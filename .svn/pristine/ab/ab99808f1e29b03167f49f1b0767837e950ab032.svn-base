@@ -1,0 +1,17 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$boform"
+		extends="{http://xplatform}xplatform$framework" namespace="/boform">
+
+		<action name="boformAction" class="boformAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchReportParameter">/xplatform/boform/searchReportParameter.vm</result>
+			<result name="createPrepare">/xplatform/boform/createReportParameter.vm</result>
+			<result name="updatePrepare">/xplatform/boform/searchReportParameterDetail.vm</result>
+			<result name="showBoRptPrepare">/xplatform/boform/showBoRpt.vm</result>
+			<result name="showBoRpt" type="redirect">${url}</result>
+			<result name="searchQueryParameter">/xplatform/boform/searchQueryParameter.vm</result>
+		</action>
+		
+	</package>
+</xwork>

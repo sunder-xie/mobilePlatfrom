@@ -1,0 +1,3310 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="user">
+	<typeAlias alias="user" type="com.kintiger.xplatform.api.user.bo.User" />
+	<typeAlias alias="product"
+		type="com.kintiger.xplatform.api.user.bo.BaseProduct" />
+	<typeAlias alias="customer"
+		type="com.kintiger.xplatform.api.user.bo.BaseCustomer" />
+	<typeAlias alias="activity"
+		type="com.kintiger.xplatform.api.user.bo.BaseMarketCheck" />
+	<typeAlias alias="picture" type="com.kintiger.xplatform.api.user.bo.Picture" />
+	<typeAlias alias="price"
+		type="com.kintiger.xplatform.api.user.bo.AbnormalPrice" />
+	<typeAlias alias="distr"
+		type="com.kintiger.xplatform.api.user.bo.Distribution" />
+	<typeAlias alias="dicts" type="com.kintiger.xplatform.api.user.bo.Dicts" />
+	<typeAlias alias="disp" type="com.kintiger.xplatform.api.user.bo.DisPlay" />
+	<typeAlias alias="stage"
+		type="com.kintiger.xplatform.api.user.bo.StockAge" />
+	<typeAlias alias="bmenu"
+		type="com.kintiger.xplatform.api.user.bo.BaseMenu" />
+	<typeAlias alias="order" type="com.kintiger.xplatform.api.user.bo.Order" />
+	<typeAlias alias="orderDetail"
+		type="com.kintiger.xplatform.api.user.bo.OrderDetail" />
+	<typeAlias alias="loginLog"
+		type="com.kintiger.xplatform.api.user.bo.LoginLog" />
+	<typeAlias alias="stock" type="com.kintiger.xplatform.api.user.bo.Stock" />
+	<typeAlias alias="kunnrStockDate"
+		type="com.kintiger.xplatform.api.user.bo.KunnrStockDate" />
+	<typeAlias alias="Kpi" type="com.kintiger.xplatform.api.user.bo.Kpi" />
+	<typeAlias alias="printFormat" type="com.kintiger.xplatform.api.user.bo.OrderPrintFormat" />
+	<typeAlias alias="lstm" type="com.kintiger.xplatform.api.user.bo.Lstm" />
+	<typeAlias alias="custsku" type="com.kintiger.xplatform.api.user.bo.CustSku" />
+	<typeAlias alias="sign" type="com.kintiger.xplatform.api.user.bo.Sign" />
+	<typeAlias alias="vistcust" type="com.kintiger.xplatform.api.user.bo.VistCust" />
+	<typeAlias alias="skuunit" type="com.kintiger.xplatform.api.user.bo.SkuUnit" />
+	<typeAlias alias="stockReport"  type="com.kintiger.xplatform.api.user.bo.StockReport" />
+	<typeAlias alias="kunnr"  type="com.kintiger.xplatform.api.user.bo.Kunnr" />
+	
+	<!-- 获取Top200经销商 -->
+	<select id="getKunnrForTop200" parameterClass="kunnr"
+		resultClass="kunnr">
+	<![CDATA[
+			select k.kunnr        as kunnr,
+			       k.name1        as name1
+			  from crm.crm_tb_kunnr_kunag k
+			  left join crm.crm_tb_kunnr kk on k.kunnr = kk.kunnr
+			  left join crm.crm_tb_kunnrbusiness b on b.kunnr = k.kunnr
+			 where 1 = 1 and b.is_important='X'
+	    ]]>
+	</select>
+	
+	<!-- 根据userId获取kunnrId -->
+	<select id="getKunnrIdForUserId" parameterClass="java.lang.String"
+		resultClass="kunnr">
+	<![CDATA[
+			select t.kunnr,
+			       t.name1
+			 from crm.crm_tb_kunnr t
+			left join  basis.basis_vw_user_psw u on t.kunnr=u.login_id
+			 where u.user_id=#userId#
+	    ]]>
+	</select>
+	
+	<insert id="insertPhoto" parameterClass="picture">
+		<selectKey resultClass="Long" keyProperty="phId">
+			select
+			crm.crm_seq_photo.nextval as phId from dual
+		</selectKey>
+		<![CDATA[
+		insert into  crm.crm_tb_photo (ph_id, CUST_ID,item_id,OPERATOR_ID,
+		PHOTO_TYPE,ACTIVITY_ID,SKU_ID,EQUIPMENT_ID,IMEI_ID,LONGITUDE,
+		latitude,file_name,create_date,modify_date,day_type,tfile,pz_date,cloud_id) values 
+		(#phId#, #custId#,#itemId#, #userId#,#photoType#,#activityId#,#skuId#,#equipmentId#,
+		#imeiId#,#longitude#,#latitude#,#fileName#,sysdate,sysdate,#dayType#,#tFile#,#pzTime#,#cloudId#)
+		]]>
+	</insert>
+
+	<insert id="insertOrder" parameterClass="order">
+		<selectKey resultClass="Long" keyProperty="oId">
+			select
+			crm.crm_seq_order_total.nextval as oId from dual
+		</selectKey>
+		<![CDATA[
+		 insert into crm.crm_tb_order_total (order_id,total_price,total_price_unit_code,total_price_unit_desc,order_description
+ 			,order_quantity,cust_id,org_id,user_id,status,planned_delivery_date,real_delivery_date,
+ 			last_modify_user,order_create_date,create_date,modify_date
+ 			,remark,order_status,cloud_id,order_funds_status)  values 
+		(#oId#, #totalPrice#,#totalPricaeUniteCode#, #totalPricaeUniteDesc#,#orderDesc#,
+		#orderQuntity#,#custId#,#orgId#,#userId#,'U',#plannedDeliveryDate#,#realDeliveryDate#,
+		#lastModifyUser#,#orderCreateDate#,sysdate,sysdate,
+		#remark#,#orderStatus#,#couldId#,#orderFundStatus#)
+		]]>
+	</insert>
+
+	<insert id="insertOrderDetail" parameterClass="orderDetail">
+		<selectKey resultClass="Long" keyProperty="odId">
+			select
+			crm.crm_seq_order_Detail.nextval as odId from dual
+		</selectKey>
+		<![CDATA[
+		  insert into crm.crm_tb_order_Detail (order_detail_id,order_id,quantity,unit_code,
+		  unit_desc,price_unit_code,price_unit_desc,
+		  price,total_price,status,create_date,modify_date,
+          order_detail_status,modify_user_id,sku_id,order_type,mapping_skuId)  values 
+		(#odId#, #orderId#,#quantity#, #unitCode#,
+		#unitDesc#,	#priceUnitCode#,#priceUnitDesc#,
+		#price#,#totalPrice#,'U',sysdate,sysdate,
+		#orderDetailStatus#,#modifyUserId#,#skuId#,#orderType#,#mappingSKUId#)
+		]]>
+	</insert>
+
+
+	<insert id="insertPrice" parameterClass="price">
+		<selectKey resultClass="Long" keyProperty="prId">
+			select
+			CRM.CRM_SEQ_ABNORMALPRICE.nextval as prId from dual
+		</selectKey>
+		<![CDATA[
+		insert into  crm.crm_tb_abnormalprice (pr_id,CUST_ID,OPERATOR_ID,PRICE,SKU_ID,STATUS,UNIT,MODIFY_DATE,
+		CREATE_DATE,DAY_TYPE,STANDARDPRICE,PROMOTIONALPRICE,CLOUD_ID) values 
+		(#prId#, #custId#, #userId#,#price#,#skuId#,#status#,#unit#,sysdate,sysdate,#dayType#,
+		#standardprice#,#promotionalprice#,#cloudId#)
+		]]>
+	</insert>
+
+	<insert id="insertDistr" parameterClass="distr">
+		<selectKey resultClass="Long" keyProperty="dId">
+			select
+			crm.crm_seq_distribution.nextval as dId from dual
+		</selectKey>
+		<![CDATA[
+		insert into  crm.crm_tb_distribution (d_id,CUST_ID,OPERATOR_ID,
+		USER_ID,QUANTITY,SKU_ID,MODIFY_DATE,CREATE_DATE,DAY_TYPE,STATUS,CLOUD_ID) values 
+		(#dId#, #custId#, #userId#,#userId#,#quantity#,#skuId#,sysdate,sysdate,#dayType#,'Y',#cloudId#)
+		]]>
+	</insert>
+
+
+	<insert id="insertDisply" parameterClass="disp">
+		<selectKey resultClass="Long" keyProperty="disId">
+			select
+			crm.crm_seq_display.nextval as disId from dual
+		</selectKey>
+		<![CDATA[
+		insert into  
+		 crm.crm_tb_display  (DIS_ID,CUST_ID,USER_ID,
+		DICT_TYPE_VALUE,ITEM_VALUE,ITEM_DESC,COUNTS,STATUS,CREATE_DATE,DAY_TYPE,MODIFY_DATE,CLOUD_ID) values 
+		(#disId#, #custId#, #userId#,#dictTypeValue#,#itemValue#,#itemDesc#,#counts#,'Y',
+		sysdate,#dayType#,sysdate,#cloudId#)
+		]]>
+	</insert>
+
+	<insert id="insertCus" parameterClass="customer">
+		<selectKey resultClass="Long" keyProperty="cId">
+			select
+			crm.crm_seq_customer.nextval as cId from dual
+		</selectKey>
+		<![CDATA[
+		insert into  
+		 crm.crm_tb_customer  (cust_id,cust_number,CHANNEL_ID,CUST_ADDRESS,CUST_NAME,
+		CONTACT_NAME,CONTACT_PHONE,CONTACT_MOBILE,ORG_ID,BUSINESS_LICENSE,CREATE_DATE,
+		LAST_MODIFY,CUST_STATE,VILLAGES,CUST_DISTRICT,CUST_CITY,CUST_PROVINCE,
+		create_user,cust_kunnr,longitude,latitude,
+		CUSTOMER_IMPORTANCE,CUSTOMER_ANNUAL_SALE) 
+		values (#cId#,#cId#,#channelId#, #address#,#custName#,#contractName#,
+		#contractPhone#,#contractMobile#,#orgId#,#businessLicense#,sysdate,
+		sysdate,'1',#zwl01#,#zwl03#,#zwl02#,#zwl04#,#userId#,#kunnr#,#longitude#,
+		#latitude#,#customerImportance#,#customerAnnualSale#)
+		]]>
+	</insert>
+	
+	<insert id="insertSign" parameterClass="sign" >
+		<selectKey resultClass="Long" keyProperty="sign_id">
+			select
+			CRM.CRM_SEQ_SIGN.nextval as cId from dual
+		</selectKey>
+		<![CDATA[
+		insert into  
+		 crm.crm_tb_sign (sign_id,LONGITUDE,LATITUDE,address,CREATE_DATE,sign_type,OPERATOR_ID) values 
+		(#sign_id#, #longitude#,#latitude#,#address#,sysdate,#sign_type#,#operator_id#)
+		]]>
+	</insert>
+
+
+	<update id="updateStockage" parameterClass="java.lang.String">
+	<![CDATA[
+		update crm.crm_tb_stockage  st set st.status = 'N' where st.day_type = to_char(sysdate,'yyyy-MM-dd') 
+	and st.cust_id = #custId# and st.status = 'Y'
+	]]>
+	</update>
+
+
+
+	<insert id="insertStage" parameterClass="stage">
+		<selectKey resultClass="Long" keyProperty="stId">
+			select
+			crm.crm_seq_stockage.nextval as stId from dual
+		</selectKey>
+		<![CDATA[
+		insert  into   
+		crm.crm_tb_stockage  (ST_ID,CUST_ID,USER_ID,SKU_ID,START_DAY,END_DAY,DAY_TYPE,CREATE_DATE,MODIFY_DATE,STATUS,YEAR,MONTH,QUANTITY,CLOUD_ID,UNIT_CODE,UNIT_DESC) values 
+		(#stId#, #custId#, #userId#,#skuId#,#startDay#,#endDay#,#dayType#,sysdate,sysdate,'Y',#year#,#month#,#quantity#,#cloudId#,#unitCode#,#unitDesc#)
+		]]>
+	</insert>
+
+	<insert id="insertSupervise" parameterClass="activity">
+		<![CDATA[
+		insert into market.market_tb_plan_implement(item_id, check_percent, implement_situation, mia_detail_id, supervision_memo,
+				check_percent_bus, implement_person, implement_date,reason	]]>
+				
+				<isNotEmpty property="status" prepend=",">
+			<![CDATA[ status]]>
+			</isNotEmpty>
+				<isNotEmpty property="status_bus" prepend=",">
+			<![CDATA[ status_bus ]]>
+			</isNotEmpty>
+			
+				
+			<![CDATA[	,LAST_MODIFY)
+		values(#itemId#, #hxProportion#, #Execution#, #marketDetailId#, #dxExplanation#, 
+				#checkPercentBus#,#implementPerson#, sysdate,#reason#]]>
+				<isNotEmpty property="status" prepend=",">
+			<![CDATA[ #status# ]]>
+			</isNotEmpty>
+				<isNotEmpty property="status_bus" prepend=",">
+			<![CDATA[ #status_bus# ]]>
+			</isNotEmpty>
+			<![CDATA[,sysdate)
+		]]>
+	</insert>
+
+	<insert id="insertCheck" parameterClass="activity">
+		<![CDATA[
+		insert into  MARKET.MARKET_TB_MOBILE_CHECK(item_id, check_percent, implement_situation, mia_detail_id, supervision_memo,
+				check_percent_bus, implement_person, implement_date,reason,cust_id,user_id,day_type,cloud_id)
+		values(#itemId#, #hxProportion#, #Execution#, #marketDetailId#, #dxExplanation#, 
+				#checkPercentBus#,#implementPerson#, sysdate,#reason#,#custId#,#userId#,#dayType#,#cloudId#)
+		]]>
+	</insert>
+
+
+
+
+	<select id="getUserByMobile" parameterClass="java.lang.String"
+		resultClass="user">
+	<![CDATA[
+     select s.userId as userId,
+          s.userName  as userName,
+          s.mobile  as  mobile,
+          s.password  as  password,
+          s.roleId  as roleId,
+          s.orgId     as orgId,
+           s.couldId  as couldId ,
+            s.orgName    as orgName,
+            s.userCode     as userCode,
+            s.roleType      as roleType
+    from basis.basis_vw_role_info  s
+	 where 1=1  
+	    and s.mobile = #mobile#]]>
+	</select>
+
+
+	<select id="getUserByCode" parameterClass="java.lang.String"
+		resultClass="user">
+	<![CDATA[
+	       select s.userId as userId,
+            s.userName  as userName,
+            s.mobile  as  mobile,
+            s.password  as  password,
+            s.roleId  as roleId,
+            s.orgId     as orgId,
+            s.couldId   as couldId ,
+            s.orgName    as orgName,
+            s.userCode     as userCode,
+            s.roleType      as roleType
+    from basis.basis_vw_role_info  s
+	  where 1=1  
+	    and s.userCode = #mobile#]]>
+	</select>
+
+<!-- 督导版手机菜单配置 -->
+	<select id="getMenu" parameterClass="java.lang.String"
+		resultClass="bmenu">
+	<![CDATA[
+	  select d.item_id          as id,
+       d.item_name        as menuCode,
+       d.item_description as menuDesc,
+       d.item_value       as menuValue,
+       dt.dict_type_value as menuType
+      from basis.basis_tb_dict_type dt, basis.basis_tb_dict d
+    where dt.dict_type_id = d.dict_type_id
+    and dt.dict_type_value = 'mobileMenu'
+    and dt.dict_type_state = 'U'
+    and d.item_state = 'U'
+    and d.remark='Y'
+]]>
+	</select>
+	<select id="getSku" parameterClass="java.lang.String"
+		resultClass="product">
+	<![CDATA[
+select s.sku_id           as categoryId,
+       s.sku_name         as categoryDesc,
+       cg.sku_category_id as categorySortId,
+       cg.category_name   as categorySortDesc,
+       s.product_type     as productType,
+       s.sku_order        as skuOrder,
+       s.CLOUDID          as cloudId,
+       co.company_name    as brandsDesc,
+       co.company_id      as brandsId,
+       s.sku_unit as skuUnit,
+       s.sku_unit_id as skuUnitId
+  from crm.crm_tb_sku s
+  left join crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id
+  left join crm.crm_tb_company co on cg.company_id = co.company_id
+ where s.sku_unit is not null and s.sku_unit_id is not null
+   and s.status = 'U'
+   and cg.status = 'U'
+   and co.status = 'U'
+   and( s.cloudid = '0000000000'
+   or s.cloudid = #cloudId#)
+   order by s.sku_order]]>
+	</select>
+
+	<select id="getOrderSkuByKunner" parameterClass="java.lang.String"
+		resultClass="product">
+	<![CDATA[select s.sku_id           as categoryId,
+       s.sku_name         as categoryDesc,
+       cg.sku_category_id as categorySortId,
+       cg.category_name   as categorySortDesc,
+       s.product_type     as productType,
+       s.sku_order        as skuOrder,
+       s.CLOUDID          as cloudId,
+       co.company_name    as brandsDesc,
+       co.company_id      as brandsId,
+       s.sku_unit as skuUnit,
+       s.sku_unit_id as skuUnitId
+  from crm.crm_tb_sku s
+  left join crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id
+  left join crm.crm_tb_company co on cg.company_id = co.company_id
+ where s.sku_unit is not null and s.sku_unit_id is not null
+   and s.product_type='1'
+   and s.status = 'U'
+   and cg.status = 'U'
+   and co.status = 'U'
+   and( s.cloudid = '0000000000'
+   or s.cloudid = #cloudId#)
+   order by s.sku_order]]>
+	</select>
+
+
+
+	<select id="getChannel" parameterClass="java.lang.String"
+		resultClass="customer">
+	<![CDATA[
+      select cn.channel_id        as channelId,
+           cn.channel_parent_id as channelParentId,
+           cn.channel_name      as channelDesc
+      from crm.crm_tb_channel cn where  cn.channel_parent_id not in ('1','-1')
+      order by  cn.channel_number,cn.channel_id
+	]]>
+	</select>
+
+	<select id="getBlCount" parameterClass="customer" resultClass="java.lang.Integer">
+	<![CDATA[
+              select count(1) from   crm.crm_tb_customer c 
+              where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="businessLicense" prepend="and">
+			<![CDATA[ c.business_license = #businessLicense# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getActCount" parameterClass="activity" resultClass="java.lang.Integer">
+	<![CDATA[
+              select count(1) from  market.market_tb_plan_implement m
+              where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="marketDetailId" prepend="and">
+			<![CDATA[  m.mia_detail_id = #marketDetailId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="itemId" prepend="and">
+			<![CDATA[  m.item_id = #itemId# ]]>
+			</isNotEmpty>
+			<!--<isNotEmpty property="implementPerson" prepend="and"> <![CDATA[ m.implement_person 
+				= #implementPerson# ]]> </isNotEmpty> -->
+		</dynamic>
+	</select>
+
+	<select id="getDivision" parameterClass="java.lang.String"
+		resultClass="customer">
+	<![CDATA[
+     select z.zwl00t || z.zwl01t || z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+       zwl04 as zwl04,
+       z.zwl04t as zwl04t
+  from crm.crm_tb_zwlqy z
+	]]>
+	</select>
+
+
+	<select id="getDivisionSearch" parameterClass="java.lang.String"
+		resultClass="customer">
+	<![CDATA[
+     select z.zwl01t || z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+       zwl04 as zwl04,
+       z.zwl04t as zwl04t
+       from crm.crm_tb_zwlqy z
+       where (z.zwl04t like #zwl04t#
+       or  z.zwl00t || z.zwl01t || z.zwl02t || z.zwl03t || z.zwl04t like #zwl04t#)
+	]]>
+	</select>
+
+	<select id="getDivisionforSearch" parameterClass="java.lang.String"
+		resultClass="customer">
+	<![CDATA[
+			select z.zwl00 as zwl00,
+			       z.zwl01 as zwl01,
+			       z.zwl02 as zwl02,
+			       z.zwl03 as zwl03,
+			       z.zwl04  as zwl04
+		 from crm.crm_tb_zwlqy z
+       where z.zwl04 = #zwl04#
+	]]>
+	</select>
+
+	<select id="getTime" parameterClass="java.lang.String"
+		resultClass="product">
+	<![CDATA[
+      select sysdate as time from dual
+	]]>
+	</select>
+	
+	<select id="getTime1"  resultClass="java.lang.String">
+	<![CDATA[
+      select to_char(sysdate,'yyyy-MM-dd HH24:mi:ss') as time from dual
+	]]>
+	</select>
+	
+	
+<!-- 数据字典 标准陈列  多点陈列  督导手机端是否需要订单管理-->
+	<select id="getDict" parameterClass="java.lang.String"
+		resultClass="dicts">
+	<![CDATA[
+		  select  d.item_id  as itemId,
+		  d.item_name   as itemName,
+		  d.item_description  as  itemDesc,
+		  d.item_value   as itemValue,
+		  dt.dict_type_id   as dictTypeId,
+		  dt.dict_type_name  as dictTypeName,
+		  dt.dict_type_value  as  dictTypeValue,
+		  d.remark as remark 
+		 from basis.basis_tb_dict_type  dt  , basis.basis_tb_dict d   
+		 where  dt.dict_type_id = d.dict_type_id and dt.dict_type_value in ( 'spdisplay','mpdisplay','isOrderManager','mobileKunnrConsole','custfxdate'） 
+		 and dt.dict_type_state = 'U' and d.item_state = 'U'
+	]]>
+			</select>
+			
+	
+<!-- 数据字典  管理员手机端菜单 登录权限-->
+	<select id="getAdmDict" parameterClass="java.lang.String"
+		resultClass="dicts">
+	<![CDATA[
+	  select  d.item_id  as itemId,
+      d.item_name   as itemName,
+      d.item_description  as  itemDesc,
+      d.item_value   as itemValue,
+      d.remark as remark,
+      dt.dict_type_id   as dictTypeId,
+      dt.dict_type_name  as dictTypeName,
+      dt.dict_type_value  as  dictTypeValue
+     from basis.basis_tb_dict_type  dt  , basis.basis_tb_dict d   
+     where  dt.dict_type_id = d.dict_type_id and dt.dict_type_value in ( 'admmobile'） 
+     and dt.dict_type_state = 'U' and d.item_state = 'U'
+	]]>
+			</select>	
+<!-- 手机市场活动选择控制 -->
+	<select id="getDictforAct" parameterClass="java.lang.String"
+		resultClass="dicts">
+	<![CDATA[
+      select  d.item_id  as itemId,
+      d.item_name   as itemName,
+      d.item_description  as  itemDesc,
+      d.item_value   as itemValue,
+      dt.dict_type_id   as dictTypeId,
+      dt.dict_type_name  as dictTypeName,
+      dt.dict_type_value  as  dictTypeValue
+     from basis.basis_tb_dict_type  dt  , basis.basis_tb_dict d   
+     where  dt.dict_type_id = d.dict_type_id and dt.dict_type_value ='mobile_dict'
+     and dt.dict_type_state = 'U' and d.item_state = 'U'
+	]]>
+	</select>
+
+
+	<select id="getVersion" parameterClass="java.lang.String"
+		resultClass="dicts">
+	<![CDATA[
+       
+      select d.item_value   as   itemValue,
+		     d.item_name  as itemName,
+		     d.remark  as itemDesc,
+       d.item_description   as dictTypeValue
+       from   basis.basis_tb_dict d , basis.basis_tb_dict_type ii 
+       where d.item_value = (select max(dd.item_value)
+             from basis.basis_tb_dict dd, basis.basis_tb_dict_type t
+            where t.dict_type_id = dd.dict_type_id
+              and t.dict_type_value = #dictTypeValue#
+              and dd.item_state = 'U')
+            and  d.dict_type_id = ii.dict_type_id
+              and ii.dict_type_value= #dictTypeValue#
+              
+	]]>
+	</select>
+	
+	<!-- 经销商手机端指标控制  -->
+	<select id="getIndexDetail" parameterClass="java.lang.String"
+		resultClass="dicts">
+	<![CDATA[
+       
+    select  dd.item_id          as itemId,
+		    dd.item_value       as itemValue,
+		    dd.item_name        as itemName,
+		    dd.item_description as dictTypeValue,
+		    dd.remark as remark
+		     from basis.basis_tb_dict dd, basis.basis_tb_dict_type t
+		    where t.dict_type_id = dd.dict_type_id
+		      and t.dict_type_value = 'mobileKunnrConsole'
+		      and dd.item_state = 'U'
+		      and t.dict_type_state = 'U'
+		      and dd.item_id not in
+		          (select tid.dict_item_id
+		             from crm.crm_tb_index_detail tid
+		            where tid.cloud_id = #cloudId#)
+	]]>
+	</select>
+
+
+
+	<select id="getCus" parameterClass="java.lang.String"
+		resultClass="customer">
+	<![CDATA[
+		  select distinct T.attr_value, x.cust_id,
+		      x.cust_number  as custId,
+		      x.cust_name  as custName,
+		      x.org_id   as orgId,
+		      l.org_name as orgName,
+		      m.emp_name   as userName,
+		      x.cust_kunnr,
+		      x.cust_level   as custLevel,
+		      x.cust_state    as custState ,
+		      x.contact_name   as  contractName,
+		      x.contact_mobile  as  contractMobile,
+		      x.contact_phone  as  contractPhone,
+		      x.channel_id   as channelId,
+		      n.channel_name  as  channelName,
+		      x.cust_address as address,
+		      x.longitude,
+		      x.latitude
+		from market.market_tb_plan_money a
+		left join market.market_tb_plan_item_list T on a.item_id = T.item_id
+		left join crm.crm_tb_customer x on T.attr_value = x.cust_id
+		left join basis.basis_tb_org l on x.org_id = l.org_id
+		left join basis.basis_tb_salesemp_info m on a.supervision = m.emp_id
+		left join crm.crm_tb_channel n on x.channel_id = n.channel_id
+		where a.supervision = #userId#
+		and T.attr_name = '门店ID'
+		and x.cust_state not in ('3','4')
+	]]>
+	</select>
+
+	<select id="getCusforSearch" parameterClass="customer"
+		resultClass="customer">
+	<![CDATA[
+		select distinct c.cust_number,
+		                c.cust_number    as custId,
+		                c.org_id         as orgId,
+		                t.org_name       as orgName,
+		                c.cust_name      as custName,
+		                c.cust_kunnr     as kunnr,
+		                ck.name1         as kunnrName,
+		                 z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+		                zwl04 as zwl04,
+		                z.zwl04t as zwl04t,
+		                c.cust_level     as custLevel,
+		                c.cust_state     as custState,
+		                c.contact_name   as contractName,
+		                c.contact_mobile as contractMobile,
+		                c.BUSINESS_LICENSE  as businessLicense,
+		                c.contact_phone  as contractPhone,
+		                c.channel_id     as channelId,
+		                cn.channel_name  as channelName,
+		                ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+		  else c.cust_address end
+		  ) as address,
+		  c.longitude,
+		  c.latitude,
+		  c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+		      from crm.crm_tb_customer c
+		      left join crm.crm_tb_channel cn
+		        on cn.channel_id = c.channel_id
+		        left join crm.crm_tb_kunnr ck 
+		        on c.cust_kunnr = ck.kunnr
+		      left join basis.basis_tb_org t
+		        on t.org_id = c.org_id
+		      left join crm.crm_tb_zwlqy z 
+		           on z.zwl04 = c.cust_province      
+		     where 1 = 1
+		     and c.cust_state not in ('3','4')      
+			]]>
+		<dynamic>
+		<!-- by ljwnag -->
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info,handler=wildcard# escape '\'
+		            or c.cust_id like #info,handler=wildcard# escape '\' 
+		            or c.cust_street like  #info,handler=wildcard# escape '\'
+		            or c.cust_house_number like  #info,handler=wildcard# escape '\' )]]>
+			</isNotEmpty>
+			<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[GetDistance(#longitude#,#latitude#,c.longitude,c.latitude)<2
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="kunnr" prepend="and">
+			<![CDATA[  c.CUST_KUNNR = #kunnr# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 拜访管理之搜索客户 -->
+	<select id="getCusforSearch1" parameterClass="customer"
+		resultClass="customer">
+	<![CDATA[
+		select distinct c.cust_number,
+		                c.cust_number    as custId,
+		                c.org_id         as orgId,
+		                t.org_name       as orgName,
+		                c.cust_name      as custName,
+		                ck.kunnr     as kunnr,
+		                ck.name1         as kunnrName,
+		                 z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+		                zwl04 as zwl04,
+		                z.zwl04t as zwl04t,
+		                c.cust_level     as custLevel,
+		                c.cust_state     as custState,
+		                c.contact_name   as contractName,
+		                c.contact_mobile as contractMobile,
+		                c.BUSINESS_LICENSE  as businessLicense,
+		                c.contact_phone  as contractPhone,
+		                c.channel_id     as channelId,
+		                cn.channel_name  as channelName,
+		                ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+						  else c.cust_address end
+						  ) as address,
+						c.longitude,
+						c.latitude,
+						c.customer_importance as customerImportance,
+                		c.customer_annual_sale as customerAnnualSale
+		      from crm.crm_tb_customer c
+		      left join crm.crm_tb_channel cn
+		        on cn.channel_id = c.channel_id
+		        left join crm.crm_tb_kunnr ck 
+		       on    substr(c.cust_kunnr,1,8) = ck.kunnr or substr(c.cust_kunnr,length(c.cust_kunnr)-7,8) = ck.kunnr
+		      left join basis.basis_tb_org t
+		        on t.org_id = c.org_id
+		      left join crm.crm_tb_zwlqy z 
+		           on z.zwl04 = c.cust_province      
+		     where 1 = 1
+		     and c.cust_state not in ('3','4')      
+			]]>
+		<dynamic>
+		<!-- by ljwnag -->
+		    <isNotEmpty property="info" prepend="and">
+						<![CDATA[( c.cust_name like #info# 
+		            or c.cust_id like #info#
+		            or c.cust_street like  #info# 
+		            or c.cust_house_number like  #info#
+		            or c.cust_name||c.cust_street||c.cust_house_number like  #info#
+		            or c.cust_street||c.cust_house_number||c.cust_name like  #info#
+		            or c.cust_name||c.cust_address like  #info#
+		            or c.cust_address||c.cust_name like  #info#
+		            )
+		            ]]>
+		            	</isNotEmpty>
+		            		<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[
+		    c.longitude between (#longitude#-#distance#) and (#longitude#+#distance#) and c.latitude between (#latitude#-#distance#) and (#latitude#+#distance#)
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="zwl04" prepend="and">
+			<![CDATA[  c.cust_province = #zwl04# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="kunnr" prepend="and">
+			<![CDATA[  c.CUST_KUNNR = #kunnr# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getCusforSearchBycsjl" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+	select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                    c.cust_kunnr     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+			      else c.cust_address end
+			      ) as address,
+			       	c.longitude,
+			       	c.latitude,
+			       	c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+            on c.cust_kunnr = ck.kunnr
+            
+            left join crm.crm_tb_kunnrbusiness kb 
+            on ck.kunnr = kb.kunnr
+            left join basis.basis_tb_station_user su 
+            on kb.BUSINESS_MANAGER_ID = su.id
+            left join basis.basis_tb_salesemp_info si 
+            on su.user_id =si.emp_id
+            
+          left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province      
+         where 1 = 1
+         and c.cust_state not in ('3','4')      
+			]]>
+		<dynamic>
+		<!-- ljwang -->
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info,handler=wildcard# escape '\'
+		            or c.cust_id like #info,handler=wildcard# escape '\' 
+		            or c.cust_street like  #info,handler=wildcard# escape '\'
+		            or c.cust_house_number like  #info,handler=wildcard# escape '\' )]]>
+			</isNotEmpty>
+			<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[GetDistance(#longitude#,#latitude#,c.longitude,c.latitude)<2
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[   su.user_id = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getCusforSearchBycsjl1" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+	select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                    ck.kunnr		     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+			      else c.cust_address end
+			      ) as address,
+			       c.longitude,
+			       c.latitude,
+			       c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+            on   substr(c.cust_kunnr,1,8) = ck.kunnr or substr(c.cust_kunnr,length(c.cust_kunnr)-7,8) = ck.kunnr
+            left join crm.crm_tb_kunnrbusiness kb 
+            on ck.kunnr = kb.kunnr
+            left join basis.basis_tb_station_user su 
+            on kb.BUSINESS_MANAGER_ID = su.id
+            left join basis.basis_tb_salesemp_info si 
+            on su.user_id =si.emp_id
+            
+          left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province   
+           left join  crm.crm_tb_kunnrbusiness_emp   ke
+           on (ke.kunnr=ck.kunnr and  business_type='0')
+         where 1 = 1
+         and c.cust_state not in ('3','4')      
+			]]>
+		<dynamic>
+		<!-- ljwang -->
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info# 
+		            or c.cust_id like #info#
+		            or c.cust_street like  #info# 
+		            or c.cust_house_number like  #info#
+		            or c.cust_name||c.cust_street||c.cust_house_number like  #info#
+		            or c.cust_street||c.cust_house_number||c.cust_name like  #info#
+		            or c.cust_name||c.cust_address like  #info#
+		            or c.cust_address||c.cust_name like  #info#
+		            )
+		            ]]>
+			</isNotEmpty>
+			<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[c.longitude between (#longitude#-#distance#) and (#longitude#+#distance#) and c.latitude between (#latitude#-#distance#) and (#latitude#+#distance#)
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[   (su.user_id = #userId# or ke.business_id=#userId#)]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getCusforSearchBykhjl" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+	select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                    c.cust_kunnr     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+				      else c.cust_address end
+				      ) as address,
+				      c.longitude,
+				      c.latitude,
+				      c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+            on c.cust_kunnr = ck.kunnr
+            left join crm.crm_tb_kunnrbusiness kb 
+            on ck.kunnr = kb.kunnr
+              left join basis.basis_tb_salesemp_info si
+       on kb.business_competent_id = si.emp_id
+          left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province      
+         where 1 = 1
+         and c.cust_state not in ('3','4')      and  ck.status = '1'
+			]]>
+		<dynamic>
+		    <!-- by ljwang -->
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info,handler=wildcard# escape '\'
+		            or c.cust_id like #info,handler=wildcard# escape '\' 
+		            or c.cust_street like  #info,handler=wildcard# escape '\'
+		            or c.cust_house_number like  #info,handler=wildcard# escape '\' )]]>
+			</isNotEmpty>
+			<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[GetDistance(#longitude#,#latitude#,c.longitude,c.latitude)<2
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[   si.emp_id  = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+<select id="getCusforSearchBykhjl1" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+	select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                    ck.kunnr		     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+				      else c.cust_address end
+				      ) as address,
+			      c.longitude,
+			      c.latitude,
+			      c.customer_importance as customerImportance,
+                  c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+            on    substr(c.cust_kunnr,1,8) = ck.kunnr or substr(c.cust_kunnr,length(c.cust_kunnr)-7,8) = ck.kunnr
+            left join crm.crm_tb_kunnrbusiness kb 
+            on ck.kunnr = kb.kunnr
+              left join basis.basis_tb_salesemp_info si
+       on kb.business_competent_id = si.emp_id
+          left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province      
+         where 1 = 1
+         and c.cust_state not in ('3','4')      and  ck.status = '1'
+			]]>
+		<dynamic>
+		    <!-- by ljwang -->
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info# 
+		            or c.cust_id like #info#
+		            or c.cust_street like  #info# 
+		            or c.cust_house_number like  #info#
+		            or c.cust_name||c.cust_street||c.cust_house_number like  #info#
+		            or c.cust_street||c.cust_house_number||c.cust_name like  #info#
+		            or c.cust_name||c.cust_address like  #info#
+		            or c.cust_address||c.cust_name like  #info#
+		            )
+		            ]]>
+			</isNotEmpty>
+			<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[c.longitude between (#longitude#-#distance#) and (#longitude#+#distance#) and c.latitude between (#latitude#-#distance#) and (#latitude#+#distance#)
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[   si.emp_id  = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getCusforSearchByywy" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+	select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                    c.cust_kunnr     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+      else c.cust_address end
+      ) as address,
+      c.longitude,
+      c.latitude,
+      c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+            on  ck.kunnr in c.cust_kunnr
+              left join crm.crm_tb_kunnrbusiness_emp ke
+              on  ke.kunnr =ck.kunnr
+             left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province      
+         where 1 = 1
+         and c.cust_state not in ('3','4')      
+         and ke.BUSINESS_TYPE='2'  and  ck.status = '1'
+			]]>
+		<dynamic>
+		<!-- by ljwang -->
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info,handler=wildcard# escape '\'
+		            or c.cust_id like #info,handler=wildcard# escape '\' 
+		            or c.cust_street like  #info,handler=wildcard# escape '\'
+		            or c.cust_house_number like  #info,handler=wildcard# escape '\' )]]>
+			</isNotEmpty>
+			<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[GetDistance(#longitude#,#latitude#,c.longitude,c.latitude)<2
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[   ke.business_id = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getCusforSearchByywy1" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+	select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                    ck.kunnr		     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+      else c.cust_address end
+      ) as address,
+      c.longitude,
+      c.latitude,
+      c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+            on    substr(c.cust_kunnr,1,8) = ck.kunnr or substr(c.cust_kunnr,length(c.cust_kunnr)-7,8) = ck.kunnr
+              left join crm.crm_tb_kunnrbusiness_emp ke
+              on  ke.kunnr =ck.kunnr
+             left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province      
+         where 1 = 1
+         and c.cust_state not in ('3','4')      
+         and ke.BUSINESS_TYPE='2'  and  ck.status = '1'
+			]]>
+		<dynamic>
+		<!-- by ljwang -->
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info# 
+		            or c.cust_id like #info#
+		            or c.cust_street like  #info# 
+		            or c.cust_house_number like  #info#
+		            or c.cust_name||c.cust_street||c.cust_house_number like  #info#
+		            or c.cust_street||c.cust_house_number||c.cust_name like  #info#
+		            or c.cust_name||c.cust_address like  #info#
+		            or c.cust_address||c.cust_name like  #info#
+		            )
+		            ]]>
+			</isNotEmpty>
+				<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[c.longitude between (#longitude#-#distance#) and (#longitude#+#distance#) and c.latitude between (#latitude#-#distance#) and (#latitude#+#distance#)
+			]]>
+		</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[   ke.business_id = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getCusforSearchByzg" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+	select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                    c.cust_kunnr     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+      else c.cust_address end
+      ) as address,
+      c.longitude,
+      c.latitude,
+      c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+            on c.cust_kunnr = ck.kunnr
+              left join crm.crm_tb_kunnrbusiness_emp ke
+              on  ke.kunnr =ck.kunnr
+             left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province      
+         where 1 = 1
+         and c.cust_state not in ('3','4')      
+         and ke.BUSINESS_TYPE='1'  and  ck.status = '1'
+			]]>
+		<dynamic>
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info,handler=wildcard# escape '\'
+		            or c.cust_id like #info,handler=wildcard# escape '\' 
+		            or c.cust_street like  #info,handler=wildcard# escape '\'
+		            or c.cust_house_number like  #info,handler=wildcard# escape '\' )]]>
+			</isNotEmpty>
+			<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[GetDistance(#longitude#,#latitude#,c.longitude,c.latitude)<2
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[   ke.business_id = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getCusforSearchByzg1" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+	select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                       ck.kunnr		     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+      else c.cust_address end
+      ) as address,
+      c.longitude,
+      c.latitude,
+      c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+            on    substr(c.cust_kunnr,1,8) = ck.kunnr or substr(c.cust_kunnr,length(c.cust_kunnr)-7,8) = ck.kunnr
+              left join crm.crm_tb_kunnrbusiness_emp ke
+              on  ke.kunnr =ck.kunnr
+             left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province      
+         where 1 = 1
+         and c.cust_state not in ('3','4')      
+         and ke.BUSINESS_TYPE='1'  and  ck.status = '1'
+			]]>
+		<dynamic>
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info# 
+		            or c.cust_id like #info#
+		            or c.cust_street like  #info# 
+		            or c.cust_house_number like  #info#
+		            or c.cust_name||c.cust_street||c.cust_house_number like  #info#
+		            or c.cust_street||c.cust_house_number||c.cust_name like  #info#
+		            or c.cust_name||c.cust_address like  #info#
+		            or c.cust_address||c.cust_name like  #info#
+		            )
+		            ]]>
+			</isNotEmpty>
+				<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[c.longitude between (#longitude#-#distance#) and (#longitude#+#distance#) and c.latitude between (#latitude#-#distance#) and (#latitude#+#distance#)
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[   ke.business_id = #userId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getRouteforSearch" parameterClass="customer"
+		resultClass="customer">
+	<![CDATA[
+        select distinct c.cust_number,
+                c.cust_number    as custId,
+                c.org_id         as orgId,
+                t.org_name       as orgName,
+                c.cust_name      as custName,
+                ck.kunnr     as kunnr,
+                ck.name1         as kunnrName,
+                z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                zwl04 as zwl04,
+                z.zwl04t as zwl04t,
+                c.cust_level     as custLevel,
+                c.cust_state     as custState,
+                c.contact_name   as contractName,
+                c.contact_mobile as contractMobile,
+                c.contact_phone  as contractPhone,
+                c.channel_id     as channelId,
+                cn.channel_name  as channelName,
+                ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+  else c.cust_address end
+  ) as address,
+to_char(rr.route_date,'yyyy-mm-dd') as routeDate,
+rr.week_day as week_day,
+c.longitude,
+c.latitude
+      from crm.crm_tb_customer c
+      left join crm.crm_tb_channel cn
+        on cn.channel_id = c.channel_id
+        left join crm.crm_tb_kunnr ck 
+        on substr(c.cust_kunnr,1,8) = ck.kunnr or substr(c.cust_kunnr,length(c.cust_kunnr)-7,8) = ck.kunnr
+      left join basis.basis_tb_org t
+        on t.org_id = c.org_id
+      left join crm.crm_tb_zwlqy z 
+           on z.zwl04 =  c.cust_province
+           left  join  crm.crm_tb_route rr  on c.cust_id = rr.cust_id 
+                 where 1 = 1
+     and c.cust_state not in ('3','4')            
+     and (to_char(rr.route_date,'yyyy/mm/dd') = to_char(sysdate,'yyyy/mm/dd') or (rr.week_day=to_char(sysdate-1,'D') and rr.isweek='1' ))
+     and rr.user_id   = #userId#
+     and rr.status = 'U'
+			]]>
+	</select>
+<!-- 
+<select id="getRouteforSearch" parameterClass="customer"
+		resultClass="customer">
+	<![CDATA[
+        select distinct c.cust_number,
+                c.cust_number    as custId,
+                c.org_id         as orgId,
+                t.org_name       as orgName,
+                c.cust_name      as custName,
+                c.cust_kunnr     as kunnr,
+                ck.name1         as kunnrName,
+                z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                zwl04 as zwl04,
+                z.zwl04t as zwl04t,
+                c.cust_level     as custLevel,
+                c.cust_state     as custState,
+                c.contact_name   as contractName,
+                c.contact_mobile as contractMobile,
+                c.contact_phone  as contractPhone,
+                c.channel_id     as channelId,
+                cn.channel_name  as channelName,
+                ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+  else c.cust_address end
+  ) as address,
+to_char(rr.route_date,'yyyy-mm-dd') as routeDate,
+c.longitude,
+c.latitude
+      from crm.crm_tb_customer c
+      left join crm.crm_tb_channel cn
+        on cn.channel_id = c.channel_id
+        left join crm.crm_tb_kunnr ck 
+        on c.cust_kunnr = ck.kunnr
+      left join basis.basis_tb_org t
+        on t.org_id = c.org_id
+      left join crm.crm_tb_zwlqy z 
+           on z.zwl04 =  c.cust_province
+           left  join  crm.crm_tb_route rr  on c.cust_id = rr.cust_id 
+                 where 1 = 1
+     and c.cust_state not in ('3','4')            
+     and to_char(rr.route_date,'yyyy/mm/dd') = to_char(sysdate,'yyyy/mm/dd')
+     and rr.user_id   = #userId#
+     and rr.status = 'U'
+			]]>
+	</select>
+	 -->	
+	<select id="getRouteforJXS" parameterClass="customer"
+		resultClass="customer">
+	<![CDATA[
+        select distinct c.cust_number,
+                c.cust_number    as custId,
+                c.org_id         as orgId,
+                t.org_name       as orgName,
+                c.cust_name      as custName,
+                c.cust_kunnr     as kunnr,
+                ck.name1         as kunnrName,
+                z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                zwl04 as zwl04,
+                z.zwl04t as zwl04t,
+                c.cust_level     as custLevel,
+                c.cust_state     as custState,
+                c.contact_name   as contractName,
+                c.contact_mobile as contractMobile,
+                c.contact_phone  as contractPhone,
+                c.channel_id     as channelId,
+                cn.channel_name  as channelName,
+                tt.weekday,
+                ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+  else c.cust_address end
+  ) as address,
+to_char(sysdate,'yyyy-mm-dd') as routeDate ,
+rr.route_seq as routeSeq,
+c.longitude,
+c.latitude 
+      from crm.crm_tb_customer c
+      left join crm.crm_tb_channel cn
+        on cn.channel_id = c.channel_id
+        left join crm.crm_tb_kunnr ck 
+        on c.cust_kunnr = ck.kunnr
+      left join basis.basis_tb_org t
+        on t.org_id = c.org_id
+      left join crm.crm_tb_zwlqy z 
+           on z.zwl04 =  c.cust_province
+      left  join  crm.crm_tb_route_detail rr  on c.cust_id = rr.cust_id 
+      left join   crm.crm_tb_route_total tt on tt.route_id = rr.route_id
+       where 1 = 1
+     and c.cust_state not in ('3','4')     
+     and rr.status = 'U' and tt.status ='U'       
+     and to_char(tt.weekday) =  to_char(to_number(to_char(sysdate,'d')-1))
+     and tt.user_id   = #userId#
+     order by rr.route_seq
+			]]>
+	</select>
+
+	<select id="getKunnrforSearch" parameterClass="java.lang.String"
+		resultClass="customer">
+		<![CDATA[
+			 select ck.kunnr as custId,
+			          ck.org_id as orgId,
+			          ck.org_name as orgName,
+			          ck.name1 as custName,
+			          ck.name3 as contractName,
+			          ck.mob_number as contractMobile,
+			          ck.tel_number as contractPhone,
+			          (CASE
+			            WHEN ck.street1 is null then
+			             z.zwl02t || z.zwl03t || z.zwl04t
+			            else
+			             ck.street1
+			          end) as address,
+			          'kunnr' as customerDataType,
+			         ck.kunnr as kunnr,
+			          ck.name1 as kunnrName
+			  from crm.crm_tb_kunnr ck
+			  left join crm.crm_tb_zwlqy z
+			       on z.zwl04 = ck.town
+			 where ck.status = '1' and  (ck.kunnr like #info# or ck.name1 like #info# ) 
+			]]>
+	</select>
+
+	<select id="getAct" parameterClass="java.lang.String"
+		resultClass="activity">
+	<![CDATA[
+	   select c.cust_number  as custId,
+	       pt.plan_id   as marketTotalId,
+          dt.detail_id  as marketDetailId,
+          pt.active_content  as marketDesc,
+          pt.active_name  as marketActivityName,
+          a.item_id,
+          mt.check_percent as hxProportion  ,
+          mt.implement_situation  as  Execution ,
+          mt.supervision_memo as dxExplanation
+     from MARKET.MARKET_TB_PLAN_ITEM_LIST a
+     left join market.market_tb_model_attribute m
+       on m.mpr_att_code = a.attr_code
+     left join crm.crm_tb_customer c
+       on c.cust_id = a.attr_value
+      left join market.market_tb_plan_detail dt
+       on a.mia_detail_id = dt.detail_id
+      left join market.market_tb_budget_plan pt
+       on pt.plan_id = dt.plan_id 
+      left join basis.basis_tb_salesemp_info s 
+       on dt.supervision  = s.emp_id 
+      left join market.market_tb_plan_implement mt
+       on mt.item_id = a.item_id 
+    where m.mpr_att_datatype = 'cust_id'
+    and s.emp_id = #userId#
+	]]>
+	</select>
+
+	<select id="getActforSearch" parameterClass="activity"
+		resultClass="activity">
+	<![CDATA[
+			select distinct T.Attr_Value  custId,
+               T.item_id              itemId, 
+               T.Mia_Detail_Id        marketDetailId,
+               x.plan_id              marketTotalId,
+               y.supervision_memo     dxExplanation,
+              (select a.attr_value from market.market_tb_plan_item_list a where a.attr_name like '%促销形式%'
+                and a.item_id = t.item_id and a.mia_detail_id =  v.detail_id)||','||v.costtypename   as      marketDesc,
+               x.active_name          marketActivityName,
+               y.check_percent        hxProportion,
+               y.implement_situation  Execution,
+               y.supervision_memo     dxExplanation,
+               x.plan_year            planYear,
+               x.plan_month           planMonth ,
+               y.check_percent_bus   as checkPercentBus ,
+               y.reason              as reason  , 
+               v.check_flag as check_flag,
+          	(select a.attr_value
+                   from market.market_tb_plan_item_list a
+                  where a.attr_name like '%进店品项（ID）%'
+                    and a.item_id = t.item_id
+                    and a.mia_detail_id = v.detail_id) as skuname,
+                      (select a.attr_value
+                   from market.market_tb_plan_item_list a
+                  where a.attr_name like '%SKU单价%'
+                    and a.item_id = t.item_id
+                    and a.mia_detail_id = v.detail_id) as skuprice,
+                 (select a.attr_value
+                   from market.market_tb_plan_item_list a
+                  where a.attr_name like '%促销品项%'
+                    and a.item_id = t.item_id
+                    and a.mia_detail_id = v.detail_id) as cxsku,
+                     (select a.attr_value
+                   from market.market_tb_plan_item_list a
+                  where a.attr_name like '%费用支付金额%'
+                    and a.item_id = t.item_id
+                    and a.mia_detail_id = v.detail_id) as payment,     
+         (select a.attr_value from market.market_tb_plan_item_list a where a.attr_name like '%我司承担比例%'
+                and a.item_id = t.item_id and a.mia_detail_id =  v.detail_id)  as myProportion,
+                 (select a.attr_value from market.market_tb_plan_item_list a where a.attr_name like '%数量%'
+                and a.item_id = t.item_id and a.mia_detail_id =  v.detail_id)  as  quantity,
+                (select a.attr_value from market.market_tb_plan_item_list a where a.attr_name like '%开始时间%'
+                and a.item_id = t.item_id and a.mia_detail_id =  v.detail_id)  as  startDate,
+                (select a.attr_value from market.market_tb_plan_item_list a where a.attr_name like '%结束时间%'
+                and a.item_id = t.item_id and a.mia_detail_id =  v.detail_id)  as  endDate,
+       (case when (x.plan_year = to_char(sysdate, 'yyyy') and x.plan_month  = to_char(sysdate, 'MM') ) and v.check_flag ='0' then 'Y'
+                else 'N' end ) as isModify 
+        from  market.market_tb_plan_item_list T
+        left join market.market_tb_plan_money l on T.Item_Id = l.item_id
+        left join market.market_tb_plan_detail v on T.Mia_Detail_Id = v.detail_id
+        left join market.market_tb_budget_plan x on v.plan_id = x.plan_id
+        left join market.market_tb_plan_implement y on T.Item_Id = y.item_id
+        where  T.attr_name = '门店ID'
+                and  x.plan_year||x.plan_month
+                  between to_char(add_months(sysdate,-1),'yyyymm')
+                and  to_char(add_months(sysdate,1),'yyyymm')
+                   and x.plan_flag = 'U'
+                    and v.exista = 'Y'
+                    and x.tr_flg  ='D'
+             and    T.attr_value in  
+	]]>
+
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+		<dynamic>
+			<isEqual property="flag" compareValue="Y" prepend="and">
+			<![CDATA[ x.verify_flag = '1']]>
+			</isEqual>
+			<isEqual property="flag" compareValue="N" prepend="and">
+			<![CDATA[ (x.verify_flag is null or x.verify_flag ='1')]]>
+			</isEqual>
+		</dynamic>
+	<![CDATA[ 	 order by T.Mia_Detail_Id ]]>
+	</select>
+
+	<select id="getActByDid" parameterClass="java.lang.String"
+		resultClass="activity">
+	<![CDATA[
+	  select  lt.item_id  as itemId from MARKET.MARKET_TB_PLAN_ITEM_LIST  lt
+       left join market.market_tb_model_attribute m
+       on m.mpr_att_code =  lt.attr_code 
+       left join market.market_tb_plan_implement mt
+       on mt.item_id =  lt.item_id       
+       where m.mpr_att_datatype = 'cust_id'
+       and lt.mia_detail_id = #marketDetailId#
+	]]>
+	</select>
+
+	<select id="getModifier" parameterClass="java.lang.String"
+		resultClass="customer">
+	<![CDATA[
+      select s.username  as Modifier from basis.basis_vw_role_info  s  where s.userId = #userId#
+	]]>
+	</select>
+
+	<select id="getKunnr" parameterClass="java.lang.String"
+		resultClass="customer">
+	<![CDATA[
+       select  k.org_id  as orgId  from     crm.crm_tb_kunnr  k  where  k.kunnr =#kunnr#
+	]]>
+	</select>
+
+	<select id="getUsersByOrgId" parameterClass="java.lang.Long"
+		resultClass="user">
+	<![CDATA[
+		SELECT t.user_id AS userId,
+		  t.user_name    AS userName
+		FROM BASIS.basis_tb_user t
+		WHERE t.org_id = #orgId#
+		AND t.state    = 'U'
+	]]>
+	</select>
+
+	<select id="getUsersByIds" parameterClass="java.util.Map"
+		resultClass="user">
+	<![CDATA[
+		select t.emp_id as userId, t.emp_name as userName
+		  from smsuser.b_salesemp_info t
+		 where t.emp_state = 'Y'
+		   and t.emp_id in
+	]]>
+		<iterate property="userIds" open="(" close=")" conjunction=",">#userIds[]#
+		</iterate>
+	</select>
+
+
+	<update id="updateCustomer" parameterClass="customer">
+
+	<![CDATA[
+		UPDATE crm.crm_tb_customer c  
+		SET c.last_modify = sysdate
+	]]>
+		<dynamic>
+			<isNotEmpty property="contractName" prepend=",">
+			<![CDATA[ c.contact_name = #contractName# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="contractPhone" prepend=",">
+			<![CDATA[ c.contact_phone = #contractPhone# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="contractMobile" prepend=",">
+			<![CDATA[ c.contact_mobile = #contractMobile# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="address" prepend=",">
+			<![CDATA[ c.cust_address = #address# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="zwl01" prepend=",">
+			<![CDATA[ c.VILLAGES = #zwl01# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="zwl03" prepend=",">
+			<![CDATA[ c.CUST_DISTRICT = #zwl03# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="zwl02" prepend=",">
+			<![CDATA[ c.CUST_CITY = #zwl02# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="zwl04" prepend=",">
+			<![CDATA[ c.CUST_PROVINCE = #zwl04# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="channelId" prepend=",">
+			<![CDATA[ c.CHANNEL_ID = #channelId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="modifier" prepend=",">
+			<![CDATA[ c.LAST_MODIFY_USER = #modifier# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="kunnr" prepend=",">
+			<![CDATA[ c.cust_kunnr = #kunnr# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgId" prepend=",">
+			<![CDATA[ c.org_id = #orgId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="businessLicense" prepend=",">
+			<![CDATA[c.business_license = #businessLicense# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="custName" prepend=",">
+			<![CDATA[c.cust_Name = #custName# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend=",">
+			<![CDATA[c.longitude = #longitude# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="latitude" prepend=",">
+			<![CDATA[c.latitude = #latitude# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="customerImportance" prepend=",">
+			<![CDATA[c.CUSTOMER_IMPORTANCE = #customerImportance# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="customerAnnualSale" prepend=",">
+			<![CDATA[c.CUSTOMER_ANNUAL_SALE = #customerAnnualSale# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[  
+		WHERE c.cust_id   = #custId#
+	]]>
+	</update>
+
+	<update id="updateSupervise" parameterClass="activity">
+
+	<![CDATA[
+		UPDATE market.market_tb_plan_implement m 
+		SET m.implement_date = sysdate,m.LAST_MODIFY=sysdate
+	]]>
+		<dynamic>
+			<isNotEmpty property="hxProportion" prepend=",">
+			<![CDATA[ m.check_percent = #hxProportion# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="Execution" prepend=",">
+			<![CDATA[ m.implement_situation = #Execution# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="dxExplanation" prepend=",">
+			<![CDATA[ m.supervision_memo = #dxExplanation# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="checkPercentBus" prepend=",">
+			<![CDATA[ m.check_percent_bus = #checkPercentBus# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="reason" prepend=",">
+			<![CDATA[ m.reason = #reason# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="implementPerson" prepend=",">
+			<![CDATA[ m.implement_person = #implementPerson# ]]>
+			</isNotEmpty>
+				<isNotEmpty property="status" prepend=",">
+			<![CDATA[ m.status = #status# ]]>
+			</isNotEmpty>
+				<isNotEmpty property="status_bus" prepend=",">
+			<![CDATA[ m.status_bus = #status_bus# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[  
+		WHERE  m.mia_detail_id   = #marketDetailId# and  m.item_id =#itemId# 
+	]]>
+	</update>
+
+	<update id="updateUser" parameterClass="user">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_user t
+		SET t.modify_date = sysdate
+	]]>
+		<dynamic>
+			<isNotEmpty property="password" prepend=",">
+			<![CDATA[ t.password      = #password# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[  
+		WHERE t.user_id   = #userId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="oldPassword" prepend="and">
+			<![CDATA[ t.password      = #oldPassword# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+
+	<select id="getUser" parameterClass="java.lang.String"
+		resultClass="user">
+	<![CDATA[
+		SELECT t.passport,
+		  t.user_name AS userName,
+		  t.state,
+		  t.org_id AS orgId,
+		  t.phone,
+		  t.mobile,
+		  t.email,
+		  t.address
+		FROM BASIS.basis_tb_user t
+		WHERE t.state <> 'D'
+		AND t.user_id  = #userId#
+	]]>
+	</select>
+
+	<select id="getUserList" parameterClass="user" resultClass="user">
+		<include refid="global.paginationStart" /> 
+	<![CDATA[
+		SELECT t.passport,
+		  t.user_name AS userName,
+		  t.state,
+		  t.org_id  AS orgId,
+		  t.user_id AS userId,
+		  t.phone,
+		  t.mobile,
+		  t.email,
+		  t.address
+		FROM BASIS.basis_tb_user t
+		WHERE t.state <> 'D'
+	]]>
+		<dynamic>
+			<isNotEmpty property="passport" prepend="and">
+			<![CDATA[ t.passport like #passport,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="userName" prepend="and">
+			<![CDATA[ t.user_name like #userName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="phone" prepend="and">
+			<![CDATA[ t.phone like #phone,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="mobile" prepend="and">
+			<![CDATA[ t.mobile like #mobile,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgId" prepend="and">
+			<![CDATA[ t.org_id = #orgId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( t.passport like #search,handler=wildcard# escape '\'
+				 or t.user_name like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<select id="getUserCount" parameterClass="user" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1) FROM BASIS.basis_tb_user t WHERE t.state <> 'D'
+	]]>
+		<dynamic>
+			<isNotEmpty property="passport" prepend="and">
+			<![CDATA[ t.passport like #passport,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="userName" prepend="and">
+			<![CDATA[ t.user_name like #userName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="phone" prepend="and">
+			<![CDATA[ t.phone like #phone,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="mobile" prepend="and">
+			<![CDATA[ t.mobile like #mobile,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgId" prepend="and">
+			<![CDATA[ t.org_id = #orgId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( t.passport like #search,handler=wildcard# escape '\'
+				 or t.user_name like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<update id="updateOrder" parameterClass="order">
+	<![CDATA[
+		  update crm.crm_tb_order_total t set t.modify_date = sysdate 
+	]]>
+		<dynamic>
+			<isNotEmpty property="orderQuntity" prepend=",">
+			<![CDATA[ t.ORDER_QUANTITY =#orderQuntity# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalPrice" prepend=",">
+			<![CDATA[ t.TOTAL_PRICE =#totalPrice# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		 where t.order_id =#orderId#
+	]]>
+	</update>
+
+	<update id="updateOrderDetail" parameterClass="order">
+	<![CDATA[
+		  update crm.crm_tb_order_detail d set d.MODIFY_DATE = sysdate ,
+		  d.STATUS='D'
+		 where d.order_id =#orderId#
+	]]>
+	</update>
+
+
+
+	<!-- 订单查询 -->
+	
+	 	<select id="getWeekOrderTotal" parameterClass="order" resultClass="order">
+	<![CDATA[
+		 select  ot.order_id  as orderId,
+          ot.total_price as totalPrice ,
+          ot.cust_id as custId,
+          ot.user_id as userId,
+          ot.order_status as orderStatus,
+          ot.order_funds_status as orderFundStatus,
+          ot.cloud_id  as  cloudId,
+          ot.order_description as orderDesc,
+          ot.create_date as createDate 
+          from crm.crm_tb_order_total ot 
+      where  ot.status = 'U'
+      and to_char(ot.create_date,'yyyy-mm-dd')  between #firstday# and #lastday#
+    and ot.user_id = #userId# ]]> 
+	 <dynamic>
+        <isNotEmpty property="cloudId"  prepend="and">
+	        <![CDATA[ot.cloud_id=#cloudId#]]>
+	    </isNotEmpty>
+	</dynamic>
+	 <dynamic>
+        <isNotEmpty property="custId"  prepend="and">
+	        <![CDATA[ot.cust_id=#custId#]]>
+	    </isNotEmpty>
+	</dynamic>
+	</select>
+	<select id="getOrderTotal" parameterClass="order" resultClass="order">
+	<![CDATA[
+		 select  ot.order_id  as orderId,
+          ot.total_price as totalPrice ,
+          ot.cust_id as custId,
+          ot.user_id as userId,
+          ot.order_status as orderStatus,
+          ot.order_funds_status as orderFundStatus,
+          ot.cloud_id  as  cloudId,
+          ot.order_description as orderDesc
+          from crm.crm_tb_order_total ot 
+      where  ot.status = 'U'
+      and to_char(ot.create_date,'yyyy-mm-dd')  = to_char(sysdate,'yyyy-mm-dd')
+    and ot.user_id = #userId# 
+      and ot.cloud_id  = #cloudId# ]]> 
+	
+	 <dynamic>
+        <isNotEmpty property="custId"  prepend="and">
+	        <![CDATA[ot.cust_id=#custId#]]>
+	    </isNotEmpty>
+	</dynamic>
+	</select>
+		<select id="getOrderTotal1" parameterClass="order" resultClass="order">
+	<![CDATA[
+		 select  ot.order_id  as orderId,
+          ot.total_price as totalPrice ,
+          ot.cust_id as custId,
+          ot.user_id as userId,
+          ot.order_status as orderStatus,
+          ot.order_funds_status as orderFundStatus,
+          ot.cloud_id  as  cloudId,
+          ot.order_description as orderDesc
+          from crm.crm_tb_order_total ot 
+      where  ot.status = 'U'
+      and to_char(ot.create_date,'yyyy-mm-dd')  = to_char(sysdate,'yyyy-mm-dd')
+    and ot.user_id = #userId# 
+      and ot.cloud_id  = #cloudId# and ot.cust_id in  ($custId$)
+	]]>
+	</select>
+
+	<!-- 订单明细查询 -->
+	<select id="getOrderDetail" parameterClass="java.lang.String"
+		resultClass="orderDetail">
+	<![CDATA[
+	    select  od.order_id as orderId,
+            od.quantity as  quantity,
+            od.unit_code as unitCode,
+           od.unit_desc as unitDesc,
+           od.price as price,  
+           od.total_price as totalPrice,
+           od.sku_id as skuId ,
+           sk.sku_name as categoryDesc,
+           od.order_type as orderType,
+           od.mapping_skuid as mappingSKUId
+          from crm.crm_tb_order_detail od 
+          left join crm.crm_tb_sku sk on od.sku_id = sk.sku_id 
+      where  od.status = 'U' and od.order_id in ($orderId$)
+	]]>
+	</select>
+	
+	<!--登陆记录 -->
+	<insert id="insertLoginLog" parameterClass="loginLog">
+		<selectKey resultClass="Long" keyProperty="loginLogId">
+			select crm.crm_seq_login_log.nextval as loginLogId from dual
+		</selectKey>
+		<![CDATA[
+		insert into  crm.crm_tb_login_log (LOG_ID, USER_ID,IMEI,LOGIN_MOBILE,
+		IMSI,LOGIN_DATE,STATUS,VERSION,packageName,HANDSETINFO) values 
+		(#loginLogId#, #userId#,#IMEI#, #loginMobile#,#IMSI#,sysdate,#status#,#version#,#packageName#,#handSetInfo#)
+		]]>
+	</insert>
+	
+	<update id="updateLoginLog" parameterClass="loginLog">
+	<![CDATA[
+		update crm.crm_tb_login_log  st set st.status = #status# ,st.logout_date =sysdate where st.log_id = #loginLogId#
+	]]>
+	</update>
+
+
+	<!-- 客户经理获取经销商 -->
+
+	<select id="getKunnrByKHJL" parameterClass="customer"
+		resultClass="customer">
+	<![CDATA[
+	    select ck.kunnr as custId,
+          ck.org_id as orgId,
+          ck.org_name as orgName,
+          ck.name1 as custName,
+          ck.name3 as contractName,
+          ck.mob_number as contractMobile,
+          ck.tel_number as contractPhone,
+          (CASE
+            WHEN ck.street1 is null then
+             z.zwl02t || z.zwl03t || z.zwl04t
+            else
+             ck.street1
+          end) as address,
+          'kunnr' as customerDataType
+     from crm.crm_tb_kunnr ck
+     left join crm.crm_tb_kunnrbusiness kb
+       on ck.kunnr = kb.kunnr
+    left join basis.basis_tb_salesemp_info si
+       on kb.business_competent_id = si.emp_id
+     left join crm.crm_tb_zwlqy z
+       on z.zwl04 = ck.town
+      where si.emp_id = #userId#
+      and  ck.status = '1'
+	]]>
+	</select>
+
+	<!-- 城市经理经理获取经销商 -->
+
+	<select id="getKunnrByCSJL" parameterClass="customer"
+		resultClass="customer">
+	<![CDATA[
+	 select ck.kunnr as custId,
+          ck.org_id as orgId,
+          ck.org_name as orgName,
+          ck.name1 as custName,
+          ck.name3 as contractName,
+          ck.mob_number as contractMobile,
+          ck.tel_number as contractPhone,
+          (CASE
+            WHEN ck.street1 is null then
+             z.zwl02t || z.zwl03t || z.zwl04t
+            else
+             ck.street1
+          end) as address,
+          'kunnr' as customerDataType
+     from crm.crm_tb_kunnr ck
+     left join crm.crm_tb_kunnrbusiness kb
+       on ck.kunnr = kb.kunnr
+     left join basis.basis_tb_station_user su
+       on kb.BUSINESS_MANAGER_ID = su.id
+     left join basis.basis_tb_salesemp_info si
+       on su.user_id = si.emp_id
+     left join crm.crm_tb_zwlqy z
+       on z.zwl04 = ck.town
+      where si.emp_id = #userId#
+      and  ck.status = '1'
+	]]>
+	</select>
+
+	<!-- 业代获取经销商 -->
+	<select id="getKunnrByYD" parameterClass="customer" resultClass="customer">
+	<![CDATA[
+	 select ck.kunnr as custId,
+          ck.org_id as orgId,
+          ck.org_name as orgName,
+          ck.name1 as custName,
+          ck.name3 as contractName,
+          ck.mob_number as contractMobile,
+          ck.tel_number as contractPhone,
+          (CASE
+            WHEN ck.street1 is null then
+             z.zwl02t || z.zwl03t || z.zwl04t
+            else
+             ck.street1
+          end) as address,
+          'kunnr' as customerDataType
+     from crm.crm_tb_kunnr ck
+        left join crm.crm_tb_kunnrbusiness_emp ke
+       on  ke.kunnr = ck.kunnr
+        left join crm.crm_tb_zwlqy z
+       on z.zwl04 = ck.town
+      where ke.business_id = #userId#  and ke.BUSINESS_TYPE='2'  and  ck.status = '1'
+	]]>
+	</select>
+	
+	<!-- 雇员获取经销商 -->
+	<select id="getKunnrByGY" parameterClass="customer" resultClass="customer">
+	<![CDATA[
+		select ck.kunnr as custId,
+		       ck.org_id as orgId,
+		       ck.org_name as orgName,
+		       ck.name1 as custName,
+		       ck.name3 as contractName,
+		       ck.mob_number as contractMobile,
+		       ck.tel_number as contractPhone,
+		       (CASE
+		         WHEN ck.street1 is null then
+		          z.zwl02t || z.zwl03t || z.zwl04t
+		         else
+		          ck.street1
+		       end) as address,
+		       'kunnr' as customerDataType
+		  from basis.basis_tb_kunnremp_info t
+		  left join crm.crm_tb_kunnr ck on t.lifnr = ck.kunnr
+		  left join crm.crm_tb_zwlqy z on z.zwl04 = ck.town
+		 where 1 = 1
+		   and t.emp_state = 'Y'
+		   and t.emp_id = #userId#
+	]]>
+	</select>
+
+	<!-- 主管获取经销商 -->
+	<select id="getKunnrByZG" parameterClass="customer" resultClass="customer">
+	<![CDATA[
+	 select ck.kunnr as custId,
+          ck.org_id as orgId,
+          ck.org_name as orgName,
+          ck.name1 as custName,
+          ck.name3 as contractName,
+          ck.mob_number as contractMobile,
+          ck.tel_number as contractPhone,
+          (CASE
+            WHEN ck.street1 is null then
+             z.zwl02t || z.zwl03t || z.zwl04t
+            else
+             ck.street1
+          end) as address,
+          'kunnr' as customerDataType
+     from crm.crm_tb_kunnr ck
+     left join crm.crm_tb_kunnrbusiness_emp ke
+       on  ke.kunnr = ck.kunnr
+      left join crm.crm_tb_zwlqy z
+       on z.zwl04 = ck.town
+      where ke.business_id = #userId# and ke.BUSINESS_TYPE='1'  and  ck.status = '1'
+	]]>
+	</select>
+
+	<insert id="insertKunnrStock" parameterClass="stock">
+		<selectKey resultClass="Long" keyProperty="id">
+			select
+			crm.crm_seq_kunnr_stock.nextval from dual
+		</selectKey>
+		<![CDATA[
+		insert into  crm.crm_tb_kunnr_stock (ID, KUNNR,SKU_ID,SKU_CATEGORY_ID,
+		PRODUCTION_DATE,CHECK_TIME,UNITDESC,QUANTITY,FLAG,STATUS,
+		CREATE_DATE,USER_ID,USER_TYPE) values 
+		(#id#, #custId#,#categoryId#, #categorySortId#,#productionDate#,
+		#checkTime#,#unitDesc#,#quantity#,
+		#flag#,'U',sysdate,#userId#,#userType#)
+		]]>
+	</insert>
+
+	<insert id="insertKunnrStock1" parameterClass="stock">
+		<selectKey resultClass="Long" keyProperty="id">
+			select
+			crm.crm_seq_kunnr_stock.nextval from dual
+		</selectKey>
+		<![CDATA[
+		insert into  crm.crm_tb_kunnr_stock (ID, KUNNR,SKU_ID,SKU_CATEGORY_ID,
+		PRODUCTION_DATE,CHECK_TIME,UNITDESC,QUANTITY,FLAG,STATUS,
+		CREATE_DATE,USER_ID,USER_TYPE) values 
+		(#id#, #custId#,#categoryId#, #categorySortId#,#productionDate#,
+		#checkTime#,#unitDesc#,#quantity#,
+		#flag#,'F',sysdate,#userId#,#userType#)
+		]]>
+	</insert>
+
+
+	<insert id="insertKunnrStockNew" parameterClass="stock">
+		
+		<![CDATA[
+		insert into  crm.crm_tb_kunnr_stock_total (ID, KUNNR,SKU_ID,SKU_CATEGORY_ID,
+		PRODUCTION_DATE,CHECK_TIME,UNITDESC,QUANTITY,FLAG,STATUS,
+		CREATE_DATE,USER_ID,USER_TYPE) values 
+		(#id#, #custId#,#categoryId#, #categorySortId#,#productionDate#,
+		#checkTime#,#unitDesc#,#quantity#,
+		#flag#,'U',sysdate,#userId#,#userType#)
+		]]>
+	</insert>
+	<insert id="insertKunnrStockNew1" parameterClass="stock">
+		
+		<![CDATA[
+		insert into  crm.crm_tb_kunnr_stock_total (ID, KUNNR,SKU_ID,SKU_CATEGORY_ID,
+		PRODUCTION_DATE,CHECK_TIME,UNITDESC,QUANTITY,FLAG,STATUS,
+		CREATE_DATE,USER_ID,USER_TYPE) values 
+		(#id#, #custId#,#categoryId#, #categorySortId#,#productionDate#,
+		#checkTime#,#unitDesc#,#quantity#,
+		#flag#,'F',sysdate,#userId#,#userType#)
+		]]>
+	</insert>
+
+	<update id="updateKunnrStock" parameterClass="stock">
+		<![CDATA[
+		update  crm.crm_tb_kunnr_stock   c
+		set
+		c.SKU_ID = #categoryId# ,
+		c.SKU_CATEGORY_ID = #categorySortId#,
+		c.PRODUCTION_DATE = #productionDate#,
+		c.CHECK_TIME = #checkTime# ,
+		c.UNITDESC = #unitDesc#,
+		c.QUANTITY = #quantity#
+		where c.id = #id# and c.USER_ID = #userId# and c.STATUS !='D'
+		]]>
+	</update>
+
+	<update id="updateKunnrStockNew" parameterClass="stock">
+		<![CDATA[
+		update  crm.crm_tb_kunnr_stock_total   c
+		set
+		c.SKU_ID = #categoryId# ,
+		c.SKU_CATEGORY_ID = #categorySortId#,
+		c.PRODUCTION_DATE = #productionDate#,
+		c.CHECK_TIME = #checkTime# ,
+		c.UNITDESC = #unitDesc#,
+		c.QUANTITY = #quantity#
+		where c.id = #id# and c.USER_ID = #userId# and c.STATUS !='D'
+		]]>
+	</update>
+
+	<update id="deleteKunnrStock" parameterClass="stock">
+		<![CDATA[
+		update  crm.crm_tb_kunnr_stock   c
+		set
+		c.STATUS = 'D'
+		where c.id = #id# and c.USER_ID = #userId# and c.STATUS !='D'
+		]]>
+	</update>
+
+	<update id="deleteKunnrStockNew" parameterClass="stock">
+		<![CDATA[
+		update  crm.crm_tb_kunnr_stock_total   c
+		set
+		c.STATUS = 'D'
+		where c.id = #id#  and c.USER_ID = #userId# and c.STATUS !='D'
+		]]>
+	</update>
+	<update id="coverKunnrStockNew" parameterClass="stock">
+		<![CDATA[
+		update  crm.crm_tb_kunnr_stock_total   s
+		set
+		s.STATUS = 'F' 
+		where s.status ='U' and s.check_time =#checkTime# and s.flag = #flag# 
+ and s.kunnr = #custId# and s.USER_TYPE='A' 
+		]]>
+	</update>
+
+	<update id="rollbackKunnerStockNew" parameterClass="stock">
+		<![CDATA[
+		update  crm.crm_tb_kunnr_stock_total   c
+		set
+		c.STATUS = 'U'
+		where  c.check_time =#checkTime# and c.flag = #flag# 
+ and c.kunnr = #custId# and c.STATUS ='F' 
+		]]>
+	</update>
+
+	<update id="rollbackSuperKunnerStock" parameterClass="stock">
+		<![CDATA[
+		UPDATE CRM.CRM_TB_KUNNR_STOCK_total s SET S.STATUS='U' where 
+	s.user_type ='A'
+	and s.STATUS = 'F'
+	AND s.CHECK_TIME = #checkTime#
+	AND s.FLAG = #flag#
+	AND s.kunnr IN (
+	SELECT
+		b.kunnr
+	FROM
+		CRM.CRM_TB_KUNNR_KUNAG b
+	WHERE
+		b.kunag = (
+			SELECT
+				CASE
+			WHEN A .KUNAG IS NULL THEN
+				A .kunnr
+			ELSE
+				A .KUNAG
+			END
+			FROM
+				CRM.CRM_TB_KUNNR_KUNAG A
+			WHERE
+				A .kunnr = #custId#
+		)
+		or 
+		b.kunnr = (
+			SELECT
+				CASE
+			WHEN A .KUNAG IS NULL THEN
+				A .kunnr
+			ELSE
+				A .KUNAG
+			END
+			FROM
+				CRM.CRM_TB_KUNNR_KUNAG A
+			WHERE
+				A .kunnr = #custId#
+		)
+)
+		]]>
+	</update>
+
+	<select id="getKunnrStock" parameterClass="stock" resultClass="stock">
+  <![CDATA[
+          select 
+		s.id as id,
+		s.kunnr as custId,
+		s.sku_id as categoryId ,
+    sk.sku_name  as categoryDesc,
+    s.sku_category_id as categorySortId,
+    cg.category_name as categorySortDesc,
+    s.unitdesc  as  unitDesc,
+    s.user_id as userId,
+    s.quantity as quantity,
+    s.production_date as productionDate,
+    s.check_time as checkTime,
+    s.flag as flag
+     from crm.crm_tb_kunnr_stock s left join crm.crm_tb_sku sk on s.sku_id =sk.sku_id 
+   left join crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id 
+  where s.status ='U' and s.user_id =#userId# and s.flag = #flag#
+ and s.kunnr = #custId#
+  ]]>
+		<dynamic>
+			<isEmpty property="checkTime" prepend="and">
+      <![CDATA[ to_char(s.create_date ,'yyyy-mm-dd') = to_char(sysdate,'yyyy-mm-dd')]]>
+			</isEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getKunnrStockNew" parameterClass="stock"
+		resultClass="stock">
+	  <![CDATA[
+	          select 
+					s.id as id,
+					s.kunnr as custId,
+					s.sku_id as categoryId ,
+				    sk.sku_name  as categoryDesc,
+				    s.sku_category_id as categorySortId,
+				    cg.category_name as categorySortDesc,
+				    s.unitdesc  as  unitDesc,
+				    s.user_id as userId,
+				    s.quantity as quantity,
+				    s.production_date as productionDate,
+				    s.check_time as checkTime,
+				    s.flag as flag,
+				    s.USER_TYPE as userType 
+		     from crm.crm_tb_kunnr_stock_total s left join crm.crm_tb_sku sk on s.sku_id =sk.sku_id 
+		   left join crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id 
+		  where s.status ='U' and s.check_time =#checkTime# and s.flag = #flag# 
+		 and s.kunnr = #custId# and s.USER_TYPE='D' 
+	  	]]>
+
+	</select>
+	
+	<!--查询库存是否重复提交:含有货龄-->
+	<select id="getKunnrStockNew1" parameterClass="stock"
+		resultClass="stock">
+		  <![CDATA[
+		            select s.id              as id,
+					       s.kunnr           as custId,
+					       s.sku_id          as categoryId,
+					       sk.sku_name       as categoryDesc,
+					       s.sku_category_id as categorySortId,
+					       cg.category_name  as categorySortDesc,
+					       s.unitdesc        as unitDesc,
+					       s.user_id         as userId,
+					       s.quantity        as quantity,
+					       s.production_date as productionDate,
+					       s.check_time      as checkTime,
+					       s.flag            as flag,
+					       s.USER_TYPE       as userType
+					  from crm.crm_tb_kunnr_stock s
+					  left join crm.crm_tb_sku sk on s.sku_id = sk.sku_id
+					  left join crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id
+					 where s.status != 'D'
+					   and s.check_time = #checkTime#
+					   and s.flag = #flag#
+					   and s.kunnr = #custId#
+					   and s.USER_TYPE = #userType#
+					   and s.sku_id = #categoryId#
+					   and s.production_date = #productionDate#
+		  ]]>
+	</select>
+	
+	<!--查询周库存是否重复提交:不含货龄-->
+	<select id="getKunnrStockNew4Week" parameterClass="stock"
+		resultClass="stock">
+		  <![CDATA[
+		            select s.id              as id,
+					       s.kunnr           as custId,
+					       s.sku_id          as categoryId,
+					       sk.sku_name       as categoryDesc,
+					       s.sku_category_id as categorySortId,
+					       cg.category_name  as categorySortDesc,
+					       s.unitdesc        as unitDesc,
+					       s.user_id         as userId,
+					       s.quantity        as quantity,
+					       s.check_time      as checkTime,
+					       s.flag            as flag,
+					       s.USER_TYPE       as userType
+					  from crm.crm_tb_kunnr_stock s
+					  left join crm.crm_tb_sku sk on s.sku_id = sk.sku_id
+					  left join crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id
+					 where s.status != 'D'
+					   and s.check_time = #checkTime#
+					   and s.flag = #flag#
+					   and s.kunnr = #custId#
+					   and s.USER_TYPE = #userType#
+					   and s.sku_id = #categoryId#
+		  ]]>
+	</select>
+
+	<select id="getKunnrStockById" parameterClass="stock"
+		resultClass="stock">
+  <![CDATA[
+          select  
+		s.id as id,
+		s.kunnr as custId,
+		s.sku_id as categoryId ,
+   
+    s.sku_category_id as categorySortId,
+    
+    s.unitdesc  as  unitDesc,
+    s.user_id as userId,
+    s.quantity as quantity,
+    s.production_date as productionDate,
+    s.check_time as checkTime,
+    s.flag as flag,
+    s.USER_TYPE as userType from crm.crm_tb_kunnr_stock_total s where s.status !='D' and s.id=#id# and s.user_id =#userId#
+  ]]>
+
+	</select>
+
+
+
+
+	<select id="getKunnrStockDaye" parameterClass="kunnrStockDate"
+		resultClass="kunnrStockDate">
+  <![CDATA[
+select     c.id   as  id,
+c.check_time   as check_time,
+c.start_date  as start_date,
+c.end_date as end_date
+            from crm.crm_tb_kunnr_stock_date c
+              where sysdate between c.START_DATE and c.END_DATE
+        ]]>
+		<dynamic>
+			<isNotEmpty property="check_time" prepend="and">
+           		 <![CDATA[ c.check_time=#check_time#  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="month" prepend="and">
+           		 <![CDATA[ c.id=6  ]]>
+			</isNotEmpty>
+			<isNotEmpty property="week" prepend="and">
+           		 <![CDATA[ c.id!=6  ]]>
+			</isNotEmpty>
+		</dynamic>    
+     <![CDATA[         
+              order by c.id desc
+  ]]>
+	</select>
+
+
+
+	<select id="getKpiNeed" parameterClass="java.lang.String"
+		resultClass="Kpi">
+	<![CDATA[
+	 	select 	t1.station_id n_stationId,
+       			t1.org_id n_orgId
+		from basis.basis_tb_salesemp_info t
+		left join basis.basis_tb_station_user t1
+		on t1.user_id = t.emp_id
+		where t.emp_id = #userId#
+	]]>
+	</select>
+
+	<select id="getKpi" parameterClass="Kpi" resultClass="Kpi">
+	<![CDATA[
+select * from 
+    (select g.org_name as orgName,g.org_id as orgId from basis.basis_tb_org g  
+      where g.org_id =#n_orgId# and  g.state='Y') , 
+    (select nvl(sum(t.fx_actual),0.0) as fx_actual,
+        nvl(sum(t.fx_target),0.0) as fx_target,
+       ( case sum(t.fx_target) WHEN 0 THEN 0.0 ELSE
+        nvl(round(sum(t.fx_actual)/sum(t.fx_target),4)*100,0.0) END) as fx_rate,
+        nvl(sum(t.ck_actual),0.0) as ck_actual,
+        nvl(sum(t.ck_target),0.0) as ck_target,
+        (case sum(t.ck_target) WHEN 0 THEN 0.0 ELSE
+        nvl(round(sum(t.ck_actual)/sum(t.ck_target),4)*100,0.0)END) as ck_rate
+      from crm.hana_distribution t 
+        where t.org_id in
+      (select b.org_id 
+        from basis.basis_tb_org b 
+              start with b.org_id = #n_orgId#
+              connect by prior b.org_id= b.org_parent_id
+          ) )
+	]]>
+	</select>
+
+	<select id="getKpiByKunnrId" parameterClass="java.lang.String"
+		resultClass="Kpi">
+	<![CDATA[
+          select nvl(t.fx_actual,0.0) as fx_actual,
+          		 nvl(t.fx_target,0.0) as fx_target,
+          		 nvl(t.fx_rate*100,0.0) as fx_rate,
+          		 nvl(t.ck_actual,0.0) as ck_actual,
+          		 nvl(t.ck_target,0.0) as ck_target,
+          		 nvl(t.ck_rate*100,0.0) as ck_rate
+          from 
+          	crm.hana_distribution t
+          where t.kunnr = #kunnrId#
+	]]>
+	</select>
+
+	<select id="getParentsOrg" parameterClass="Kpi" resultClass="Kpi">
+	<![CDATA[
+	 select b.org_id as n_orgId
+        	from basis.basis_tb_org b 
+        	where b.org_id not in  
+        	(select a.org_id 
+        			from basis.basis_tb_org a 
+             	 start with a.org_id = '51235'
+          			connect by prior  a.org_parent_id= a.org_id) 
+        	start with b.org_id = #n_orgId#
+       	 connect by prior  b.org_parent_id= b.org_id
+       	 order by rownum desc
+	]]>
+	</select>
+
+	<select id="getVisitActual" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+	<![CDATA[
+select count(m.cust_id) as v_actual from 
+    (select distinct m.cust_id,to_char(m.create_date,'yyyy-mm-dd')  as day_type,m.user_id,m.cloud_id from  
+   (select a.cust_id,a.create_date,a.operator_id as user_id,a.cloud_id from crm.crm_tb_abnormalprice a 
+   where a.create_date between  trunc(sysdate,'mm') and  sysdate+1
+   union all 
+     select a.cust_id,a.create_date ,a.user_id,a.cloud_id from crm.crm_tb_display a 
+   where a.create_date between  trunc(sysdate,'mm') and  sysdate+1
+    union all 
+     select a.cust_id,a.create_date ,a.user_id,a.cloud_id from crm.crm_tb_distribution a 
+   where a.create_date between  trunc(sysdate,'mm') and  sysdate+1
+   union all 
+    select a.cust_id,a.IMPLEMENT_DATE  as create_date ,a.user_id ,a.cloud_id from  market.market_tb_mobile_check a  
+   where a.IMPLEMENT_DATE between trunc(sysdate,'mm') and  sysdate+1
+    union all
+    select a.cust_id,a.create_date,a.operator_id as user_id,a.cloud_id from crm.crm_tb_photo a 
+   where a.create_date between  trunc(sysdate,'mm') and  sysdate+1 
+   ) m ) m
+   where m.user_id = #userId# 
+	]]>
+	</select>
+
+	<select id="getSuperKunnrName" parameterClass="stock"
+		resultClass="java.lang.String">
+	<![CDATA[
+		SELECT
+		b.name1
+	FROM
+		CRM.CRM_TB_KUNNR_KUNAG b
+	WHERE
+		b.kunnr = (
+			SELECT
+				CASE
+			WHEN A .KUNAG IS NULL THEN
+				A .kunnr
+			ELSE
+				A .KUNAG
+			END
+			FROM
+				CRM.CRM_TB_KUNNR_KUNAG A
+			WHERE
+				A .kunnr = #custId#
+		)
+	
+	]]>
+	</select>
+	<!-- 获取提报汇总箱数 -->
+	<select id="getSuperKunnrQuantity" parameterClass="stock"
+		resultClass="java.lang.String">
+	<![CDATA[SELECT
+				CASE
+				WHEN SUM (s.QUANTITY) IS NULL THEN
+				0
+				ELSE
+				SUM (s.QUANTITY) end 
+				FROM
+				CRM.CRM_TB_KUNNR_STOCK s
+				WHERE
+				s.STATUS = 'U'
+				AND s.CHECK_TIME = #checkTime#
+				AND s.FLAG = #flag#
+				AND s.kunnr IN (
+				SELECT
+					b.kunnr
+				FROM
+					CRM.CRM_TB_KUNNR_KUNAG b
+				WHERE
+					b.kunag = (
+						SELECT
+							CASE
+						WHEN A .KUNAG IS NULL THEN
+							A .kunnr
+						ELSE
+							A .KUNAG
+						END
+						FROM
+							CRM.CRM_TB_KUNNR_KUNAG A
+						WHERE
+							A .kunnr = #custId#
+					)
+					or 
+					b.kunnr = (
+						SELECT
+							CASE
+						WHEN A .KUNAG IS NULL THEN
+							A .kunnr
+						ELSE
+							A .KUNAG
+						END
+						FROM
+							CRM.CRM_TB_KUNNR_KUNAG A
+						WHERE
+							A .kunnr = #custId#
+					)
+			)
+	]]>
+	<dynamic>
+	    <isEqual property="userType" compareValue="D" prepend="and" >
+	        <![CDATA[ s.user_type='D' ]]>
+	    </isEqual>
+	     <isEqual property="userType" compareValue="A" prepend="and">
+	        <![CDATA[ s.user_type='A' ]]>
+	    </isEqual>
+	</dynamic>
+	</select>
+
+	<update id="coverSuperKunnrStock" parameterClass="stock">
+		<![CDATA[
+					UPDATE CRM.CRM_TB_KUNNR_STOCK_total s SET S.STATUS='F' where 
+				s.user_type ='A'
+				and s.STATUS = 'U'
+				AND s.CHECK_TIME = #checkTime#
+				AND s.FLAG = #flag#
+				AND s.kunnr IN (
+				SELECT
+					b.kunnr
+				FROM
+					CRM.CRM_TB_KUNNR_KUNAG b
+				WHERE
+					b.kunag = (
+						SELECT
+							CASE
+						WHEN A .KUNAG IS NULL THEN
+							A .kunnr
+						ELSE
+							A .KUNAG
+						END
+						FROM
+							CRM.CRM_TB_KUNNR_KUNAG A
+						WHERE
+							A .kunnr = #custId#
+					)
+					or 
+					b.kunnr = (
+						SELECT
+							CASE
+						WHEN A .KUNAG IS NULL THEN
+							A .kunnr
+						ELSE
+							A .KUNAG
+						END
+						FROM
+							CRM.CRM_TB_KUNNR_KUNAG A
+						WHERE
+							A .kunnr = #custId#
+					)
+			)
+		]]>
+	</update>
+
+	<select id="getSuperKunnrStock" parameterClass="stock"
+		resultClass="stock">
+  <![CDATA[
+         select * from CRM.CRM_TB_KUNNR_STOCK_total s where 
+	s.user_type ='D'
+	and s.STATUS = 'U'
+	AND s.CHECK_TIME = #checkTime#
+	AND s.FLAG = #flag#
+	AND s.kunnr IN (
+	SELECT
+		b.kunnr
+	FROM
+		CRM.CRM_TB_KUNNR_KUNAG b
+	WHERE
+		b.kunag = (
+			SELECT
+				CASE
+			WHEN A .KUNAG IS NULL THEN
+				A .kunnr
+			ELSE
+				A .KUNAG
+			END
+			FROM
+				CRM.CRM_TB_KUNNR_KUNAG A
+			WHERE
+				A .kunnr = #custId#
+		)
+		or 
+		b.kunnr = (
+			SELECT
+				CASE
+			WHEN A .KUNAG IS NULL THEN
+				A .kunnr
+			ELSE
+				A .KUNAG
+			END
+			FROM
+				CRM.CRM_TB_KUNNR_KUNAG A
+			WHERE
+				A .kunnr = #custId#
+		)
+)
+  ]]>
+	</select>
+<!-- 获取sku最后一次输入价格 	
+<select id="getSkuLastPrice" parameterClass="product"
+		resultClass="product">
+	<![CDATA[
+select s.sku_id           as categoryId,
+       s.sku_name         as categoryDesc,
+       cg.sku_category_id as categorySortId,
+       cg.category_name   as categorySortDesc,
+       s.product_type     as productType,
+       s.sku_order        as skuOrder,
+       s.CLOUDID          as cloudId,
+       co.company_name    as brandsDesc,
+       co.company_id      as brandsId,
+       s.sku_unit as skuUnit,
+       s.sku_unit_id as skuUnitId,
+       nvl(aaa.price,0) as lastPrice  
+  from crm.crm_tb_sku s
+  left join crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id
+  left join crm.crm_tb_company co on cg.company_id = co.company_id
+  ]]>
+       <dynamic>
+        <isNotEmpty property="cloudId">
+	        <![CDATA[left join (select ss.price, ss.sku_id
+               from (select rank() over(partition by d.sku_id, t.cust_id, t.user_id, t.cloud_id order by t.modify_date desc) rn,
+                            d.sku_id,
+                            t.cust_id,
+                            t.user_id,
+                            t.cloud_id,
+                            d.modify_date,
+                            t.order_id,
+                            d.order_detail_id,
+                            d.price
+                       from crm.crm_tb_order_detail d
+                       left join crm.crm_tb_order_total t on t.order_id =
+                                                             d.order_id
+                      where t.status = 'U'
+                        and d.status = 'U'
+                        and t.cloud_id = #cloudId#
+                        and t.cust_id = #custId#
+                        and t.user_id = #empId#) ss
+                            where ss.rn = 1) aaa on aaa.sku_id = s.sku_id]]>
+	    </isNotEmpty>
+	    <isEmpty property="cloudId">
+	        <![CDATA[left join (select ss.price, ss.sku_id
+               from (select rank() over(partition by d.sku_id, t.user_id, t.cloud_id order by t.modify_date desc) rn,
+                            d.sku_id,
+                            t.cust_id,
+                            t.user_id,
+                            d.modify_date,
+                            t.order_id,
+                            d.order_detail_id,
+                            d.price
+                       from crm.crm_tb_order_detail d
+                       left join crm.crm_tb_order_total t on t.order_id =
+                                                             d.order_id
+                      where t.status = 'U'
+                        and d.status = 'U'
+                        and t.cust_id = #custId#
+                        and t.user_id = #empId#) ss
+                            where ss.rn = 1) aaa on aaa.sku_id = s.sku_id]]>
+	    </isEmpty>
+       	<![CDATA[
+       where s.sku_unit is not null and s.sku_unit_id is not null
+            and s.status = 'U'
+            and cg.status = 'U'
+            and co.status = 'U'
+            and s.product_type='1'
+       ]]>
+        <isNotEmpty property="cloudId"  prepend="and">
+	        <![CDATA[( s.cloudid = '0000000000' or s.cloudid = #cloudId#) ]]>
+	    </isNotEmpty>
+	    <isEmpty property="cloudId"  prepend="and">
+	        <![CDATA[ s.cloudid = '0000000000']]>
+	    </isEmpty>
+	    <isNotEmpty property="categoryId"  prepend="and">
+	        <![CDATA[ s.sku_id = #categoryId#]]>
+	    </isNotEmpty>
+	</dynamic>
+	<![CDATA[ order by s.sku_order]]>
+	</select>-->
+
+	<select id="getSkuLastPrice" parameterClass="product"
+		resultClass="product">
+	<![CDATA[
+select s.sku_id           as categoryId,
+       s.sku_name         as categoryDesc,
+       cg.sku_category_id as categorySortId,
+       cg.category_name   as categorySortDesc,
+       s.product_type     as productType,
+       s.sku_order        as skuOrder,
+       s.CLOUDID          as cloudId,
+       co.company_name    as brandsDesc,
+       co.company_id      as brandsId,
+       s.sku_unit as skuUnit,
+       s.sku_unit_id as skuUnitId,
+       nvl(aaa.price,0) as lastPrice,
+      nvl( aaa.cust_id,'N') as status  
+  from crm.crm_tb_sku s
+  left join crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id
+  left join crm.crm_tb_company co on cg.company_id = co.company_id
+  ]]>
+       <dynamic>
+        <isNotEmpty property="cloudId">
+	        <![CDATA[right join (select ss.price, ss.sku_id,ss.status,ss.cust_id
+               from (select rank() over(partition by d.sku_id, t.cust_id, t.user_id, t.cloud_id order by t.modify_date desc) rn,
+                            d.sku_id,
+                            t.cust_id,
+                            t.user_id,
+                            t.cloud_id,
+                            d.modify_date,
+                            t.order_id,
+                            d.order_detail_id,
+                            d.price,
+                            d.status
+                       from crm.crm_tb_order_detail d
+                       left join crm.crm_tb_order_total t on t.order_id =
+                                                             d.order_id
+                      where t.status = 'U'
+                        and d.status = 'U'
+                        and t.cloud_id = #cloudId#
+                        and t.cust_id = #custId#
+                        and t.user_id = #empId#) ss
+                            where ss.rn = 1) aaa on aaa.sku_id = s.sku_id]]>
+	    </isNotEmpty>
+	    <isEmpty property="cloudId">
+	        <![CDATA[right join (select ss.price, ss.sku_id,ss.status,cust_id
+               from (select rank() over(partition by d.sku_id, t.user_id, t.cloud_id order by t.modify_date desc) rn,
+                            d.sku_id,
+                            t.cust_id,
+                            t.user_id,
+                            d.modify_date,
+                            t.order_id,
+                            d.order_detail_id,
+                            d.price,
+                            d.status 
+                       from crm.crm_tb_order_detail d
+                       left join crm.crm_tb_order_total t on t.order_id =
+                                                             d.order_id
+                      where t.status = 'U'
+                        and d.status = 'U'
+                        and t.cust_id = #custId#
+                        and t.user_id = #empId#) ss
+                            where ss.rn = 1) aaa on aaa.sku_id = s.sku_id]]>
+	    </isEmpty>
+       	<![CDATA[
+       where s.sku_unit is not null and s.sku_unit_id is not null
+            and s.status = 'U'
+            and cg.status = 'U'
+            and co.status = 'U'
+            and s.product_type='1'
+       ]]>
+        <isNotEmpty property="cloudId"  prepend="and">
+	        <![CDATA[( s.cloudid = '0000000000' or s.cloudid = #cloudId#) ]]>
+	    </isNotEmpty>
+	    <isEmpty property="cloudId"  prepend="and">
+	        <![CDATA[ s.cloudid = '0000000000']]>
+	    </isEmpty>
+	    <isNotEmpty property="categoryId"  prepend="and">
+	        <![CDATA[ s.sku_id = #categoryId#]]>
+	    </isNotEmpty>
+	</dynamic>
+	<![CDATA[ order by s.sku_order]]>
+	</select>
+
+	<!-- 经销商打印格式 -->
+<select id="getKunnrOrderFormat" parameterClass="printFormat"
+		resultClass="printFormat">
+	<![CDATA[
+		select f.format_id as formatId,
+		       f.kunnr as kunnr,
+		       f.properties_code as propertiesCode,
+		       dd.item_name as propertiesTxt,
+		       f.type,
+		       f.order_desc as orderDesc
+		  from crm.crm_tb_order_printformat f
+		  left join (select d.item_value,d.item_name
+		               from basis.basis_tb_dict d
+		               left join basis.basis_tb_dict_type t on t.dict_type_id =d.dict_type_id
+		              where t.dict_type_value='app@orderFormat'
+		              and t.dict_type_state = 'U'
+		                and d.item_state = 'U')dd on dd.item_value=f.properties_code 
+		 where f.status = 'U'
+  	]]>
+       <dynamic>
+        <isNotEmpty property="kunnr"  prepend="and">
+	        <![CDATA[f.kunnr=#kunnr#]]>
+	    </isNotEmpty>
+	</dynamic>
+	<![CDATA[ order by to_number(f.order_desc) asc]]>
+	</select>
+<!--历史条码 -->	
+<select id="getLstm" parameterClass="lstm"
+		resultClass="lstm">
+	<![CDATA[
+select t.sku_id,t.sku_name, t.company_name,t.company_id,t.cloudid,t.cust_id,t.modify_date from 
+(select rank() over(partition by s2.sku_id order by s2.modify_date desc) rk,s2.sku_id,s2.modify_date,s1.sku_name,s1.company_name,s1. company_id,s1.cloudid,tt.cust_id from crm.crm_tb_order_detail s2 
+left join (
+select s.sku_id,s.sku_name, co.company_name,co.company_id,s.cloudid from crm.crm_tb_sku s left join 
+crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id   left join crm.crm_tb_company co on 
+
+cg.company_id = co.company_id
+) s1  on s1.sku_id = s2.sku_id  left join crm.crm_tb_order_total tt on s2.order_id=tt.order_id 
+where s2.status='U' and (s1.cloudid='0000000000' ]]>   	
+
+	 <dynamic>
+        <isNotEmpty property="cloudid"  prepend="or">
+	        <![CDATA[s1.cloudid=#cloudid#]]>
+	    </isNotEmpty>
+	</dynamic>
+<![CDATA[	)]]>
+	 <dynamic>
+        <isNotEmpty property="cust_id"  prepend="and">
+	        <![CDATA[tt.cust_id=#cust_id#]]>
+	    </isNotEmpty>
+	</dynamic>
+<![CDATA[  ) t 
+where t.rk=1 order by sku_id]]>
+
+      
+	</select>
+<select id="findLstm" parameterClass="lstm"
+		resultClass="lstm">	
+select * from crm.crm_tb_lstm where status='U'
+ <dynamic>
+        <isNotEmpty property="cust_id"  prepend="and">
+	        <![CDATA[cust_id=#cust_id#]]>
+	    </isNotEmpty>
+	</dynamic>
+	<dynamic>
+        <isNotEmpty property="sku_id"  prepend="and">
+	        <![CDATA[sku_id=#sku_id#]]>
+	    </isNotEmpty>
+	</dynamic>
+</select>
+<select id="getusers"  parameterClass="java.lang.String"
+		resultClass="user">	
+
+select t.emp_code as userId, t.emp_name as userName,o.org_name as orgName from basis.basis_tb_salesemp_info t left join basis.basis_tb_org o on t.org_id=o.org_id where t.emp_state = 'Y' 
+<dynamic>
+        <isNotEmpty property="value"  prepend="and">
+	        <![CDATA[t.emp_name like  '%' || #info# || '%' or t.emp_code like  '%' || #info# || '%']]>
+	    </isNotEmpty>
+	</dynamic>
+	
+		
+</select>
+
+<select id="findallLstm" parameterClass="lstm"
+		resultClass="lstm">	
+select * from crm.crm_tb_lstm where 1=1
+ <dynamic>
+        <isNotEmpty property="cust_id"  prepend="and">
+	        <![CDATA[cust_id=#cust_id#]]>
+	    </isNotEmpty>
+	</dynamic>
+	<dynamic>
+        <isNotEmpty property="sku_id"  prepend="and">
+	        <![CDATA[sku_id=#sku_id#]]>
+	    </isNotEmpty>
+	</dynamic>
+</select>
+
+
+
+<insert id="insertLstm" parameterClass="lstm">
+	
+		<![CDATA[
+		insert into  crm.crm_tb_lstm (CUST_ID, SKU_ID,CLOUDID,SKU_NAME,COMPANY_NAME,COMPANY_ID,STATUS,MODIFY_DATE) values 
+		(#cust_id#, #sku_id#,#cloudid#, #sku_name#,#company_name#,#company_id#,'U',#modify_date#)
+		]]>
+</insert>
+
+
+
+<update id="updateLstm" parameterClass="lstm">
+		<![CDATA[
+		UPDATE crm.crm_tb_lstm SET modify_date=#modify_date#,status='U' where 
+	cust_id=#cust_id#
+	and sku_id=#sku_id#
+
+		]]>
+	</update>
+<update id="deleteLstm" parameterClass="lstm">
+		<![CDATA[
+		UPDATE crm.crm_tb_lstm SET status='D' where 
+	cust_id=#cust_id#
+	and sku_id=#sku_id#
+
+		]]>
+	</update>
+<update id="deleteallLstm" parameterClass="lstm">
+		<![CDATA[
+		UPDATE crm.crm_tb_lstm SET status='D' where 
+	cust_id=#cust_id#
+	
+		]]>
+	</update>	
+	<update id="resetPwd"  parameterClass="User">
+	<![CDATA[
+		  update basis.basis_tb_salesemp_info t set  t.last_modify =sysdate  
+	]]>
+		<dynamic>
+			<isNotEmpty property="password" prepend=",">
+			<![CDATA[ t.emp_psd =#password# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		where  t.emp_code =#userCode#
+	]]>
+	</update>
+<select id="findallCustSku" parameterClass="custsku"
+		resultClass="custsku">	
+select s.sku_id as sku_id,s.sku_name as sku_name, co.company_name as company_name,co.company_id as company_id,s.cloudid as cloudid,r1.cust_id as cust_id,
+r1.modify_date as modify_date,r1.status as status 
+
+from crm.crm_tb_sku s left join 
+crm.crm_tb_cg cg on s.sku_category_id = cg.sku_category_id   left join crm.crm_tb_company co on 
+cg.company_id = co.company_id left join (select * from (select rank() over(partition by s2.sku_id order by 
+
+s2.modify_date desc) rk,s2.sku_id,s2.modify_date,s2.status,tt.cust_id,tt.cloud_id from 
+
+crm.crm_tb_order_detail s2 left join  crm.crm_tb_order_total tt on s2.order_id=tt.order_id) r where r.rk=1 
+ and r.status='U' 
+ <dynamic>
+        <isNotEmpty property="cust_id"  prepend="and">
+	        <![CDATA[r.cust_id=#cust_id#]]>
+	    </isNotEmpty>
+	</dynamic>
+ <dynamic>
+        <isNotEmpty property="cloudid"  prepend="and">
+	        <![CDATA[r.cloud_id=#cloudid#]]>
+	    </isNotEmpty>
+	</dynamic>	
+
+	) r1 on s.sku_id=r1.sku_id
+
+order by r1.cust_id,co.company_id,r1.modify_date desc
+</select>	
+	<select id="getCusforSearchByorg" parameterClass="customer"
+		resultClass="customer">
+			<![CDATA[
+select distinct c.cust_number,
+                    c.cust_number    as custId,
+                    c.org_id         as orgId,
+                    t.org_name       as orgName,
+                    c.cust_name      as custName,
+                    ck.kunnr     as kunnr,
+                    ck.name1         as kunnrName,
+                     z.zwl02t || z.zwl03t || z.zwl04t as diviName,
+                    zwl04 as zwl04,
+                    z.zwl04t as zwl04t,
+                    c.cust_level     as custLevel,
+                    c.cust_state     as custState,
+                    c.contact_name   as contractName,
+                    c.contact_mobile as contractMobile,
+                    c.BUSINESS_LICENSE  as businessLicense,
+                    c.contact_phone  as contractPhone,
+                    c.channel_id     as channelId,
+                    cn.channel_name  as channelName,
+                    ( CASE WHEN c.cust_address is null then   c.cust_street || c.cust_house_number 
+      else c.cust_address end
+      ) as address,
+      c.longitude,
+      c.latitude,
+      c.customer_importance as customerImportance,
+                	c.customer_annual_sale as customerAnnualSale
+          from crm.crm_tb_customer c
+          left join crm.crm_tb_channel cn
+            on cn.channel_id = c.channel_id
+            left join crm.crm_tb_kunnr ck 
+           on    instr (c.cust_kunnr,ck.kunnr)>0
+          left join basis.basis_tb_org t
+            on t.org_id = c.org_id
+          left join crm.crm_tb_zwlqy z 
+               on z.zwl04 = c.cust_province      
+         where 1 = 1
+         and c.cust_state not in ('3','4') 
+			]]>
+		<dynamic>
+		<!-- ljwang -->
+		    <isNotEmpty property="info" prepend="and">
+			<![CDATA[( c.cust_name like #info# 
+		            or c.cust_id like #info#
+		            or c.cust_street like  #info# 
+		            or c.cust_house_number like  #info#
+		            or c.cust_name||c.cust_street||c.cust_house_number like  #info#
+		            or c.cust_street||c.cust_house_number||c.cust_name like  #info#
+		            or c.cust_name||c.cust_address like  #info#
+		            or c.cust_address||c.cust_name like  #info#
+		            )
+		            ]]>
+			</isNotEmpty>
+			<isNotEmpty property="locDw" prepend="and">
+			<![CDATA[c.longitude is not null and c.latitude is not null
+			]]>
+			</isNotEmpty>
+			<isNotEmpty property="longitude" prepend="and">
+			<![CDATA[
+			c.longitude between (#longitude#-#distance#) and (#longitude#+#distance#) and c.latitude between (#latitude#-#distance#) and (#latitude#+#distance#)
+			]]>
+			</isNotEmpty>
+			
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[ c.org_id in(select org_id from basis.basis_tb_org t  where state='Y' start with org_parent_id = (select org_id from basis.basis_tb_salesemp_info t1 where emp_id= #userId#)
+
+connect by prior org_id = org_parent_id) ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	<select id="getMantnr" parameterClass="java.lang.String"
+		resultClass="product">
+	<![CDATA[
+select sku_sap_code  as sapcode 
+  from crm.crm_tb_sku s
+ where s.status = 'U' and s.sku_id=#chuanhaosku#
+  ]]>
+	</select>
+	<!-- 获取签到相关信息 -->
+	<select id="getSignList" parameterClass="sign" resultClass="sign">
+		<![CDATA[
+		     select sign_id,
+		            operator_id,
+		            address,
+		            sign_type,
+		            longitude,
+		            latitude,
+		            to_char(CREATE_DATE, 'yyyy"年"MM"月"dd"日" hh24:mi:ss') as sign_date 
+		     from crm.crm_tb_sign c
+		  	 where 1=1  
+		  	 and trunc(CREATE_DATE,'dd')=trunc(sysdate ,'dd')
+	   	]]>
+	   <dynamic>
+		<!-- ljwang -->
+		    <isNotEmpty property="sign_id" prepend="and">
+			<![CDATA[sign_id=#sign_id#]]>
+			</isNotEmpty>
+			 <isNotEmpty property="operator_id" prepend="and">
+			<![CDATA[operator_id=#operator_id#]]>
+			</isNotEmpty>
+			<isNotEmpty property="sign_type" prepend="and">
+			<![CDATA[sign_type=#sign_type#]]>
+			</isNotEmpty>
+		</dynamic>
+	   	order by CREATE_DATE desc
+	</select>
+	<!-- 更新签到时间 -->
+	<update id="updateSign" parameterClass="sign">
+	<![CDATA[
+		update crm.crm_tb_sign   
+		set LONGITUDE=#longitude#,
+			LATITUDE=#latitude#,
+			address=#address#,
+			CREATE_DATE=sysdate,
+			sign_type=#sign_type#,
+			OPERATOR_ID=#operator_id# 
+		where sign_id=#sign_id#
+	]]>
+	</update>
+	
+	<select id="getVistCust" parameterClass="vistcust"
+		resultClass="vistcust">
+			<![CDATA[
+	select m.user_id, m.create_date as vistday,count(*) as countnum from
+(select distinct m.cust_id, m.create_date, m.user_id
+  from (select a.cust_id,
+               to_char(a.create_date, 'yyyy-MM-dd') as create_date,
+               a.operator_id as user_id
+        
+          from crm.crm_tb_abnormalprice a
+         where to_char(a.create_date, 'yyyy-MM') =
+               to_char(sysdate, 'yyyy-MM')
+           and a.operator_id = #user_id#
+        union all
+        select a.cust_id,
+               to_char(a.create_date, 'yyyy-MM-dd') as create_date,
+               a.user_id
+        
+          from crm.crm_tb_display a
+         where to_char(a.create_date, 'yyyy-MM') =
+               to_char(sysdate, 'yyyy-MM')
+           and a.user_id =  #user_id#
+        union all
+        select a.cust_id,
+               to_char(a.create_date, 'yyyy-MM-dd') as create_date,
+               a.user_id
+        
+          from crm.crm_tb_distribution a
+         where to_char(a.create_date, 'yyyy-MM') =
+               to_char(sysdate, 'yyyy-MM')
+           and a.user_id =  #user_id#
+        union all
+        select a.cust_id,
+               to_char(a.IMPLEMENT_DATE, 'yyyy-MM-dd') as create_date,
+               a.user_id
+        
+          from market.market_tb_mobile_check a
+         where to_char(a.IMPLEMENT_DATE, 'yyyy-MM') =
+               to_char(sysdate, 'yyyy-MM')
+           and a.user_id =  #user_id#
+        union all
+        select a.cust_id,
+               to_char(a.create_date, 'yyyy-MM-dd') as create_date,
+               a.operator_id as user_id
+        
+          from crm.crm_tb_photo a
+         where to_char(a.create_date, 'yyyy-MM') =
+               to_char(sysdate, 'yyyy-MM')
+           and a.operator_id =  #user_id# and a.cust_id is not null) m)m group by m.user_id, m.create_date order 
+
+by m.create_date
+	]]>
+	</select>	
+	
+	<select id="getSkuUnit" resultClass="skuunit">
+			<![CDATA[
+select t.sku_id, t.sku_unit, t.create_date, s.sku_name, s.sku_category_id
+  from crm.crm_tb_sku_unit t
+  left join crm.crm_tb_sku s on t.sku_id = s.sku_id
+ order by s.sku_order
+
+	]]>
+	</select>	
+	<insert id="createCustomerStock" parameterClass="stockReport">
+		<selectKey resultClass="Long" keyProperty="stockId">
+		<![CDATA[
+			select crm.crm_seq_customer_stock.nextval as stockId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into crm.crm_tb_customer_stock
+		  (id,
+		   cust_id,
+		   sku_id,
+		   sku_category_id,
+		   production_date,
+		   check_time,
+		   unitdesc,
+		   quantity,
+		   flag,
+		   status,
+		   create_date,
+		   user_id,
+		   user_type)
+		values
+		  (#stockId#,
+		   #custId#,
+		   #skuId#,
+		   #categoryId#,
+		   #productionDate#,
+		   #checkTime#,
+		   #unitDesc#,
+		   #quantity#,
+		   #flag#,
+		   'U',
+		   sysdate,
+		   #userId#,
+		   #userType#)
+	]]>
+	</insert>
+	
+	<update id="updateCustomerStock" parameterClass="stockReport">
+	    <![CDATA[ update crm.crm_tb_customer_stock s ]]>
+	    <dynamic prepend="set">
+	    <isNotEmpty property="quantity" prepend=",">
+			<![CDATA[ s.quantity=#quantity#, s.create_date=sysdate]]>
+		</isNotEmpty>
+		<isNotEmpty property="status" prepend=",">
+			<![CDATA[ s.status=#status#]]>
+		</isNotEmpty>
+		<isNotEmpty property="userId" prepend=",">
+			<![CDATA[ s.user_id=#userId#]]>
+		</isNotEmpty>
+		<isNotEmpty property="userType" prepend=",">
+			<![CDATA[ s.user_type=#userType#]]>
+		</isNotEmpty>
+		</dynamic>
+	    <![CDATA[ where s.cust_id=#custId# and s.check_time=#checkTime# and s.sku_id=#skuId# and s.status='U']]>
+	</update>
+	<select id="getCustomerStockCount" parameterClass="stockReport" resultClass="java.lang.Integer">
+	<![CDATA[
+              select count(1)  from crm.crm_tb_customer_stock s 
+              where s.cust_id=#custId# and s.check_time=#checkTime# and s.sku_id=#skuId# and s.status='U'
+	]]>
+		
+	</select>
+		<select id="getCustomerStockByCustid"  parameterClass="java.lang.String"  resultClass="stockReport">
+			<![CDATA[
+ 		 select s.cust_id as custId,
+       s.sku_id as skuId,
+       s.sku_category_id as categoryId,
+       s.production_date as productionDate,
+       s.check_time as checkTime,
+       s.unitdesc as unitDesc,
+       s.quantity as quantity,
+       s.flag as flag,
+       s.user_id as userId,
+       s.user_type as  userType  from crm.crm_tb_customer_stock s 
+              where substr(s.check_time,1,7) between
+       to_char(add_months(sysdate, -1), 'yyyy-mm') and
+       to_char(add_months(sysdate, 1), 'yyyy-mm') and s.status='U' and s.cust_id=#custId#
+	 order by s.check_time
+	]]>
+	  
+	</select>	
+	<!-- 修改活动明细计划的实施状态 -->
+	<update id="modifyImplementStatusDetail" parameterClass="java.util.HashMap">
+	<![CDATA[
+		update market.market_tb_plan_detail t
+		set t.implement_flag = 
+			(case when #COUNT1# = #COUNT3# then '2'
+				when #COUNT2# > 0 then '1'
+				when #COUNT2# = 0 then '0'
+			end)
+		where t.detail_id = #MIADETAILID#
+	]]>
+	</update>
+	<!-- 如果实施完成，修改核销总金额 -->
+	<update id="modifyPlanCheckMoney" parameterClass="java.lang.String">
+	<![CDATA[
+		update market.market_tb_plan_detail v
+		set v.check_money = (
+			select sum(t.plan_money * least(x.check_percent, x.check_percent_bus)/100)
+			from market.market_tb_plan_money t, market.market_tb_plan_implement x
+			where t.item_id = x.item_id
+			and t.plan_detail_id = #miaDetailId#
+		)
+		where v.detail_id = #miaDetailId#
+	]]>
+	</update>
+	<!-- 获取活动Detial一条的单店导入总数、已经录入完成的数量 -->
+	<select id="selectCountOfItemList" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+	<![CDATA[
+		select 
+			 (select count(T.item_id) 
+					from ( select distinct t.item_id from market.market_tb_plan_item_list t
+						   where t.mia_detail_id = #miaDetailId#
+						) T
+			) count1,
+			(select count(v.item_id) from market.market_tb_plan_implement v 
+				where v.mia_detail_id = #miaDetailId#
+				and (v.status = 'S' or v.status_bus = 'S')
+			) count2,
+			(select count(v.item_id) from market.market_tb_plan_implement v
+         		where v.mia_detail_id = #miaDetailId#
+           		and v.status = 'S'
+           		and v.status_bus = 'S'
+           	) count3
+		from dual
+	]]>
+	</select>
+	
+	<insert id="saveLogin" parameterClass="user">
+	<![CDATA[
+		insert into basis.BASIS_TB_LOGINLOG(LOGIN_ID, LOGIN_IP, LOGIN_DATE, LOGIN_TYPE) 
+		values (#userCode#, '111', to_char(sysdate,'yyyy-mm-dd hh24:mi'), '手机')
+	]]>
+	</insert>
+</sqlMap>

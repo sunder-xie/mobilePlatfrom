@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    	#CSSM(["ext", "style"])
+    </head>
+<body>
+	<form name="myForm" action="" method="post">
+		<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+			<tr>
+				<td valign="top">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="form_top_icon_01">
+								新闻版块修改
+							</td>
+							<td class="title_bottom_line" noWrap align='right'>
+								<a href="javascript:updateNewsTotal();">
+									<img src="$!{env.imgUrl}/image/actions/icon_save.png" align="absMiddle" >保存 </img>
+								</a>
+								<br>
+							</td>
+						</tr>
+						<tr>
+							<td class="home_title">
+								新闻版块内容
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="home_title_line">
+									
+							</td>
+						</tr>
+						<tr>
+							<td colspan="4">
+								<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+									<tr>
+										<td class="head" noWrap>
+											栏目名称<FONT color="#ff0000">*</FONT>
+										</td>
+										<td class="even" noWrap>
+											<input type="text" id="totalName" name="newsTotal.totalName" value="$!{newsTotal.totalName}" />
+											<input type="hidden" id="totalId" name="newsTotal.totalId" value="$!{newsTotal.totalId}"/>
+										</td>
+									</tr>
+									<tr>
+                                        <td class="head" noWrap>
+											首页显示									
+										</td>
+										<td class="even" noWrap>
+											#if($!{newsTotal.totalShow} == "Y")
+											<label><input type="radio" name="newsTotal.totalShow" value="Y" checked="checked" />是</label>
+											<label><input type="radio" name="newsTotal.totalShow" value="N" />否</label>
+											#else
+											<label><input type="radio" name="newsTotal.totalShow" value="Y" />是</label>
+											<label><input type="radio" name="newsTotal.totalShow" value="N" checked="checked" />否</label>
+											#end
+										</td>
+									</tr>
+									<tr id="t1">
+										<td class="head" noWrap>
+											跑马灯显示	
+										</td>
+										<td class="even" noWrap>
+											#if($!{newsTotal.totalSign} == "Y")
+											<label><input type="radio" name="newsTotal.totalSign" value="Y" checked="checked" />是</label>
+											<label><input type="radio" name="newsTotal.totalSign" value="N" />否</label>
+											#else
+											<label><input type="radio" name="newsTotal.totalSign" value="Y" />是</label>
+											<label><input type="radio" name="newsTotal.totalSign" value="N" checked="checked" />否</label>
+											#end
+										</td>
+									</tr>
+									<tr id="t2">
+										<td class="head" noWrap>
+											排序码<FONT color="#ff0000">*</FONT>
+										</td>
+										<td class="even" noWrap>
+											<input type="text" id="totalCode" name="newsTotal.totalCode" />
+										</td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</form>
+	<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+	#JSM(["common", "ext", "jquery"])
+	#JS_ENV_VAL()
+	<script type="text/javascript">
+	var totalCode = "$!{newsTotal.totalCode}";
+    </script>
+	<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/news/updateNewsTotal.js"></script>
+	</body>
+</html>

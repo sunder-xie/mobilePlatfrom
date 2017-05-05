@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="boformAction" class="com.kintiger.xplatform.boform.action.BoformAction"
+		scope="request" parent="baseAction">
+		<property name="boformService" ref="boformService" />
+		<property name="bo4url">
+			<value>${sap.bo4.reip}</value>
+		</property>
+		<property name="bo4use">
+			<value>${sap.bo4.use}</value>
+		</property>
+		<property name="bo4pwd">
+			<value>${sap.bo4.pwd}</value>
+		</property>
+		<property name="bo4dev">
+			<value>${sap.bo4.dev}</value>
+		</property>
+		<property name="bo4enterp">
+			<value>${sap.bo4.enterp}</value>
+		</property>
+		<property name="bo3url">
+			<value>${sap.bo3.reip}</value>
+		</property>
+		<property name="bo3use">
+			<value>${sap.bo3.use}</value>
+		</property>
+		<property name="bo3pwd">
+			<value>${sap.bo3.pwd}</value>
+		</property>
+		<property name="bo3dev">
+			<value>${sap.bo3.dev}</value>
+		</property>
+		<property name="bo3enterp">
+			<value>${sap.bo3.enterp}</value>
+		</property>
+	</bean>
+	
+	<bean id="boformService"
+		class="com.kintiger.xplatform.boform.service.impl.BoformServiceImpl">
+		<!--<property name="memcachedCacheService" ref="memcachedCacheService" />-->
+		<property name="boformDao" ref="boformDao" />
+	</bean>
+
+	<bean id="boformDao" class="com.kintiger.xplatform.boform.dao.impl.BoformDaoImpl" parent="baseDao">
+	</bean>
+	
+</beans>

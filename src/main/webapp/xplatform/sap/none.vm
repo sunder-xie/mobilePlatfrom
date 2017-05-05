@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>剑齿虎</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href="$!{env.imgUrl}/css/base.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/public.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/layout.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/nofound.css" type="text/css" rel="stylesheet" />
+	</head>
+
+<body>
+<!-- header begin -->
+<!-- header end --> 
+<!-- slider begin --> 
+<!-- slider end -->
+
+	<div class="no-found">
+		<h3>抱歉没有空闲的ERP帐号......</h3>
+		<h4>We're sorry but the page your are looking for is Not Account...</h4>
+		<p class="no-found-text">没有空闲的ERP帐号，最有可能的原因是：<p>
+		<ul class="no-found-list">
+			<li>所有ERP帐号都已被占用，请稍后再试。</li>
+		</ul>
+		<p class="no-found-text">点击一下链接继续浏览kingiter<p>
+		<ul class="no-found-list">
+			<li><a href="#">返回kingiter首页</a></li>
+			<li><a href="#">返回上一个页面</a></li>
+		</ul>
+	</div>
+
+<!-- footer beigin -->
+<!-- footer end --> 
+</body>
+</html>

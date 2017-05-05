@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean name="/caService"
+		class="com.kintiger.xplatform.framework.hessian.DSAHessianServiceExporter">
+		<property name="service" ref="caService" />
+		<property name="serviceInterface" value="com.kintiger.xplatform.api.login.ICAService" />
+		<property name="dsaService" ref="dsaService" />
+		<property name="timeout" value="0" />
+		<property name="allowedClients" value="" />
+		<property name="secureKey" value="secureKey" />
+		<property name="keyPairName" value="xplatform.hessian" />
+	</bean>
+	
+	<bean id="caServiceHessian"
+		class="com.kintiger.xplatform.framework.hessian.DSAHessianProxyFactoryBean">
+		<property name="serviceUrl" value="http://127.0.0.1:8080/xplatform/service/caService" />
+		<property name="serviceInterface" value="com.kintiger.xplatform.api.login.ICAService" />
+		<property name="dsaHessianProxyFactory" ref="defaultDSAHessianProxyFactory" />
+	</bean>
+	
+</beans>

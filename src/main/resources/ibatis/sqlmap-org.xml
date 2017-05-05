@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="org">
+	<typeAlias alias="borg"
+		type="com.kintiger.xplatform.api.org.bo.Borg" />
+		
+	<parameterMap id="param" class="java.util.Map" >
+		<parameter property="userId" jdbcType="VARCHAR"
+			javaType="java.lang.String" mode="IN" />
+		<parameter property="result" jdbcType="VARCHAR" javaType="java.lang.String" mode="OUT"/>
+	</parameterMap>                                    
+	<procedure id="fnUserOrgList2" parameterMap="param" resultClass="java.util.Map" >
+		{ call cms.cms_api_pack.fn_user_org_list( ?, 'Y' )}
+	</procedure>
+	
+	<select id="fnUserOrgList" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+	<![CDATA[
+		SELECT BASIS.basis_pkg_api.basis_fn_user_org_list(#userId#,'Y') as orgIds FROM dual
+	]]>
+	</select>
+	
+	<select id="getOrgByUserId" parameterClass="java.lang.Long"
+		resultClass="borg">
+	<![CDATA[
+		   select      g.org_id  as orgId,
+					   g.org_code as orgCode,
+					   g.org_level as orgLevel,
+					   g.org_city as orgCity,
+					   g.org_name as orgName,
+					   g.org_parent_id as orgParentId,
+					   g.state as state ,
+					   g.remark as remark,
+					   g.last_modify as lastModify,
+					   g.root_notice as rootNotice,
+					   g.sap_org_id as sapOrgId,
+					   g.company_id as companyId,
+					   g.org_jc as orgJc,
+					   g.city_id as cityId,
+					   g.leader_station_id as leaderStationId,
+					   g.img_showorg_id  as imgOrgId,
+					   g.adgroup_name as ADGroupName,
+					   g.organise_type as OrganiseType,
+					   g.create_time as createTime,
+					   g.new_organise_id_str as NewOrganiseIdStr,
+					   g.lsorganise_ids as LSOrganiseIds,
+					   g.short_name as ShortName,
+					   g.jian_ping as JianPing,
+					   g.samaccount_name as sAMAccountName,
+					   g.if_have_mail as IfHaveMail,
+					   g.sap_company_id as sapCompanyId,
+					   g.orgunit as  orgUnit,
+					   g.org_range as orgRange,
+					   g.account_type as accountType
+		  from smsuser.b_org g, smsuser.b_salesemp_info o
+		 where g.org_id = o.org_id
+		   and o.emp_id =#userId#
+		   order by g.org_id
+	]]>
+	</select>
+	
+	<select id="getOrgListByOrgIds" parameterClass="borg"
+		resultClass="borg">
+	<![CDATA[
+		SELECT g.org_id         AS orgId,
+		  g.org_code            AS orgCode,
+		  g.org_level           AS orgLevel,
+		  g.org_city            AS orgCity,
+		  g.org_name            AS orgName,
+		  g.org_parent_id       AS orgParentId,
+		  g.state               AS state ,
+		  g.remark              AS remark,
+		  g.last_modify         AS lastModify,
+		  g.root_notice         AS rootNotice,
+		  g.sap_org_id          AS sapOrgId,
+		  g.company_id          AS companyId,
+		  g.org_jc              AS orgJc,
+		  g.city_id             AS cityId,
+		  g.leader_station_id   AS leaderStationId,
+		  g.img_showorg_id      AS imgOrgId,
+		  g.adgroup_name        AS ADGroupName,
+		  g.organise_type       AS OrganiseType,
+		  g.create_time         AS createTime,
+		  g.new_organise_id_str AS NewOrganiseIdStr,
+		  g.lsorganise_ids      AS LSOrganiseIds,
+		  g.short_name          AS ShortName,
+		  g.jian_ping           AS JianPing,
+		  g.samaccount_name     AS sAMAccountName,
+		  g.if_have_mail        AS IfHaveMail,
+		  g.sap_company_id      AS sapCompanyId,
+		  g.orgunit             AS orgUnit,
+		  g.org_range           AS orgRange,
+		  g.account_type        AS accountType
+		FROM BASIS.basis_tb_org g
+		WHERE g.state = 'Y'
+	]]>
+		<dynamic>
+			<isNotEmpty property="orgIdarrs" prepend="and">
+			<![CDATA[ g.org_id in ]]>
+				<iterate property="orgIdarrs" open="(" close=")" conjunction=",">#orgIdarrs[]#
+				</iterate>
+			</isNotEmpty>
+			<isNotEmpty property="orgName" prepend="and">
+			<![CDATA[  g.org_name =#orgName#]]>
+			</isNotEmpty>
+			<isNotEmpty property="companyId" prepend="and">
+			<![CDATA[  g.company_id =#companyId#]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgId" prepend="and">
+			<![CDATA[  g.org_id =#orgId#]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		order by g.org_id
+	]]>
+	</select>
+	
+	<select id="getOrgTreeListByOrgId" parameterClass="borg"
+		resultClass="borg">
+	<![CDATA[
+		SELECT g.org_id         AS orgId,
+		  g.org_code            AS orgCode,
+		  g.org_level           AS orgLevel,
+		  g.org_city            AS orgCity,
+		  g.org_name            AS orgName,
+		  g.org_parent_id       AS orgParentId,
+		  g.state               AS state ,
+		  g.remark              AS remark,
+		  g.last_modify         AS lastModify,
+		  g.root_notice         AS rootNotice,
+		  g.sap_org_id          AS sapOrgId,
+		  g.company_id          AS companyId,
+		  g.org_jc              AS orgJc,
+		  g.city_id             AS cityId,
+		  g.leader_station_id   AS leaderStationId,
+		  g.img_showorg_id      AS imgOrgId,
+		  g.adgroup_name        AS ADGroupName,
+		  g.organise_type       AS OrganiseType,
+		  g.create_time         AS createTime,
+		  g.new_organise_id_str AS NewOrganiseIdStr,
+		  g.lsorganise_ids      AS LSOrganiseIds,
+		  g.short_name          AS ShortName,
+		  g.jian_ping           AS JianPing,
+		  g.samaccount_name     AS sAMAccountName,
+		  g.if_have_mail        AS IfHaveMail,
+		  g.sap_company_id      AS sapCompanyId,
+		  g.orgunit             AS orgUnit,
+		  g.org_range           AS orgRange,
+		  g.account_type        AS accountType
+		FROM BASIS.basis_tb_org g
+		WHERE g.state = 'Y'
+	]]>
+		<dynamic>
+			<isNotEmpty property="orgId" prepend="and">
+			<![CDATA[ g.org_id = #orgId# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty property="orgParentId" prepend="and">
+			<![CDATA[ g.org_parent_id = #orgParentId# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		order by g.org_id
+	]]>
+	</select>
+	
+	<select id="getOrgByOrgId" parameterClass="borg"
+		resultClass="borg">
+	<![CDATA[
+		SELECT g.org_id         AS orgId,
+		  g.org_code            AS orgCode,
+		  g.org_level           AS orgLevel,
+		  g.org_city            AS orgCity,
+		  g.org_name            AS orgName,
+		  g.org_parent_id       AS orgParentId,
+		  g.state               AS state,
+		  g.remark              AS remark,
+		  g.last_modify         AS lastModify,
+		  g.root_notice         AS rootNotice,
+		  g.sap_org_id          AS sapOrgId,
+		  g.company_id          AS companyId,
+		  g.org_jc              AS orgJc,
+		  g.city_id             AS cityId,
+		  g.leader_station_id   AS leaderStationId,
+		  g.leader_role_id      AS leaderRoleId,
+		  g.img_showorg_id      AS imgOrgId,
+		  g.adgroup_name        AS ADGroupName,
+		  g.organise_type       AS OrganiseType,
+		  g.create_time         AS createTime,
+		  g.new_organise_id_str AS NewOrganiseIdStr,
+		  g.lsorganise_ids      AS LSOrganiseIds,
+		  g.short_name          AS ShortName,
+		  g.jian_ping           AS JianPing,
+		  g.samaccount_name     AS sAMAccountName,
+		  g.if_have_mail        AS IfHaveMail,
+		  g.sap_company_id      AS sapCompanyId,
+		  g.orgunit             AS orgUnit,
+		  g.org_range           AS orgRange,
+		  g.account_type        AS accountType,
+		  g2.org_name           AS orgParentName,
+		  g3.org_name           AS companyName,
+		  s.role_name           AS leaderRoleName
+		FROM BASIS.basis_tb_org g ,
+		  BASIS.basis_tb_org g2 ,
+		  BASIS.basis_tb_org g3 ,
+		  (SELECT t.role_name,
+			t.role_id
+		  FROM BASIS.basis_tb_role t
+		  WHERE t.descn LIKE '%WFE%'
+		  AND t.state = 'U'
+		  ) s
+		WHERE g.org_parent_id = g2.org_id(+)
+		AND g.company_id      = g3.org_id(+)
+		AND g.leader_role_id  = s.role_id(+)
+		AND g.state           = 'Y'
+	]]>
+		<dynamic>
+			<isNotEmpty property="orgId" prepend="and">
+			<![CDATA[ g.org_id=#orgId#]]>
+			</isNotEmpty>
+		</dynamic>
+		<dynamic>
+			<isNotEmpty property="orgParentId" prepend="and">
+			<![CDATA[ g.org_parent_id=#orgParentId#]]>
+			</isNotEmpty>
+		</dynamic>
+		
+	</select>
+	
+	<select id="getCompanyListCount" parameterClass="borg"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1)
+		FROM BASIS.basis_tb_org g
+		WHERE g.state       = 'Y'
+		AND g.organise_type = 'X'
+	]]>
+		<isNotEmpty property="orgId" prepend="and">
+		<![CDATA[ g.org_id= #orgId# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="orgName" prepend="and">
+		<![CDATA[ g.org_name = #orgName# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="search" prepend="and">
+		<![CDATA[
+			  ( g.org_id like #search,handler=wildcard# escape '\'
+			 or g.org_name like #search,handler=wildcard# escape '\' )
+		]]>
+		</isNotEmpty>
+	</select>
+	
+	<select id="getCompanyList" parameterClass="borg"
+		resultClass="borg">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT g.org_id AS orgId,
+		  g.org_name    AS orgName
+		FROM BASIS.basis_tb_org g
+		WHERE g.state       = 'Y'
+		AND g.organise_type = 'X'
+	]]>
+		<isNotEmpty property="orgId" prepend="and">
+		<![CDATA[ g.org_id= #orgId# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="orgName" prepend="and">
+		<![CDATA[ g.org_name = #orgName# ]]>
+		</isNotEmpty>
+		<isNotEmpty property="search" prepend="and">
+		<![CDATA[
+			  ( g.org_id like #search,handler=wildcard# escape '\'
+			 or g.org_name like #search,handler=wildcard# escape '\' )
+		]]>
+		</isNotEmpty>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+
+	<insert id="createOrg" parameterClass="borg" >
+		<selectKey resultClass="java.lang.Long" keyProperty="orgId">
+		<![CDATA[
+			  SELECT SMSUSER.B_ORG_SEQ.NEXTVAL AS orgId FROM DUAL	
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into SMSUSER.B_ORG
+		(   
+			ORG_ID,
+			ORG_CODE,
+			ORG_LEVEL,
+			ORG_CITY,
+			ORG_NAME,
+			ORG_PARENT_ID,
+			STATE,
+			REMARK,
+			LAST_MODIFY,
+			ROOT_NOTICE,
+			SAP_ORG_ID,
+			COMPANY_ID,
+			ORG_JC,
+			CITY_ID,
+			LEADER_STATION_ID,
+			LEADER_ROLE_ID,
+			IMG_SHOWORG_ID,
+			ADGROUP_NAME,
+			ORGANISE_TYPE,
+			CREATE_TIME,
+			NEW_ORGANISE_ID_STR,
+			LSORGANISE_IDS,
+			SHORT_NAME,
+			JIAN_PING,
+			SAMACCOUNT_NAME,
+			IF_HAVE_MAIL,
+			SAP_COMPANY_ID,
+			ORGUNIT,
+			ORG_RANGE
+		   ) values
+		(#orgId#,#orgId#,#orgLevel#,#orgCity#,#orgName#,#orgParentId#,#state#,#remark#,#lastModify#,
+		#rootNotice#,#sapOrgId#
+	]]>
+		<dynamic>
+			<isEqual property="organiseType" compareValue="X"  prepend=",">
+			<![CDATA[ #orgId# ]]>
+			</isEqual>
+			<isEqual property="organiseType" compareValue="Z" prepend=",">
+			<![CDATA[ #companyId# ]]>
+			</isEqual>
+		</dynamic>
+	<![CDATA[
+		,#orgJc#,#cityId#,#leaderStationId#,#leaderRoleId#,#imgOrgId#,
+		#adGroupName#,#organiseType#,#createTime#,#newOrganiseIdStr#,#lSOrganiseIds#,#shortName#,#jianPing#,
+		#sAMAccountName#,#ifHaveMail#,#sapCompanyId#,#orgUnit#,#orgRange#)
+	]]>
+	</insert>
+	
+	<update  id="updateBorg" parameterClass="borg" >
+	<![CDATA[
+		update  SMSUSER.B_ORG t set t.LAST_MODIFY=sysdate
+	]]>
+		<dynamic>
+			<isNotEmpty property="leaderStationId" prepend=",">
+			<![CDATA[ t.LEADER_STATION_ID =#leaderStationId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="leaderRoleId" prepend=",">
+			<![CDATA[ t.LEADER_ROLE_ID =#leaderRoleId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="imgOrgId" prepend=",">
+			<![CDATA[ t.IMG_SHOWORG_ID =#imgOrgId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgUnit" prepend=",">
+			<![CDATA[ t.ORGUNIT =#orgUnit# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgRange" prepend=",">
+			<![CDATA[ t.ORG_RANGE =#orgRange# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="orgName" prepend=",">
+			<![CDATA[ t.ORG_NAME =#orgName# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="sAMAccountName" prepend=",">
+			<![CDATA[ t.SAMACCOUNT_NAME =#sAMAccountName# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="adGroupName" prepend=",">
+			<![CDATA[ t.ADGROUP_NAME =#adGroupName# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		  where t.ORG_ID=#orgId#
+	]]>
+	</update>
+	
+	<select id="getFnUserOrg" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+	<![CDATA[
+		 select cms.cms_api_pack.fn_user_org( #userId# ) as orgIds from dual
+	]]>
+	</select>
+	
+	<select id="getAllParentOrgs" parameterClass="java.lang.String"
+		resultClass="borg">
+	<![CDATA[
+		SELECT o.org_id AS orgId,
+		  o.org_name    AS orgName
+		FROM BASIS.basis_tb_org o
+		WHERE o.state                      = 'Y'
+		  START WITH o.org_id              = #orgId#
+		  CONNECT BY prior o.org_parent_id = o.org_id
+		ORDER BY o.org_level ASC
+	]]>
+	</select>
+	
+	<select id="getOrgCount" parameterClass="borg"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(t.org_id) from smsuser.b_org t where t.state = 'Y'
+	]]>
+		<dynamic>
+			<isNotEmpty property="orgId" prepend="and">
+			<![CDATA[  t.org_id = #orgId#]]>
+			</isNotEmpty>
+			<isNotEmpty property="companyId" prepend="and">
+			<![CDATA[  t.company_id = #companyId#]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>组织列表</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>
+        <form method="post">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table bgColor=#ffffff width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+						 		<td colspan="2" class="home_title" noWrap >
+									组织信息
+			                     </td>
+								 <td noWrap align="right">
+									<a href="#" onclick="create();">
+										<img src="$!{env.imgUrl}/image/actions/icon_add.gif" align="absMiddle" >创建组织 </img>
+									</a>
+									<a href="#" onclick="save();">
+										<img src="$!{env.imgUrl}/image/actions/icon_save.png" align="absMiddle" >保存组织修改 </img>
+                                    </a>
+								</td>
+                            </tr>
+							<tr>
+								<td bgcolor="#FFFFFF" colspan="3">
+									<table bgColor=#ffffff width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												组织名<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="text" name="borg.orgName"  id="orgName" value="$!{borg.orgName}" />
+											</td>
+                                            <td bgcolor="#FFFFFF" class="head" nowrap>
+												组织编号：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="text" name="borg.orgId" readonly id="orgId" value="$!{borg.orgId}" />
+											</td>
+                                        </tr>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												组织性质：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="text" readonly id="orgCityName" name="orgCityName" />
+												<input type="hidden" readonly id="orgCity" name="orgCity" value="$!{borg.orgCity}" />
+                                            </td>
+                                            <td bgcolor="#FFFFFF" class="head" nowrap>
+												所属公司：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="hidden" name="companyId" readonly id="companyId" value="$!{borg.companyId}" />
+												<input type="text" name="companyName" readonly id="companyName" value="$!{borg.companyName}" />
+											</td>
+                                        </tr>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												父级组织编号：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="text"  id="borg.orgParentId" readonly value="$!{borg.orgParentId}" />
+											</td>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												父级组织名：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="text"  id="orgParentName" readonly value="$!{borg.orgParentName}" />
+											</td>
+                                        </tr>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												组织层级：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap colspan="3">
+												<input type="text" name="orgLevel" readonly id="orgLevel" value="$!{borg.orgLevel}" />
+											</td>
+                                        </tr>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												组织简称<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap >
+												<input type="text" name="borg.shortName"  id="shortName" value="$!{borg.shortName}" />
+											</td>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												组织简拼<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap  >
+												<input type="text"  name="borg.jianPing"  id="jianPing" value="$!{borg.jianPing}" />
+											</td>
+                                        </tr>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												域组名<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap >
+												<input type="text"  name="borg.adGroupName"  id="adGroupName" value="$!{borg.adGroupName}" />
+											</td>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												域组层级<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap >
+												<input type="text" name="borg.sAMAccountName"  id="sAMAccountName" value="$!{borg.sAMAccountName}" />
+											</td>
+                                        </tr>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												领导角色<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap >
+												<input type="text" name="borg.leaderRoleId"  id="leaderRoleId" value="$!{borg.leaderRoleId}" />
+												<input type="hidden" id="roleName" />
+											</td>
+                                            <td bgcolor="#FFFFFF" class="head" nowrap>
+												映射组织<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="text" name="borg.imgOrgId" id="imgOrgId" value="$!{borg.imgOrgId}" />
+											</td>
+                                        </tr>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												组织范围<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap colspan="3">
+												<input type="hidden" name="borg.orgRange"  id="orgRange" value="$!{borg.orgRange}" />
+												<input type="text"  id="orgRangeName" value="$!{borg.orgRange}" />
+											</td>
+										</tr>
+									</table>
+                                </td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JSM(["common", "ext", "jquery"])
+		#JS_ENV_VAL()
+		<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/org/searchOrgDetail.js"></script>
+	</body>
+</html>

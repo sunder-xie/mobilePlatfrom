@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>剑齿虎</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href="$!{env.imgUrl}/css/base.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/public.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/layout.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/nofound.css" type="text/css" rel="stylesheet" />
+	</head>
+
+<body>
+<!-- header begin -->
+<!-- header end --> 
+<!-- slider begin --> 
+<!-- slider end -->
+
+	<div class="no-found">
+		<h3>抱歉登录超时......</h3>
+		<h4>We're sorry but the page your are looking for is Not Found...</h4>
+		<p class="no-found-text">登录超时，最有可能的原因是：<p>
+		<ul class="no-found-list">
+			<li>您已退出当前系统。</li>
+			<li>当您点击某个连接时，它可能已过期。</li>
+		</ul>
+		<p class="no-found-text">点击一下链接继续浏览kingiter<p>
+		<ul class="no-found-list">
+			<li><a href="javascript:login()">重新登陆系统</a></li>
+		</ul>
+	</div>
+
+<!-- footer beigin -->
+<!-- footer end -->
+    <script languang="text/javascript">
+    function login() {
+    	top.location = "/xplatform";
+    }
+    </script>
+</body>
+</html>

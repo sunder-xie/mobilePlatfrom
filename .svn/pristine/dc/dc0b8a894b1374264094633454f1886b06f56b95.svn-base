@@ -1,0 +1,15 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$dict"
+		extends="{http://xplatform}xplatform$framework" namespace="/dict">
+		
+		<action name="dictAction" class="dictAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchDictType">/xplatform/dict/searchDictType.vm</result>
+			<result name="createDictTypePrepare">/xplatform/dict/createDictType.vm</result>
+			<result name="createDictPrepare">/xplatform/dict/createDict.vm</result>
+			<result name="updateDictTypePrepare">/xplatform/dict/searchDictTypeDetail.vm</result>
+			<result name="updateDictPrepare">/xplatform/dict/searchDictDetail.vm</result>
+		</action>
+	</package>
+</xwork>

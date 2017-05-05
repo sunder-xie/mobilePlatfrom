@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sap">
+	<typeAlias alias="sapAccount" type="com.kintiger.xplatform.api.sap.bo.SAPAccount" />
+	<typeAlias alias="sapLog" type="com.kintiger.xplatform.api.sap.bo.SAPLog" />
+	
+	<update id="releaseSAPAccount" parameterClass="java.util.HashMap">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_sap_account t
+		SET t.user_id     = NULL,
+		  t.occupy        = '0',
+		  t.modify_date   = sysdate
+		WHERE t.status    = '1'
+		AND t.sap_account = #passport#
+	]]>
+		<dynamic>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[ t.user_id     = #userId# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+	<select id="getIdleSAPAccount" resultClass="sapAccount">
+	<![CDATA[
+		SELECT MAX(ABS(mod( dbms_random.random,100))
+		  || '|'
+		  || t.sap_account) AS sapAccount
+		FROM BASIS.basis_tb_sap_account t
+		WHERE t.status = '1'
+		AND t.occupy   = '0'
+	]]>
+	</select>
+	
+	<update id="occupySAPAccount" parameterClass="java.util.HashMap">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_sap_account t
+		SET t.user_id     = #userId#,
+		  t.occupy        = '1',
+		  t.modify_date   = sysdate
+		WHERE t.status    = '1'
+		AND t.occupy      = '0'
+		AND t.sap_account = #passport#
+	]]>
+	</update>
+	
+	<select id="getSAPAccountCount" parameterClass="sapAccount"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1) FROM BASIS.basis_tb_sap_account t WHERE 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="sapAccount" prepend="and">
+			<![CDATA[ t.sap_account like #sapAccount,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="occupy" prepend="and">
+			<![CDATA[ t.occupy = #occupy# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+			<![CDATA[ t.status = #status# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getSAPAccountList" parameterClass="sapAccount"
+		resultClass="sapAccount">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT t.id,
+		  t.sap_account AS sapAccount,
+		  t.occupy,
+		  t.status,
+		  t.create_date AS createDate,
+		  t.modify_date AS modifyDate,
+		  p.user_name   AS userName,
+		  p.passport
+		FROM BASIS.basis_tb_sap_account t,
+		  BASIS.basis_tb_user p
+		WHERE t.user_id = p.user_id(+)
+	]]>
+		<dynamic>
+			<isNotEmpty property="sapAccount" prepend="and">
+			<![CDATA[ t.sap_account like #sapAccount,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="occupy" prepend="and">
+			<![CDATA[ t.occupy = #occupy# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+			<![CDATA[ t.status = #status# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<update id="disableSAPAccount" parameterClass="java.util.HashMap">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_sap_account t
+		SET t.user_id     = NULL,
+		  t.occupy        = '0',
+		  t.status        = '0',
+		  t.modify_date   = sysdate
+		WHERE t.status    = '1'
+		AND t.sap_account = #passport#
+	]]>
+	</update>
+	
+	<update id="enableSAPAccount" parameterClass="java.util.HashMap">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_sap_account t
+		SET t.status      = '1',
+		  t.modify_date   = sysdate
+		WHERE t.status    = '0'
+		AND t.occupy      = '0'
+		AND t.user_id    IS NULL
+		AND t.sap_account = #passport#
+	]]>
+	</update>
+	
+	<select id="getUnusualSAPAccountList" resultClass="sapAccount">
+	<![CDATA[
+		SELECT t.sap_account AS sapAccount
+		FROM BASIS.basis_tb_sap_account t
+		WHERE t.status    = '1'
+		AND t.occupy      = '1'
+		AND t.modify_date < sysdate-1/1440
+	]]>
+	</select>
+	
+	<insert id="createSAPLog" parameterClass="sapLog">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			SELECT BASIS.basis_seq_sap_log.nextval AS id FROM dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_sap_log
+		  (
+			ID,
+			SAP_ACCOUNT,
+			USER_ID,
+			TCODE,
+			IP,
+			CREATE_DATE
+		  )
+		  values
+		  (
+			#id:NUMBER#,
+			#sapAccount:VARCHAR#,
+			#userId:VARCHAR#,
+			#tcode:VARCHAR#,
+			#ip:VARCHAR#,
+			sysdate
+		  )
+	]]>
+	</insert>
+	
+	<select id="getSAPLogCount" parameterClass="sapLog" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1) FROM BASIS.basis_tb_sap_log t WHERE 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="sapAccount" prepend="and">
+			<![CDATA[ t.sap_account like upper(#sapAccount,handler=wildcard#) escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="tcode" prepend="and">
+			<![CDATA[ t.tcode = upper(#tcode#) ]]>
+			</isNotEmpty>
+			<isNotEmpty property="gmtStart" prepend="and">
+			<![CDATA[ t.create_date >= to_date(#gmtStart#, 'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="gmtEnd" prepend="and">
+			<![CDATA[ t.create_date < to_date(#gmtEnd#, 'yyyy-mm-dd') + 1 ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getSAPLogList" parameterClass="sapLog" resultClass="sapLog">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT t.id,
+		  t.sap_account AS sapAccount,
+		  t.tcode,
+		  t.ip,
+		  t.create_date AS createDate,
+		  p.passport,
+		  p.user_name AS userName
+		FROM BASIS.basis_tb_sap_log t,
+		  BASIS.basis_tb_user p
+		WHERE t.user_id = p.user_id
+	]]>
+		<dynamic>
+			<isNotEmpty property="sapAccount" prepend="and">
+			<![CDATA[ t.sap_account like upper(#sapAccount,handler=wildcard#) escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="tcode" prepend="and">
+			<![CDATA[ t.tcode = upper(#tcode#) ]]>
+			</isNotEmpty>
+			<isNotEmpty property="gmtStart" prepend="and">
+			<![CDATA[ t.create_date >= to_date(#gmtStart#, 'yyyy-mm-dd') ]]>
+			</isNotEmpty>
+			<isNotEmpty property="gmtEnd" prepend="and">
+			<![CDATA[ t.create_date < to_date(#gmtEnd#, 'yyyy-mm-dd') + 1 ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createSAPAccount" parameterClass="sapAccount">
+		<selectKey resultClass="java.lang.String" keyProperty="id">
+		<![CDATA[
+			SELECT BASIS.BASIS_SEQ_SAP_ACCOUNT.nextval AS id FROM dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_sap_account
+		  (
+			ID,
+			SAP_ACCOUNT,
+			USER_ID,
+			OCCUPY,
+			STATUS,
+			CREATE_DATE,
+			MODIFY_DATE
+		  )
+		  VALUES
+		  (
+			#id:VARCHAR#,
+			#sapAccount:VARCHAR#,
+			'',
+			0,
+			1,
+			sysdate,
+			sysdate
+		  )
+	]]>
+	</insert>
+	
+</sqlMap>

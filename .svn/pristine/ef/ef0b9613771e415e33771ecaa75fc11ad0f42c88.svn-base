@@ -1,0 +1,11 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$error"
+		extends="{http://xplatform}xplatform$framework" namespace="/error">
+		
+		<action name="errorAction" class="errorAction" >
+			<result name="403">/xplatform/framework/error/403.vm</result>
+			<result name="404">/xplatform/framework/error/404.vm</result>
+		</action>
+	</package>
+</xwork>

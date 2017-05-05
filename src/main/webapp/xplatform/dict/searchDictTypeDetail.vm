@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>字典类型修改</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>	
+		<form method="post"> 
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table bgColor=#ffffff width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td colspan="2" class="home_title" noWrap>
+									字典类型修改
+			                     </td>
+								 <td noWrap align="right">
+									<a href="javascript:save();">
+                                        <img src="$!{env.imgUrl}/image/actions/icon_save.png" align="absMiddle" >保存 </img>
+									</a>
+									<br />
+								</td>
+                            </tr>
+							<tr>
+								<td bgcolor="#FFFFFF" colspan="3">
+									<table bgColor=#ffffff width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+                                        <tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												类型名称<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="hidden" id="dictTypeId" name="dictType.dictTypeId" value="$!{dictType.dictTypeId}" />
+												<input type="text" id="dictTypeName" name="dictType.dictTypeName" value="$!{dictType.dictTypeName}" />
+											</td>
+                                         </tr>
+                                        <tr>
+                                            <td bgcolor="#FFFFFF" class="head" nowrap>
+												类型值<font color='red'>*</font>：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap>
+												<input type="text"  id="dictTypeValue" name="dictType.dictTypeValue" value="$!{dictType.dictTypeValue}" />
+											</td>
+                                        </tr>
+										<tr>
+											<td bgcolor="#FFFFFF" class="head" nowrap>
+												备注：
+											</td>
+											<td bgcolor="#FFFFFF" class="even" nowrap >
+												 <textarea name="dictType.remark" id="remark" >$!{dictType.remark}</textarea>
+											</td>
+										</tr>
+                                  </table>
+                                 </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+           </table>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JSM(["common", "ext", "jquery"])
+		#JS_ENV_VAL()
+		<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/dict/searchDictTypeDetail.js"></script>
+	</body>
+</html>

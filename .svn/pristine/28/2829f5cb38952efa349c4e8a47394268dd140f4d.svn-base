@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head>
+    	<title>新闻栏目明细创建</title>
+    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    	#CSSM(["ext", "style"])
+    </head>
+	<body>
+		<form action="" enctype="multipart/form-data" id="sform" name="sform" method="post">
+			<table width="100%">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="form_top_icon_01">
+									新闻栏目明细创建
+								</td>
+								<td class="title_bottom_line" noWrap align='right'>
+            						<a href="javascript:save();">
+                                        <img src="$!{env.imgUrl}/image/actions/icon_save.png" align="absMiddle" >保存 </img>
+            						</a>
+            						<br>
+								</td>
+							</tr>
+            				<tr>
+            					<td>
+            						<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+            								<tr>
+            									<td class="head">
+            										所属栏目<FONT color="#ff0000">*</FONT>
+            									</td>
+            									<td class="even">
+            										<input type="text" id="parentName" name="parentName" readonly="readonly"/>
+            										<input type="hidden" id="totalParentId" name="newsDetail.totalId" />
+            										<img title="点击打开栏目树" style="cursor:pointer" src="$!{env.imgUrl}/image/news/bt_detail.gif" onclick="showtree()"></img>
+            									</td>
+            								</tr>
+            								<tr id="t1">
+            									<td class="head" align="left">
+            										标题<FONT color="#ff0000">*</FONT>
+            									</td>
+            									<td colspan="3" class="even">
+            										<input type="text" id="detailTitle" name="newsDetail.detailTitle" />
+            										&nbsp;&nbsp;&nbsp;&nbsp;标题为红色
+            										<input type="checkbox" name="css_flag" id="css_flag"/>
+            									</td>
+            								</tr>
+            								<tr id="t2">
+            									<td class="head">
+            										内容<FONT color="#ff0000">*</FONT>
+            									</td>
+            									<td class="even" colspan="3">
+            										<div id="htmlEditor">
+                                                    </div>
+            									</td>
+            								</tr>
+            							</table>
+            					</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JS_ENV_VAL()
+		#JSM(["common", "ext", "jquery", "upload"]) 
+		<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/news/createNewsDetail.js"></script>
+	</body>
+</html>

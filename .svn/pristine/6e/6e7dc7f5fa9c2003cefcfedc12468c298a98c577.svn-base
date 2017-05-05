@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	
+	<bean id="dataManageAction" class="com.kintiger.xplatform.data.action.DataManageAction"
+		scope="request" parent="baseAction">
+		<property name="dataService" ref="dataService" />
+	</bean>
+	<bean id="dataService"
+		class="com.kintiger.xplatform.data.service.impl.DataServiceImpl">
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="dataDao" ref="dataDao" />
+		<property name="dataLogDao" ref="dataLogDao" />
+	</bean>
+	<bean id="dataDao" class="com.kintiger.xplatform.data.dao.impl.DataDaoImpl" parent="baseDao">
+	</bean>
+	
+	<bean id="dataConfigAction" class="com.kintiger.xplatform.data.action.DataConfigAction"
+		scope="request" parent="baseAction">
+		<property name="dataConfigService" ref="dataConfigService" />
+		<property name="userService" ref="userService" />
+	</bean>
+	<bean id="dataConfigService"
+		class="com.kintiger.xplatform.data.service.impl.DataConfigServiceImpl">
+		<property name="dataConfigDao" ref="dataConfigDao" />
+	</bean>
+	<bean id="dataConfigDao" class="com.kintiger.xplatform.data.dao.impl.DataConfigDaoImpl" parent="baseDao">
+	</bean>
+	
+	<bean id="dataLogAction" class="com.kintiger.xplatform.data.action.DataLogAction"
+		scope="request" parent="baseAction">
+		<property name="dataLogService" ref="dataLogService" />
+	</bean>
+	<bean id="dataLogService"
+		class="com.kintiger.xplatform.data.service.impl.DataLogServiceImpl">
+		<property name="dataLogDao" ref="dataLogDao" />
+	</bean>
+	<bean id="dataLogDao" class="com.kintiger.xplatform.data.dao.impl.DataLogDaoImpl" parent="baseDao">
+	</bean>
+	
+</beans>

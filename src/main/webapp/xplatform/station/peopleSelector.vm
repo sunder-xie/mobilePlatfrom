@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>
+		<form method="post">
+			<input type ="hidden" id="userIds" name="userIds" />
+			<input type ="hidden" name="stationId" value="$!{stationId}" />
+        </form>
+		<input type ="hidden" id="listJson" name="listJson" value='$!{listJson}' />
+		<div style="margin-top:15px;" id="itemselector" class="cent_border" align=center></div>
+		<iframe id="hideFrame" name="hideFrame" src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JSM(["common", "ext", "jquery"])
+        #JS_ENV_VAL()
+        <script type="text/javascript">
+        var store;
+        </script>
+		<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/station/peopleSelector.js"></script>
+    </body>
+</html>

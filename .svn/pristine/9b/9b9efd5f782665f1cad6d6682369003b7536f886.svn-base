@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>剑齿虎</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href="$!{env.imgUrl}/css/base.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/public.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/layout.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/forget.css" type="text/css" rel="stylesheet" />
+		#CSSM(["ext"])
+		<!-- Google Analytics --> 
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        
+          ga('create', 'UA-44827885-1', 'kintiger.com');
+          ga('send', 'pageview');
+        
+        </script>
+	</head>
+	<body>
+		<!-- header begin -->
+		<div class="topbar">
+	 		<div class="section">
+	    		<div class="mininavLeft">
+	    			<a class="mobileIcon" href="" target="_blank">手机剑齿虎</a>
+	    		</div>
+	    		<div class="mininavRight">
+					#if($!stringUtil.isNotEmpty($!{userName}))
+	    			<span class="welcome">欢迎，</span>
+	    			<a class="account" href="">$!{userName}</a>
+	    			<a class="accountout" href="logout.htm"> [退出] </a>
+					#else
+					<a class="home" href="">登录 </a>
+					#end
+					|<a class="home" href=""> 设为首页</a>
+	    			<a href="help" target="_blank"> 帮助中心</a>
+	    		</div>
+	  		</div>
+		</div>
+		<div class="header">
+	  		<div class="wf-wrap">
+	   			<div class="branding">
+	   				<a href="">
+	   					<img src="$!{env.imgUrl}/image/login/logo.png"/>
+	   				</a>
+	   			</div>
+	   			<div class="navigation">
+	   				<ul class="main-nav">
+	        			<li class="acts">
+	        				<a href="" target="_blank">首页</a>
+	        			</li>
+						<li><a href="" target="_blank">产品中心</a></li>
+				        <li><a href="" target="_blank">公司新闻</a></li>
+				        <li><a href="" target="_blank">联系我们</a></li>
+	      			</ul>
+	    		</div>
+	  		</div>
+		</div>
+		<!-- header end -->
+		
+		<div class="content fn-clear">
+			<div class="password_box">
+				<div class="hd">
+					<h2 class="hd_title">忘记登录密码</h2>
+				</div>
+				<div class="bd">
+					<div class="password">
+						<div class="flowsteps fn-clear">
+							<ul class="num3">
+								<li><span><div>1. 第一步</div><em>输入登录帐号</em></span></li>
+								<li class="first current"><span><div style="text-align :center"><strong>2</strong> 第二步</div><em>发送链接到注册邮箱</em></span></li>
+								<li class="last"><span><div>3. 第三步</div><em>完成重置密码</em></span></li>
+							</ul>
+						</div>
+						<div class="kv_list">
+							<form action="" method="post" id="J_login_form">
+								<input type="hidden" name="passport" value="$!{passport}" />
+								<div class="kv_item">
+									$!{successMessage}
+								</div>
+								<div class="kv_item">
+									<button class="btn" type="button" onclick="sendCheckCode();"> 重新发送验证码 </button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- footer beigin -->
+		<div class="footer">
+			<div class="wf-wrap fn-clear">
+	      		<div class="branding-bottom">
+	      			<!--<a href="" target="_blank"><img src="$!{env.imgUrl}/image/login/slogo.png" width="114" height="29" alt="" /></a>-->
+	      		</div>
+	      		<div class="wf-float-left">剑齿虎科技有限公司版权所有 </div>
+	      		<div class="wf-td">
+	      			<a href="" target="_blank">关于我们</a>
+	      			<a href="" target="_blank">客服服务</a>
+	      			<a href="" target="_blank">隐私政策</a>
+	      		</div>
+	      	</div>
+		</div>
+		<!-- footer end -->
+		
+		#JSM(["common", "ext", "jquery"])
+        #JS_ENV_VAL()
+    	<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/login/forgetPassword.js"></script>
+	</body>
+</html>

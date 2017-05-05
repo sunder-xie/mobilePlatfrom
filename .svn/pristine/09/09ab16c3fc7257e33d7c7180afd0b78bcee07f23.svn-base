@@ -1,0 +1,33 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>组织列表</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["style"])
+	</head>
+	<body>
+        <p/><br/>
+		<input type="hidden" id="orgId" value="$!{orgId}" />
+		<input type="text" id="orgName" readOnly="readOnly" size="30" value="$!{orgName}" />
+		<input type="hidden" id="sapOrgId" value="$!{sapOrgId}" />
+		<input type=button value="确定" onclick="javascript:closewin();" />
+		<script language=javascript>
+        	function closewin() {
+        		var orgId = document.getElementById("orgId");
+        		var orgName = document.getElementById("orgName");
+        		var sapOrgId = document.getElementById("sapOrgId");
+        		if (orgId.value == "" || orgName.value == "无") {
+        			alert("请选择！");
+        		} else {
+        			var s = new Array();
+              		s[0] = orgId.value;
+              		s[1] = orgName.value;
+        			s[3] = sapOrgId.value
+        			window.returnValue = s;
+        			window.close();
+        		}
+        	}
+        </script>
+	</body>
+</html>

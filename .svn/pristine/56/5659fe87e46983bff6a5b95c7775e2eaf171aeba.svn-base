@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	
+	<bean id="logMonitorAction" class="com.kintiger.xplatform.log.action.LogMonitorAction"
+		scope="request" parent="baseAction">
+		<property name="logMonitorService" ref="logMonitorService" />
+	</bean>
+	<bean id="logMonitorService"
+		class="com.kintiger.xplatform.log.service.impl.LogMonitorServiceImpl">
+		<property name="logMonitorDao" ref="logMonitorDao" />
+	</bean>
+	<bean id="logMonitorDao" class="com.kintiger.xplatform.log.dao.impl.LogMonitorDaoImpl" parent="baseDao">
+	</bean>
+	
+	<bean id="logAction" class="com.kintiger.xplatform.log.action.LogAction"
+		scope="request" parent="baseAction">
+		<property name="actionLogService" ref="actionLogService" />
+	</bean>
+	<bean id="actionLogService"
+		class="com.kintiger.xplatform.log.service.impl.ActionLogServiceImpl">
+		<property name="actionLogDao" ref="actionLogDao" />
+	</bean>
+	<bean id="actionLogDao" class="com.kintiger.xplatform.log.dao.impl.ActionLogDaoImpl" parent="baseDao">
+	</bean>
+	
+</beans>

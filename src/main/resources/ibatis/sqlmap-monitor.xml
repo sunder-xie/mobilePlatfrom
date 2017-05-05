@@ -1,0 +1,487 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="monitor">
+	<typeAlias alias="sqlMonitor" type="com.kintiger.xplatform.api.monitor.bo.SqlMonitor" />
+	<typeAlias alias="monitorLog" type="com.kintiger.xplatform.api.monitor.bo.MonitorLog" />
+	<typeAlias alias="cacheStats" type="com.kintiger.xplatform.api.cache.bo.CacheStats" />
+	<typeAlias alias="methodMonitor" type="com.kintiger.xplatform.api.monitor.bo.MethodMonitor" />
+	
+	<select id="execMonitorSql" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	<![CDATA[
+		$sql$
+	]]>
+	</select>
+	
+	<select id="execMonitorSqlDetail" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+	<![CDATA[
+		select *
+		  from (select row_.*, rownum rownum_
+				  from ($sqlDetail$) row_
+				 where rownum < 50)
+		 where rownum_ >= 1
+	]]>
+	</select>
+	
+	<select id="getSqlMonitorCount" parameterClass="sqlMonitor" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from osap.monitor_sql t where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEqual property="freq" compareValue="0" prepend="and">
+			<![CDATA[ t.freq = #freq# ]]>
+			</isNotEqual>
+			<isNotEmpty property="status" prepend="and">
+			<![CDATA[ t.status = #status# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getSqlMonitorList" parameterClass="sqlMonitor" resultClass="sqlMonitor">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.sql_monitor_id    as sqlMonitorId,
+			   t.sql,
+			   t.sql_detail        as sqlDetail,
+			   t.freq,
+			   t.threshold,
+			   t.email_alarm       as emailAlarm,
+			   t.sms_alarm         as smsAlarm,
+			   t.log,
+			   t.create_date       as createDate,
+			   t.modify_date       as modifyDate,
+			   t.status,
+			   t.sql_monitor_title as sqlMonitorTitle
+		  from osap.monitor_sql t
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEqual property="freq" compareValue="0" prepend="and">
+			<![CDATA[ t.freq = #freq# ]]>
+			</isNotEqual>
+			<isNotEmpty property="status" prepend="and">
+			<![CDATA[ t.status = #status# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="sqlMonitorId" prepend="and">
+			<![CDATA[ t.sql_monitor_id = #sqlMonitorId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="sqlMonitorTitle" prepend="and">
+			<![CDATA[ t.sql_monitor_title like #sqlMonitorTitle,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="status" prepend="and">
+			<![CDATA[  t.status = #status# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="log" prepend="and">
+			<![CDATA[ t.log = #log# ]]>
+			</isNotEmpty>
+		</dynamic>
+		
+		<isNotEmpty property="sort">
+		<![CDATA[ ORDER BY $sort$ $dir$ ]]>
+		</isNotEmpty>
+		<isEmpty property="sort">
+		<![CDATA[ ORDER BY sql_monitor_id desc ]]>
+		</isEmpty>
+		
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createSqlMonitor" parameterClass="sqlMonitor">
+		<selectKey resultClass="java.lang.Long" keyProperty="sqlMonitorId">
+		<![CDATA[
+			select osap.seq_monitor_sql_id.nextval as sqlMonitorId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into osap.monitor_sql
+		  (SQL_MONITOR_ID,
+		   SQL,
+		   SQL_DETAIL,
+		   FREQ,
+		   THRESHOLD,
+		   EMAIL_ALARM,
+		   SMS_ALARM,
+		   LOG,
+		   CREATE_DATE,
+		   MODIFY_DATE,
+		   STATUS,
+		   SQL_MONITOR_TITLE)
+		values
+		  (#sqlMonitorId:NUMBER#,
+		   #sql:VARCHAR#,
+		   #sqlDetail:VARCHAR#,
+		   #freq:NUMBER#,
+		   #threshold:NUMBER#,
+		   #emailAlarm:VARCHAR#,
+		   #smsAlarm:VARCHAR#,
+		   #log:VARCHAR#,
+		   sysdate,
+		   sysdate,
+		   'Y',
+		   #sqlMonitorTitle:VARCHAR#)
+	]]>
+	</insert>
+	
+	<select id="getSqlMonitorById" parameterClass="java.lang.Long" resultClass="sqlMonitor">
+	<![CDATA[
+		select t.sql_monitor_id    as sqlMonitorId,
+			   t.sql,
+			   t.sql_detail        as sqlDetail,
+			   t.freq,
+			   t.threshold,
+			   t.email_alarm       as emailAlarm,
+			   t.sms_alarm         as smsAlarm,
+			   t.log,
+			   t.modify_date       as modifyDate,
+			   t.status,
+			   t.sql_monitor_title as sqlMonitorTitle
+		  from osap.monitor_sql t
+		 where t.sql_monitor_id = #sqlMonitorId#
+	]]>
+	</select>
+	
+	<update id="updateSqlMonitor" parameterClass="sqlMonitor">
+	<![CDATA[
+		update osap.monitor_sql t
+		   set t.modify_date       = sysdate,
+			   t.sql               = #sql#,
+			   t.sql_detail        = #sqlDetail#,
+			   t.freq              = #freq#,
+			   t.threshold         = #threshold#,
+			   t.email_alarm       = #emailAlarm#,
+			   t.sms_alarm         = #smsAlarm#,
+			   t.log               = #log#,
+			   t.status            = #status#,
+			   t.sql_monitor_title = #sqlMonitorTitle#
+		 where t.sql_monitor_id = #sqlMonitorId#
+	]]>
+	</update>
+	
+	<select id="getMonitorLogCount" parameterClass="monitorLog" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from osap.monitor_log t where 1=1
+	]]>
+		<dynamic>
+			<isNotEmpty property="monitorId" prepend="and">
+			<![CDATA[ t.monitor_id = #monitorId# ]]>
+			</isNotEmpty>	    
+		</dynamic>
+	</select>
+	
+	<select id="getMonitorLogList" parameterClass="monitorLog" resultClass="monitorLog">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.monitor_log_id as monitorLogId,
+			   t.monitor_id     as monitorId,
+			   t.monitor_result as monitorResult,
+			   t.threshold,
+			   t.create_date    as createDate,
+			   m.sql_monitor_title   as sqlMonitorTitle
+		  from osap.monitor_log t,osap.monitor_sql m
+		  where t.monitor_id = m.sql_monitor_id
+	]]>
+		<dynamic>
+			<isNotEmpty property="monitorId" prepend="and">
+			<![CDATA[ t.monitor_id = #monitorId# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createMonitorLog" parameterClass="monitorLog">
+		<selectKey resultClass="java.lang.Long" keyProperty="monitorLogId">
+		<![CDATA[
+			select osap.seq_monitor_log_id.nextval as monitorLogId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into osap.monitor_log
+		  (MONITOR_LOG_ID,
+		   MONITOR_ID,
+		   MONITOR_RESULT,
+		   THRESHOLD,
+		   CREATE_DATE,
+		   MODIFY_DATE)
+		values
+		  (#monitorLogId:NUMBER#,
+		   #monitorId:NUMBER#,
+		   #monitorResult:NUMBER#,
+		   #threshold:NUMBER#,
+		   sysdate,
+		   sysdate)
+	]]>
+	</insert>
+	
+	<select id="getCacheMonitorCount" parameterClass="cacheStats" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from osap.cache_monitor t where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="hostAddress" prepend="and">
+			<![CDATA[ t.host_address = #hostAddress# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="port" prepend="and">
+			<![CDATA[ t.port = #port# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getCacheMonitorList" parameterClass="cacheStats" resultClass="cacheStats">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.cache_stats_id        as cacheStatsId,
+			   t.address,
+			   t.host_address          as hostAddress,
+			   t.host_name             as hostName,
+			   t.port,
+			   t.delete_hits           as deleteHits,
+			   t.bytes,
+			   t.total_items           as totalItems,
+			   t.rusage_system         as rusageSystem,
+			   t.touch_misses          as touchMisses,
+			   t.cmd_touch             as cmdTouch,
+			   t.listen_disabled_num   as listenDisabledNum,
+			   t.auth_errors           as authErrors,
+			   t.evictions,
+			   t.version,
+			   t.pointer_size          as pointerSize,
+			   t.time,
+			   t.incr_hits             as incrHits,
+			   t.threads,
+			   t.expired_unfetched     as expiredUnfetched,
+			   t.limit_maxbytes        as limitMaxbytes,
+			   t.hash_is_expanding     as hashIsExpanding,
+			   t.bytes_read            as bytesRead,
+			   t.curr_connections      as currConnections,
+			   t.get_misses            as getMisses,
+			   t.reclaimed,
+			   t.bytes_written         as bytesWritten,
+			   t.hash_power_level      as hashPowerLevel,
+			   t.connection_structures as connectionStructures,
+			   t.cas_hits              as casHits,
+			   t.delete_misses         as deleteMisses,
+			   t.total_connections     as totalConnections,
+			   t.rusage_user           as rusageUser,
+			   t.cmd_flush             as cmdFlush,
+			   t.libevent,
+			   t.uptime,
+			   t.reserved_fds          as reservedFds,
+			   t.touch_hits            as touchHits,
+			   t.cas_badval            as casBadval,
+			   t.pid,
+			   t.get_hits              as getHits,
+			   t.curr_items            as currItems,
+			   t.cas_misses            as casMisses,
+			   t.accepting_conns       as acceptingConns,
+			   t.evicted_unfetched     as evictedUnfetched,
+			   t.cmd_get               as cmdGet,
+			   t.cmd_set               as cmdSet,
+			   t.auth_cmds             as authCmds,
+			   t.incr_misses           as incrMisses,
+			   t.hash_bytes            as hashBytes,
+			   t.decr_misses           as decrMisses,
+			   t.decr_hits             as decrHits,
+			   t.conn_yields           as connYields,
+			   t.create_date           as createDate
+		  from osap.cache_monitor t
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="hostAddress" prepend="and">
+			<![CDATA[ t.host_address = #hostAddress# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="port" prepend="and">
+			<![CDATA[ t.port = #port# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createCacheMonitor" parameterClass="cacheStats">
+		<selectKey resultClass="java.lang.Long" keyProperty="cacheStatsId">
+		<![CDATA[
+			select to_number(osap.seq_cache_monitor_id.nextval) as cacheStatsId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into osap.cache_monitor
+		  (CACHE_STATS_ID,
+		   ADDRESS,
+		   HOST_ADDRESS,
+		   HOST_NAME,
+		   PORT,
+		   DELETE_HITS,
+		   BYTES,
+		   TOTAL_ITEMS,
+		   RUSAGE_SYSTEM,
+		   TOUCH_MISSES,
+		   CMD_TOUCH,
+		   LISTEN_DISABLED_NUM,
+		   AUTH_ERRORS,
+		   EVICTIONS,
+		   VERSION,
+		   POINTER_SIZE,
+		   TIME,
+		   INCR_HITS,
+		   THREADS,
+		   EXPIRED_UNFETCHED,
+		   LIMIT_MAXBYTES,
+		   HASH_IS_EXPANDING,
+		   BYTES_READ,
+		   CURR_CONNECTIONS,
+		   GET_MISSES,
+		   RECLAIMED,
+		   BYTES_WRITTEN,
+		   HASH_POWER_LEVEL,
+		   CONNECTION_STRUCTURES,
+		   CAS_HITS,
+		   DELETE_MISSES,
+		   TOTAL_CONNECTIONS,
+		   RUSAGE_USER,
+		   CMD_FLUSH,
+		   LIBEVENT,
+		   UPTIME,
+		   RESERVED_FDS,
+		   CAS_BADVAL,
+		   PID,
+		   GET_HITS,
+		   CURR_ITEMS,
+		   CAS_MISSES,
+		   ACCEPTING_CONNS,
+		   EVICTED_UNFETCHED,
+		   CMD_GET,
+		   CMD_SET,
+		   AUTH_CMDS,
+		   INCR_MISSES,
+		   HASH_BYTES,
+		   DECR_MISSES,
+		   DECR_HITS,
+		   CONN_YIELDS,
+		   TOUCH_HITS,
+		   CREATE_DATE)
+		values
+		  (#cacheStatsId:NUMBER#,
+		   #address:VARCHAR#,
+		   #hostAddress:VARCHAR#,
+		   #hostName:VARCHAR#,
+		   #port:VARCHAR#,
+		   #deleteHits:VARCHAR#,
+		   #bytes:VARCHAR#,
+		   #totalItems:VARCHAR#,
+		   #rusageSystem:VARCHAR#,
+		   #touchMisses:VARCHAR#,
+		   #cmdTouch:VARCHAR#,
+		   #listenDisabledNum:VARCHAR#,
+		   #authErrors:VARCHAR#,
+		   #evictions:VARCHAR#,
+		   #version:VARCHAR#,
+		   #pointerSize:VARCHAR#,
+		   #time:VARCHAR#,
+		   #incrHits:VARCHAR#,
+		   #threads:VARCHAR#,
+		   #expiredUnfetched:VARCHAR#,
+		   #limitMaxbytes:VARCHAR#,
+		   #hashIsExpanding:VARCHAR#,
+		   #bytesRead:VARCHAR#,
+		   #currConnections:VARCHAR#,
+		   #getMisses:VARCHAR#,
+		   #reclaimed:VARCHAR#,
+		   #bytesWritten:VARCHAR#,
+		   #hashPowerLevel:VARCHAR#,
+		   #connectionStructures:VARCHAR#,
+		   #casHits:VARCHAR#,
+		   #deleteMisses:VARCHAR#,
+		   #totalConnections:VARCHAR#,
+		   #rusageUser:VARCHAR#,
+		   #cmdFlush:VARCHAR#,
+		   #libevent:VARCHAR#,
+		   #uptime:VARCHAR#,
+		   #reservedFds:VARCHAR#,
+		   #casBadval:VARCHAR#,
+		   #pid:VARCHAR#,
+		   #getHits:VARCHAR#,
+		   #currItems:VARCHAR#,
+		   #casMisses:VARCHAR#,
+		   #acceptingConns:VARCHAR#,
+		   #evictedUnfetched:VARCHAR#,
+		   #cmdGet:VARCHAR#,
+		   #cmdSet:VARCHAR#,
+		   #authCmds:VARCHAR#,
+		   #incrMisses:VARCHAR#,
+		   #hashBytes:VARCHAR#,
+		   #decrMisses:VARCHAR#,
+		   #decrHits:VARCHAR#,
+		   #connYields:VARCHAR#,
+		   #touchHits:VARCHAR#,
+		   sysdate)
+	]]>
+	</insert>
+	
+	<select id="getMethodMonitorCount" parameterClass="methodMonitor" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1) FROM BASIS.basis_tb_method_monitor t WHERE 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="className" prepend="and">
+			<![CDATA[ t.class_name like #className,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="methodName" prepend="and">
+			<![CDATA[ t.method_name like #methodName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getMethodMonitorList" parameterClass="methodMonitor" resultClass="methodMonitor">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT t.method_monitor_id AS methodMonitorId,
+		  t.class_name             AS className,
+		  t.method_name            AS methodName,
+		  t.cost,
+		  t.create_date AS createDate
+		FROM BASIS.basis_tb_method_monitor t
+		WHERE 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="className" prepend="and">
+			<![CDATA[ t.class_name like #className,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="methodName" prepend="and">
+			<![CDATA[ t.method_name like #methodName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createMethodMonitor" parameterClass="methodMonitor">
+		<selectKey resultClass="java.lang.String" keyProperty="methodMonitorId">
+		<![CDATA[
+			SELECT BASIS.BASIS_SEQ_METHOD_MONITOR.nextval AS methodMonitorId FROM dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_method_monitor
+		  (
+			METHOD_MONITOR_ID,
+			CLASS_NAME,
+			METHOD_NAME,
+			COST,
+			CREATE_DATE
+		  )
+		  VALUES
+		  (
+			#methodMonitorId:VARCHAR#,
+			#className:VARCHAR#,
+			#methodName:VARCHAR#,
+			#cost:NUMBER#,
+			sysdate
+		  )
+	]]>
+	</insert>
+
+</sqlMap>

@@ -1,0 +1,21 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$menu"
+		extends="{http://xplatform}xplatform$framework" namespace="/menu">
+
+		<action name="menuTreeAjax" class="menuTreeAjaxAction" >
+			<interceptor-ref name="authenticationStack" />
+		</action>
+		
+		<action name="menuAction" class="menuAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchMenu">/xplatform/menu/searchMenu.vm</result>
+			<result name="createPrepare">/xplatform/menu/createMenu.vm</result>
+			<result name="updatePrepare">/xplatform/menu/searchMenuDetail.vm</result>
+			<result name="searchSelectedMenu4Role">/xplatform/menu/searchSelectedMenu4Role.vm</result>
+			<result type="redirect" name="menuRedirect1">${redirectUrl}?token=${token}</result>
+			<result type="redirect" name="menuRedirect2">${redirectUrl}&amp;token=${token}</result>
+		</action>
+
+	</package>
+</xwork>

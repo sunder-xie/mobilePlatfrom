@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    	<title>修改新闻明细</title>
+    	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    	#CSSM(["ext", "style"])
+    </head>
+	<body>
+		<form action="" enctype="multipart/form-data" id="sform" name="sform" method="post">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+					<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+        					<td class="form_top_icon_01">
+        						新闻栏目明细修改
+        					</td>
+        					<td class="title_bottom_line" noWrap align='right'>
+        						<a href="javascript:save();">
+                                    <img src="$!{env.imgUrl}/image/actions/icon_save.png" align="absMiddle" >保存 </img>
+        						</a>
+        						<br>
+        					</td>
+        				</tr>
+        				<tr>
+        					<td>
+        						<table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
+        							<tr id="t1">
+        								<td class="head" align="left" colspan="1">
+        									标题<FONT color="#ff0000">*</FONT>
+        								</td>
+        								<td colspan="3" class="even">
+        									<input type="text" name="newsDetail.detailTitle" id="detailTitle" value="$!{newsDetail.detailTitle}"/>
+        									&nbsp;&nbsp;&nbsp;&nbsp;标题为红色
+        									#if($!{newsDetail.cssFlag} == "Y")
+        									<input type="checkbox" name="newsDetail.cssFlag" id="cssFlag" checked/>
+        									#else
+        									<input type="checkbox" name="newsDetail.cssFlag" id="cssFlag"/>
+        									#end
+        								</td>
+        							</tr>
+        							<tr id="t2">
+        								<td class="head" colspan="1">
+        									内容<FONT color="#ff0000">*</FONT>
+        								</td>
+        								<td class="even" colspan="3">
+        									<div id="htmlEditor">
+                                            </div>
+        								</td>
+        							</tr>
+        						</table>
+        					</td>
+        				</tr>
+					</table>
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" name="newsDetail.detailId" value="$!{newsDetail.detailId}"/>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		<input type="hidden" id="content" value="$!esc.html($!{newsDetail.detailContent})"/>
+        #JSM(["common", "ext", "jquery", "upload"]) 
+        #JS_ENV_VAL()
+        <script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/news/updateNewsDetail.js"></script>
+	</body>
+</html>

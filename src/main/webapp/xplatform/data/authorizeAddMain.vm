@@ -1,0 +1,12 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+     <Frameset cols="45%,55%">
+		 <frame name="main" src="$!{env.appUrl}/data/dataConfigAction!getOrgPeopleTree.htm?itemId=$!{itemId}">
+		 <frame src="$!{env.appUrl}/data/dataConfigAction!sendOrgToGetPeople.htm?itemId=$!{itemId}" name="right" id="right" title="right">
+	 </Frameset>
+	
+</html>

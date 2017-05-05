@@ -1,0 +1,118 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>
+		<form method="post" enctype="multipart/form-data">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+							<tr>
+								<td class="form_top_icon_01" >
+									监控计划明细
+								</td>
+								<td class="title_bottom_line" noWrap align='right'>
+									<a href="javascript:update($!{sqlMonitor.sqlMonitorId});">
+                                        <img src="$!{env.imgUrl}/image/actions/icon_save.png" align="absMiddle" >修改 </img>
+									</a>
+									<br>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="home_title">
+									计划明细
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+										<tr>
+    										<td class="head" width="20%" noWrap style="text-align: left">
+    											监控标题
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='sql_monitor_title' name="sqlMonitor.sqlMonitorTitle" value='$!{sqlMonitor.sqlMonitorTitle}'/>
+											</td>
+                                    	</tr>
+                                    	<tr>
+    										<td class="head" noWrap style="text-align: left">
+    											监控频率
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='freq' name="sqlMonitor.freq" value='$!{sqlMonitor.freq}'/>
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: left">
+    											阈值
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='threshold' name="sqlMonitor.threshold" value='$!{sqlMonitor.threshold}'/>
+											</td>
+                                    	</tr>
+                                    	<tr>
+    										<td class="head" noWrap style="text-align: left">
+    											是否需要日志
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='log' name="sqlMonitor.log" value='$!{sqlMonitor.log}'/>
+											</td>
+                                    	</tr>
+                                    	<tr>
+    										<td class="head" noWrap style="text-align: left">
+    											监控计划状态
+    										</td>
+											<td  class="even" colspan="3">
+													<input type='text' id='status' name="sqlMonitor.status" value='$!{sqlMonitor.status}'/>
+                                            </td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: left">
+    											短信警报列表<p style='color:red'>(号码之间用分号隔开)</p>
+    										</td>
+											<td  class="even" colspan="3">
+												<input type='text' id='sms_alarm' name="sqlMonitor.smsAlarm" value='$!{sqlMonitor.smsAlarm}'/>
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: left">
+    											邮件警报列表<p style='color:red'>(邮件之间用分号隔开)</p>
+    										</td>
+											<td  class="even" colspan="3">
+													<input type='text' id='email_alarm' name="sqlMonitor.emailAlarm" value='$!{sqlMonitor.emailAlarm}'/>
+                                            </td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: left">
+    											监控SQL<p style='color:red'>(需要监控的sql必须是count)</p>
+    										</td>
+											<td class="even" noWrap>
+												<textarea id='sql' name="sqlMonitor.sql" >$!{sqlMonitor.sql}</textarea>
+											</td>
+                                    	</tr>
+                                    	<tr>
+    										<td class="head" noWrap style="text-align: left">
+    											SQL<p style='color:red'>(日志中希望返回的字段)</p>
+    										</td>
+											<td class="even" noWrap>
+												<textarea  id='sql_detail' name="sqlMonitor.sqlDetail" >$!{sqlMonitor.sqlDetail}</textarea>
+											</td>
+                                    	</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<iframe id="hideFrame" name="hideFrame" src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+	</body>
+#JS_ENV_VAL()
+#JSM(["ext", "jquery", "common"])
+<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/monitor/updateSqlMonitor.js"></script>
+</html>

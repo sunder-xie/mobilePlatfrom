@@ -1,0 +1,102 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>
+		<form method="post">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+							<tr>
+								<td class="form_top_icon_01" >
+									维护角色
+								</td>
+								<td class="title_bottom_line" noWrap align='right'>
+									<br>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="home_title">
+									新增角色
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+    									<tr>
+    										<td class="head" noWrap style="text-align: center">
+    											选择角色
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='roleIds' name="roleIds" size='90' />
+											</td>
+											<td class="even" noWrap>
+												<input type="button" onclick="javascript:selectRole()" value="保存新增角色" />
+											</td>
+                                    	</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="home_title">
+									查询条件
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+    									<tr>
+    										<td class="head" noWrap style="text-align: center">
+    											角色编号
+    										</td>
+                                     		<td class="even" noWrap >
+    											<input type="text" name="roleId" id="roleId" />
+    			    						</td>
+    										<td class="head" noWrap style="text-align: center">
+    											角色名称
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='roleName' name="roleName" />
+												<input type="button" onclick="javascript:search()" value="查询" />
+											</td>
+                                    	</tr>
+									</table>
+									<tr>
+        								<td colspan="1" class="home_title">
+        									查询列表
+        								</td>
+										<td noWrap align='right'>
+        									<a href="javascript:deleteRole();">
+                                                <img src="$!{env.imgUrl}/image/actions/icon_del.gif" align="absMiddle" >删除 </img>
+        									</a>
+        									<br>
+        								</td>
+									</tr>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<div class="cent_border">
+				<div id="gridList" class="ext-grid-mask"></div>
+			</div>
+			<input type='hidden' id='roleList' name='roleList'></input>
+			<input type='hidden' id='stationId' name='stationId' value='$!{stationId}' ></input>
+			<input type='hidden' id='positionTypeId' name='positionTypeId' value='$!{positionTypeId}' ></input>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+	</body>
+#JSM(["common", "ext", "jquery"])
+#JS_ENV_VAL()
+<script type="text/javascript">
+var store;
+var stationId = '$!{stationId}';
+var positionTypeId = '$!{positionTypeId}';
+</script>
+<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/role/searchSelectedRole.js"></script>
+</html>

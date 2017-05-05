@@ -1,0 +1,8 @@
+list = com.kintiger.xplatform.framework.webwork.converter.Json2ListConverter
+conpointList = com.kintiger.xplatform.framework.webwork.converter.Json2ListConverter
+companyList = com.kintiger.xplatform.framework.webwork.converter.Json2ListConverter
+dataConfigList = com.kintiger.xplatform.framework.webwork.converter.Json2ListConverter
+fileInfoList = com.kintiger.xplatform.framework.webwork.converter.Json2ListConverter
+menuList = com.kintiger.xplatform.framework.webwork.converter.Json2ListConverter
+reportParameterList = com.kintiger.xplatform.framework.webwork.converter.Json2ListConverter
+roleList = com.kintiger.xplatform.framework.webwork.converter.Json2ListConverter

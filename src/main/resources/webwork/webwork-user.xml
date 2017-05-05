@@ -1,0 +1,14 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$user"
+		extends="{http://xplatform}xplatform$framework" namespace="/user">
+
+		<action name="userAction" class="userAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchUserInfo">/xplatform/user/searchUserInfo.vm</result>
+			<result name="searchAddressBook">/xplatform/user/searchAddressBook.vm</result>
+			<result name="searchMyInfo">/xplatform/user/searchMyInfo.vm</result>
+		</action>
+		
+	</package>
+</xwork>

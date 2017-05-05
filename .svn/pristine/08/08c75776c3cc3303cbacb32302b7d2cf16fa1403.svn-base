@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="orgAction" class="com.kintiger.xplatform.org.action.OrgAction"
+		scope="request" parent="baseAction">
+		<property name="orgService" ref="orgService" />
+	</bean>
+	
+	<bean id="orgTreeAjaxAction" class="com.kintiger.xplatform.org.action.OrgTreeAjaxAction"
+		scope="request" parent="baseAction">
+		<property name="orgService" ref="orgService" />
+	</bean>
+	
+	<bean id="orgService"
+		class="com.kintiger.xplatform.org.service.impl.OrgServiceImpl">
+		<!--<property name="memcachedCacheService" ref="memcachedCacheService" />-->
+		<property name="orgDao" ref="orgDao" />
+	</bean>
+
+	<bean id="orgDao" class="com.kintiger.xplatform.org.dao.impl.OrgDaoImpl" parent="baseDao">
+	</bean>
+	
+</beans>

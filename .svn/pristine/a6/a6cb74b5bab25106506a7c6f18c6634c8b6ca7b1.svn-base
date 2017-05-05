@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="loginAction" class="com.kintiger.xplatform.login.action.LoginAction"
+		parent="baseAction" scope="request">
+		<property name="validate">
+			<value>${ldap.jdbc.validate}</value>
+		</property>
+		<property name="caService" ref="caService" />
+		<!--<property name="memcachedCacheService" ref="memcachedCacheService" />-->
+		<property name="sapService" ref="sapService" />
+		<property name="userService" ref="userService" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="smtpServer">
+			<value>${mail.smtpServer}</value>
+		</property>
+		<property name="mailFrom">
+			<value>${mail.from}</value>
+		</property>
+		<property name="mailUsername">
+			<value>${mail.username}</value>
+		</property>
+		<property name="mailPassword">
+			<value>${mail.password}</value>
+		</property>
+	</bean>
+	
+	<bean id="caService"
+		class="com.kintiger.xplatform.login.service.impl.CAServiceImpl">
+		<property name="userService" ref="userService" />
+		<property name="ldapService" ref="ldapService" />
+		<!--<property name="memcachedCacheService" ref="memcachedCacheService" />-->
+		<property name="menuService" ref="menuService" />
+		<property name="sapService" ref="sapService" />
+	</bean>
+	
+	<bean id="ldapService"
+		class="com.kintiger.xplatform.login.service.impl.LDAPServiceImpl">
+		<property name="ldapHost">
+			<value>${ldap.jdbc.ldapHost}</value>
+		</property>
+		<property name="ldapPort">
+			<value>${ldap.jdbc.ldapPort}</value>
+		</property>
+		<property name="domain">
+			<value>${ldap.jdbc.domain}</value>
+		</property>
+	</bean>
+	
+</beans>

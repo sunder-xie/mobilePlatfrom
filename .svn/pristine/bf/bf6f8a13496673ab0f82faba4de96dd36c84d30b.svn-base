@@ -1,0 +1,36 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$monitor"
+		extends="{http://xplatform}xplatform$framework" namespace="/monitor">
+
+		<action name="sqlMonitorAction" class="sqlMonitorAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchSqlMonitor">/xplatform/monitor/searchSqlMonitor.vm</result>
+			<result name="createPrepare">/xplatform/monitor/createSqlMonitor.vm</result>
+			<result name="updatePrepare">/xplatform/monitor/searchSqlMonitorDetail.vm</result>
+		</action>
+		
+		<action name="monitorLogAction" class="monitorLogAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchMonitorLog">/xplatform/monitor/searchMonitorLog.vm</result>
+		</action>
+		
+		<action name="cacheMonitorAction" class="cacheMonitorAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchCacheStats">/xplatform/monitor/searchCacheStats.vm</result>
+			<result name="updatePrepare">/xplatform/monitor/configCache.vm</result>
+			<result name="searchCacheMonitor">/xplatform/monitor/searchCacheMonitor.vm</result>
+		</action>
+		
+		<action name="logMonitorAction" class="logMonitorAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchLogMonitor">/xplatform/monitor/searchLogMonitor.vm</result>
+		</action>
+		
+		<action name="methodMonitorAction" class="methodMonitorAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchMethodMonitor">/xplatform/monitor/searchMethodMonitor.vm</result>
+		</action>
+
+	</package>
+</xwork>

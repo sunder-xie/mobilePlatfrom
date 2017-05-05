@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="data">
+	<typeAlias alias="dataConfig" type="com.kintiger.xplatform.api.data.bo.DataConfig" />
+	<typeAlias alias="dataInfo" type="com.kintiger.xplatform.api.data.bo.DataInfo" />
+	<typeAlias alias="dataLogTotal" type="com.kintiger.xplatform.api.data.bo.DataLogTotal" />
+	<typeAlias alias="dataLogDetail" type="com.kintiger.xplatform.api.data.bo.DataLogDetail" />
+	<typeAlias alias="tabColumn" type="com.kintiger.xplatform.api.data.bo.TabColumn" />
+	
+	<select id="getTabColumns1" parameterClass="java.util.Map" resultClass="tabColumn">
+	<![CDATA[
+		select t.COLUMN_ID        as columnId,
+			   t.COLUMN_NAME      as columnName,
+			   k.item_value       as tableName,
+			   k.item_description as primaryKey
+		  from all_tab_columns     t,
+			   cms.cms_tb_dict     k,
+			   osap.data_config    q,
+			   osap.data_log_total p
+		 where t.OWNER || '.' || t.TABLE_NAME = upper(k.item_value)
+		   and k.item_id = q.item_id
+		   and q.data_config_id = p.data_config_id
+		   and q.user_id = #userId#
+		   and p.data_log_total_id = #dataLogTotalId#
+		 order by t.COLUMN_ID asc
+	]]>
+	</select>
+	
+	<select id="getTabColumns2" parameterClass="java.util.Map" resultClass="tabColumn">
+	<![CDATA[
+		select t.COLUMN_ID      as columnId,
+			   t.COLUMN_NAME    as columnName,
+			   t.DATA_TYPE      as dataType,
+			   t.DATA_LENGTH    as dataLength,
+			   t.DATA_PRECISION as dataPrecision,
+			   t.NULLABLE       as nullable,
+			   p.COMMENTS       as comments,
+			   k.item_value     as tableName,
+			   k.remark         as sequenceValue
+		  from all_tab_columns  t,
+			   all_col_comments p,
+			   cms.cms_tb_dict  k,
+			   osap.data_config q
+		 where t.TABLE_NAME = p.TABLE_NAME
+		   and t.COLUMN_NAME = p.COLUMN_NAME
+		   and t.OWNER || '.' || t.TABLE_NAME = upper(k.item_value)
+		   and k.item_id = q.item_id
+		   and k.item_state = 'U'
+		   and q.flag = 'U'
+		   and q.user_id = #userId#
+		   and q.data_config_id = #dataConfigId#
+		 order by t.COLUMN_ID asc
+	]]>
+	</select>
+	
+	<select id="getSequenceValue" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		select $sequenceValue$.nextval from dual
+	]]>
+	</select>
+	
+	<insert id="createDataInfo" parameterClass="dataInfo">
+		<dynamic>
+		<![CDATA[
+			insert into $tableName$
+			  ($parameter1$
+		]]>
+			<isNotEmpty property="parameter2" prepend=",">
+			<![CDATA[ $parameter2$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter3" prepend=",">
+			<![CDATA[ $parameter3$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter4" prepend=",">
+			<![CDATA[ $parameter4$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter5" prepend=",">
+			<![CDATA[ $parameter5$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter6" prepend=",">
+			<![CDATA[ $parameter6$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter7" prepend=",">
+			<![CDATA[ $parameter7$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter8" prepend=",">
+			<![CDATA[ $parameter8$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter9" prepend=",">
+			<![CDATA[ $parameter9$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter10" prepend=",">
+			<![CDATA[ $parameter10$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter11" prepend=",">
+			<![CDATA[ $parameter11$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter12" prepend=",">
+			<![CDATA[ $parameter12$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter13" prepend=",">
+			<![CDATA[ $parameter13$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter14" prepend=",">
+			<![CDATA[ $parameter14$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter15" prepend=",">
+			<![CDATA[ $parameter15$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter16" prepend=",">
+			<![CDATA[ $parameter16$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter17" prepend=",">
+			<![CDATA[ $parameter17$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter18" prepend=",">
+			<![CDATA[ $parameter18$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter19" prepend=",">
+			<![CDATA[ $parameter19$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter20" prepend=",">
+			<![CDATA[ $parameter20$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter21" prepend=",">
+			<![CDATA[ $parameter21$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter22" prepend=",">
+			<![CDATA[ $parameter22$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter23" prepend=",">
+			<![CDATA[ $parameter23$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter24" prepend=",">
+			<![CDATA[ $parameter24$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter25" prepend=",">
+			<![CDATA[ $parameter25$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter26" prepend=",">
+			<![CDATA[ $parameter26$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter27" prepend=",">
+			<![CDATA[ $parameter27$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter28" prepend=",">
+			<![CDATA[ $parameter28$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter29" prepend=",">
+			<![CDATA[ $parameter29$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter30" prepend=",">
+			<![CDATA[ $parameter30$ ]]>
+			</isNotEmpty>
+		<![CDATA[
+			  )
+			values
+			  (#value1#
+		]]>
+			<isNotEmpty property="parameter2" prepend=",">
+			<![CDATA[ #value2# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter3" prepend=",">
+			<![CDATA[ #value3# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter4" prepend=",">
+			<![CDATA[ #value4# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter5" prepend=",">
+			<![CDATA[ #value5# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter6" prepend=",">
+			<![CDATA[ #value6# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter7" prepend=",">
+			<![CDATA[ #value7# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter8" prepend=",">
+			<![CDATA[ #value8# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter9" prepend=",">
+			<![CDATA[ #value9# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter10" prepend=",">
+			<![CDATA[ #value10# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter11" prepend=",">
+			<![CDATA[ #value10# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter12" prepend=",">
+			<![CDATA[ #value12# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter13" prepend=",">
+			<![CDATA[ #value13# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter14" prepend=",">
+			<![CDATA[ #value14# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter15" prepend=",">
+			<![CDATA[ #value15# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter16" prepend=",">
+			<![CDATA[ #value16# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter17" prepend=",">
+			<![CDATA[ #value17# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter18" prepend=",">
+			<![CDATA[ #value18# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter19" prepend=",">
+			<![CDATA[ #value19# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter20" prepend=",">
+			<![CDATA[ #value20# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter21" prepend=",">
+			<![CDATA[ #value21# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter22" prepend=",">
+			<![CDATA[ #value22# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter23" prepend=",">
+			<![CDATA[ #value23# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter24" prepend=",">
+			<![CDATA[ #value24# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter25" prepend=",">
+			<![CDATA[ #value25# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter26" prepend=",">
+			<![CDATA[ #value26# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter27" prepend=",">
+			<![CDATA[ #value27# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter28" prepend=",">
+			<![CDATA[ #value28# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter29" prepend=",">
+			<![CDATA[ #value29# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="parameter30" prepend=",">
+			<![CDATA[ #value30# ]]>
+			</isNotEmpty>
+		<![CDATA[
+			  )
+		]]>
+		</dynamic>
+	</insert>
+	
+	<insert id="createDataLogTotal" parameterClass="dataLogTotal">
+		<selectKey resultClass="java.lang.Long" keyProperty="dataLogTotalId">
+		<![CDATA[
+			select osap.seq_data_log_total_id.nextval as dataLogTotalId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into osap.data_log_total
+		  (DATA_LOG_TOTAL_ID, DATA_CONFIG_ID, CREATE_DATE, FLAG, MODIFY_DATE)
+		values
+		  (#dataLogTotalId:NUMBER#, #dataConfigId:NUMBER#, sysdate, 'U', sysdate)
+	]]>
+	</insert>
+	
+	<insert id="createDataLogDetail" parameterClass="dataLogDetail">
+		<selectKey resultClass="java.lang.Long" keyProperty="dataLogDetailId">
+		<![CDATA[
+			select osap.seq_data_log_detail_id.nextval as dataLogDetailId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into osap.data_log_detail
+		  (DATA_LOG_DETAIL_ID, DATA_LOG_TOTAL_ID, DATA_ID, CREATE_DATE)
+		values
+		  (#dataLogDetailId:NUMBER#, #dataLogTotalId:NUMBER#, #dataId:VARCHAR#, sysdate)
+	]]>
+	</insert>
+	
+	<select id="getDataConfigCount" parameterClass="dataConfig" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from osap.data_config t where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="itemId" prepend="and">
+			<![CDATA[ t.item_id = #itemId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ t.flag = #flag# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getDataConfigList" parameterClass="dataConfig" resultClass="dataConfig">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.data_config_id   as dataConfigId,
+			   t.flag,
+			   t.create_date      as createDate,
+			   t.modify_date      as modifyDate,
+			   p.emp_name         as userName,
+			   q.item_value       as tableName,
+			   q.remark           as sequenceValue,
+			   q.item_description as primaryKey
+		  from osap.data_config t, smsuser.b_salesemp_info p, cms.cms_tb_dict q
+		 where t.user_id = p.emp_id
+		   and t.item_id = q.item_id
+	]]>
+		<dynamic>
+			<isNotEmpty property="itemId" prepend="and">
+			<![CDATA[ t.item_id = #itemId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ t.flag = #flag# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<select id="getDBTableCount" parameterClass="dataLogTotal" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from osap.data_config t where t.user_id = #userId#
+	]]>
+	</select>
+
+<!--	
+	<select id="getDBTableList" parameterClass="dataLogTotal" resultClass="cmsTbDict">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.data_config_id as itemId,
+			   p.item_value     as itemValue,
+			   p.remark,
+			   t.flag           as itemState
+		  from osap.data_config t, cms.cms_tb_dict p
+		 where t.item_id = p.item_id
+		   and t.user_id = #userId#
+	]]>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+-->
+	
+	<select id="getDataLogTotalCount" parameterClass="dataLogTotal" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1)
+		  from osap.data_log_total t
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="dataConfigId" prepend="and">
+			<![CDATA[ t.data_config_id = #dataConfigId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="dataLogTotalId" prepend="and">
+			<![CDATA[ t.data_log_total_id = #dataLogTotalId# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getDataLogTotalList" parameterClass="dataLogTotal" resultClass="dataLogTotal">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select aaa.data_log_total_id as dataLogTotalId,
+			   aaa.data_config_id    as dataConfigId,
+			   q.item_value          as tableName,
+			   aaa.create_date       as createDate,
+			   q.item_description    as primaryKey,
+			   aaa.flag              as flag,
+			   aaa.modify_date       as modifyDate,
+			   aaa.total
+		  from (select t.data_log_total_id,
+					   t.data_config_id,
+					   t.create_date,
+					   t.flag,
+					   t.modify_date,
+					   count(1) as total
+				  from osap.data_log_total t, osap.data_log_detail k
+				 where t.data_log_total_id = k.data_log_total_id
+	]]>
+		<dynamic>
+			<isNotEmpty property="dataConfigId" prepend="and">
+			<![CDATA[ t.data_config_id = #dataConfigId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="dataLogTotalId" prepend="and">
+			<![CDATA[ t.data_log_total_id = #dataLogTotalId# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+				 group by t.data_log_total_id,
+						  t.data_config_id,
+						  t.create_date,
+						  t.flag,
+						  t.modify_date) aaa,
+			   osap.data_config p,
+			   cms.cms_tb_dict q
+		 where aaa.data_config_id = p.data_config_id
+		   and p.item_id = q.item_id
+	]]>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createDataConfig" parameterClass="dataConfig">
+		<selectKey resultClass="java.lang.Long" keyProperty="dataConfigId">
+		<![CDATA[
+			select osap.seq_data_config_id.nextval as dataConfigId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into osap.data_config
+		  (DATA_CONFIG_ID, USER_ID, ITEM_ID, FLAG, CREATE_DATE, MODIFY_DATE)
+		values
+		  (#dataConfigId:NUMBER#,
+		   #userId:VARCHAR#,
+		   #itemId:NUMBER#,
+		   'U',
+		   sysdate,
+		   sysdate)
+	]]>
+	</insert>
+	
+	<update  id="updateDataConfig" parameterClass="dataConfig" >
+	<![CDATA[
+		update osap.data_config t
+		   set t.modify_date = sysdate, t.flag = 'D'
+		 where t.data_config_id in
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+	</update>
+	
+	<select id="getDataLogDetailCount" parameterClass="dataLogTotal" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from osap.data_log_detail t where t.data_log_total_id = #dataLogTotalId#
+	]]>
+	</select>
+	
+	<select id="getDataPreviewList" parameterClass="dataLogTotal" resultClass="java.util.HashMap">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.*
+		  from $tableName$          t,
+			   osap.data_log_detail p,
+			   osap.data_log_total  k,
+			   osap.data_config     q
+		 where t.$primaryKey$ = p.data_id
+		   and p.data_log_total_id = k.data_log_total_id
+		   and k.data_config_id = q.data_config_id
+		   and k.data_log_total_id = #dataLogTotalId#
+		   and q.user_id = #userId#
+		 order by p.data_log_detail_id desc
+	]]>
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<delete id="deleteDataInfo" parameterClass="java.util.Map">
+	<![CDATA[
+		delete $tableName$ t
+		 where exists (select 1
+				  from osap.data_log_detail p,
+					   osap.data_log_total  k,
+					   osap.data_config     q
+				 where p.data_id = t.$primaryKey$
+				   and p.data_log_total_id = k.data_log_total_id
+				   and k.data_config_id = q.data_config_id
+				   and k.data_log_total_id = #dataLogTotalId#
+				   and q.user_id = #userId#)
+	]]>
+	</delete>
+	
+	<update id="updateDataLogTotal" parameterClass="java.util.Map">
+	<![CDATA[
+		update osap.data_log_total t
+		   set t.modify_date = sysdate, t.flag = #flag#
+		 where exists (select 1
+				  from osap.data_config p
+				 where p.data_config_id = t.data_config_id
+				   and p.user_id = #userId#)
+		   and t.data_log_total_id = #dataLogTotalId#
+	]]>
+	</update>
+
+</sqlMap>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="sms">
+	<typeAlias alias="message"
+		type="com.kintiger.xplatform.api.sms.bo.Message" />
+		
+	<insert id="createMessage" parameterClass="message">
+		<selectKey resultClass="java.lang.Long" keyProperty="id">
+		<![CDATA[
+			select to_number(SMSUSER.SENDWAIT_SEQ.NEXTVAL) as id from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into SMSUSER.SENDWAIT (
+			ID,
+			MOBILE,
+			SMSCONTENT,
+			SMSTYPE,
+			SENDTIME,
+			SENDFLAG,
+			SMS_ID)
+		values (
+			#id:NUMBER#,
+			#mobile:VARCHAR#,
+			#smsContent:VARCHAR#,
+			#smsType:VARCHAR#,
+	]]>
+		<dynamic>
+			<isNotEmpty property="sendTime">
+			<![CDATA[ #sendTime:Date#, ]]>
+			</isNotEmpty>
+			<isEmpty property="sendTime">
+			<![CDATA[ sysdate, ]]>
+			</isEmpty>
+		</dynamic>
+	<![CDATA[
+		#sendFlag:NUMBER#,
+		#smsId:VARCHAR# || #id:VARCHAR#)
+	]]>
+	</insert>
+	
+</sqlMap>

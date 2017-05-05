@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+	
+	<bean id="sqlMonitorAction" class="com.kintiger.xplatform.monitor.action.SqlMonitorAction"
+		scope="request" parent="baseAction">
+		<property name="sqlMonitorService" ref="sqlMonitorService" />
+	</bean>
+	<bean id="sqlMonitorService"
+		class="com.kintiger.xplatform.monitor.service.impl.SqlMonitorServiceImpl">
+		<property name="sqlMonitorDao" ref="sqlMonitorDao" />
+	</bean>
+	<bean id="sqlMonitorDao" class="com.kintiger.xplatform.monitor.dao.impl.SqlMonitorDaoImpl" parent="baseDao">
+	</bean>
+	
+	<bean id="monitorLogAction" class="com.kintiger.xplatform.monitor.action.MonitorLogAction"
+		scope="request" parent="baseAction">
+		<property name="monitorLogService" ref="monitorLogService" />
+	</bean>
+	<bean id="monitorLogService"
+		class="com.kintiger.xplatform.monitor.service.impl.MonitorLogServiceImpl">
+		<property name="monitorLogDao" ref="monitorLogDao" />
+	</bean>
+	<bean id="monitorLogDao" class="com.kintiger.xplatform.monitor.dao.impl.MonitorLogDaoImpl" parent="baseDao">
+	</bean>
+	
+	<bean id="cacheMonitorAction" class="com.kintiger.xplatform.monitor.action.CacheMonitorAction"
+		scope="request" parent="baseAction">
+		<!--<property name="memcachedCacheService" ref="memcachedCacheService" />-->
+		<property name="cacheMonitorService" ref="cacheMonitorService" />
+	</bean>
+	<bean id="cacheMonitorService"
+		class="com.kintiger.xplatform.monitor.service.impl.CacheMonitorServiceImpl">
+		<property name="cacheMonitorDao" ref="cacheMonitorDao" />
+	</bean>
+	<bean id="cacheMonitorDao" class="com.kintiger.xplatform.monitor.dao.impl.CacheMonitorDaoImpl" parent="baseDao">
+	</bean>
+	
+	<bean id="methodMonitorAction" class="com.kintiger.xplatform.monitor.action.MethodMonitorAction"
+		scope="request" parent="baseAction">
+		<property name="methodMonitorService" ref="methodMonitorService" />
+	</bean>
+	<bean id="methodMonitorService"
+		class="com.kintiger.xplatform.monitor.service.impl.MethodMonitorServiceImpl">
+		<property name="methodMonitorDao" ref="methodMonitorDao" />
+	</bean>
+	<bean id="methodMonitorDao" class="com.kintiger.xplatform.monitor.dao.impl.MethodMonitorDaoImpl" parent="baseDao">
+	</bean>
+	
+</beans>

@@ -1,0 +1,75 @@
+#macro(JS_ENV_VAL)
+	<script type="text/javascript">
+		var appUrl = '$!{env.appUrl}';
+		var imgUrl = '$!{env.imgUrl}';
+		var pageSize = $!{limit};
+		var height = 350;
+		var rowIndex;
+		
+		function forbidBackSpace(e) {
+			var ev = e || window.event;
+			var obj = ev.target || ev.srcElement;
+			var t = obj.type || obj.getAttribute('type');
+			var vReadOnly = obj.readOnly;
+			var vDisabled = obj.disabled;
+			vReadOnly = (vReadOnly == undefined) ? false : vReadOnly;
+			vDisabled = (vDisabled == undefined) ? true : vDisabled;
+			var flag1 = ev.keyCode == 8
+					&& (t == "password" || t == "text" || t == "textarea")
+					&& (vReadOnly == true || vDisabled == true);
+			var flag2 = ev.keyCode == 8 && t != "password" && t != "text"
+					&& t != "textarea";
+    		if (flag2 || flag1) {
+    			return false;
+    		}
+		}
+		document.onkeypress = forbidBackSpace;
+		document.onkeydown = forbidBackSpace;
+	</script>
+#end
+
+#macro(JSM $libs)
+	#foreach ($key in $libs)
+		#if($key == 'common')
+			<script type="text/javascript" src="$!{env.imgUrl}/js/common.js"></script>
+		#elseif($key == 'ext')
+			<script type="text/javascript" src="$!{env.imgUrl}/js/ext/ext-base.js" ></script>
+			<script type="text/javascript" src="$!{env.imgUrl}/js/ext/ext-all.js" ></script>
+			<script type="text/javascript" src="$!{env.imgUrl}/js/ext/ext-lang-zh_CN.js" ></script>
+			<script type="text/javascript" src="$!{env.imgUrl}/js/ext/ext-components.js"></script>
+			<script type="text/javascript" src="$!{env.imgUrl}/js/ext/Ext.plugins.Selector.js"></script>
+		#elseif($key == 'jquery')
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.js"></script>
+		#elseif($key == 'jquery.tools')
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.tools.js"></script>
+		#elseif($key == 'jquery.ui')
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.ui.core.js"></script> 
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.ui.widget.js"></script> 
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.ui.mouse.js"></script>
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.ui.draggable.js"></script> 
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.ui.droppable.js"></script>
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.ui.effect.js"></script>
+			<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.ui.effect-highlight.js"></script>
+		#elseif($key == 'dwr')
+    		<script type='text/javascript' src='$!{env.appUrl}/dwr/engine.js'></script>
+            <script type="text/javascript" src="$!{env.appUrl}/dwr/interface/nextUserDwr.js"></script>
+            <script type="text/javascript" src="$!{env.appUrl}/dwr/interface/nextRouteDwr.js"></script>
+            <script type="text/javascript" src="$!{env.appUrl}/dwr/interface/userRoleDwr.js"></script>
+            <script type="text/javascript" src="$!{env.appUrl}/dwr/interface/userModelDwr.js"></script>
+			<script type="text/javascript" src="$!{env.appUrl}/dwr/interface/modelUtilDwr.js"></script>
+		#end
+	#end
+#end
+
+#macro(CSSM $libs)
+	#foreach ($key in $libs)
+		#if($key == 'style')
+			<link href="$!{env.imgUrl}/css/style.css" type="text/css" rel="stylesheet" />
+		#elseif($key == 'ext')
+			<link href="$!{env.imgUrl}/css/ext/css/ext-all.css" type="text/css" rel="stylesheet" />
+			<link href="$!{env.imgUrl}/css/ext-plugins.css" type="text/css" rel="stylesheet" />
+		#elseif($key == 'wfe')
+			<link href="$!{env.imgUrl}/css/wfe/webflowEngine.css" type="text/css" rel="stylesheet" />
+		#end
+	#end
+#end

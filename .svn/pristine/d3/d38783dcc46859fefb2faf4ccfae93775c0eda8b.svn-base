@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="station">
+	<typeAlias alias="station" type="com.kintiger.xplatform.api.station.bo.Station" />
+
+	<select id="getStationJsonListCount" parameterClass="station"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1) FROM BASIS.basis_tb_stations t WHERE t.status = 'U'
+	]]>
+		<dynamic>
+			<isNotEmpty property="stationId" prepend="and">
+			<![CDATA[ t.station_id like #stationId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="stationName" prepend="and">
+			<![CDATA[ t.station_name like #stationName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getStationJsonList" parameterClass="station"
+		resultClass="station">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT t.station_id stationId,
+		  t.station_name stationName,
+		  CASE
+			WHEN p.userCount IS NULL
+			THEN 0
+			ELSE p.userCount
+		  END AS userCount,
+		  CASE
+			WHEN q.roleCount IS NULL
+			THEN 0
+			ELSE q.roleCount
+		  END AS roleCount
+		FROM BASIS.basis_tb_stations t,
+		  (SELECT COUNT(1) AS userCount,
+			pp.station_id
+		  FROM BASIS.basis_tb_station_user pp
+		  GROUP BY pp.station_id
+		  ) p,
+		  (SELECT COUNT(1) AS roleCount,
+			qq.station_id
+		  FROM BASIS.basis_tb_station_role qq
+		  WHERE qq.flag = 'U'
+		  GROUP BY qq.station_id
+		  )q
+		WHERE t.station_id     = p.station_id(+)
+		AND t.station_id     = q.station_id(+)
+		AND t.status         = 'U'
+	]]>
+		<dynamic>
+			<isNotEmpty property="stationId" prepend="and">
+			<![CDATA[ t.station_id like #stationId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="stationName" prepend="and">
+			<![CDATA[ t.station_name like #stationName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<select id="getStation" parameterClass="java.lang.String"
+		resultClass="station">
+	<![CDATA[
+		SELECT t.station_id AS stationId,
+		  t.station_name    AS stationName
+		FROM BASIS.basis_tb_stations t
+		WHERE t.status   = 'U'
+		AND t.station_id = #stationId#
+	]]>
+	</select>
+
+	<update id="updateStation" parameterClass="station">
+	<![CDATA[
+		update BASIS.basis_tb_stations t
+		   set t.station_name = #stationName#,
+			   t.modify_date  = sysdate
+		 where t.station_id = #stationId#
+	]]>
+
+	</update>
+
+	<update id="deleteStation" parameterClass="java.lang.String">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_stations t
+		SET t.status     = 'D',
+		  t.modify_date  = sysdate
+		WHERE t.status   = 'U'
+		AND t.station_id = #stationId#
+	]]>
+	</update>
+
+	<insert id="createStation" parameterClass="station">
+		<selectKey resultClass="java.lang.String" keyProperty="stationId">
+		<![CDATA[
+			SELECT #stationId# AS stationId FROM DUAL
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_stations
+		  (
+			STATION_ID,
+			station_name,
+			status,
+			modify_date
+		  )
+		  VALUES
+		  (
+			#stationId#,
+			#stationName#,
+			'U',
+			sysdate
+		  )
+	]]>
+	</insert>
+
+	<select id="getStationUserCount" parameterClass="station"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1)
+		FROM BASIS.basis_tb_station_user t,
+		  BASIS.basis_tb_user tt
+		WHERE t.user_id  = tt.user_id
+		AND t.station_id = #stationId#
+	]]>
+		<dynamic>
+			<isNotEmpty prepend="and" property="passport">
+			<![CDATA[ tt.passport like #passport,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userName">
+			<![CDATA[ tt.user_name like #userName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getStationUserList" parameterClass="station"
+		resultClass="station">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT t.id,
+		  tt.user_id AS userId,
+		  tt.passport,
+		  tt.user_name AS userName
+		FROM BASIS.basis_tb_station_user t,
+		  BASIS.basis_tb_user tt
+		WHERE t.user_id  = tt.user_id
+		AND t.station_id = #stationId#
+	]]>
+		<dynamic>
+			<isNotEmpty prepend="and" property="passport">
+			<![CDATA[ tt.passport like #passport,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userName">
+			<![CDATA[ tt.user_name like #userName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="codes" prepend="and">
+			<![CDATA[ tt.user_id in ]]>
+				<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[ order by tt.user_id ]]>
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<delete id="deleteStationUser" parameterClass="station">
+	<![CDATA[
+		DELETE BASIS.basis_tb_station_user t WHERE t.id = #id#
+	]]>
+	</delete>
+
+	<insert id="createStationUser" parameterClass="station">
+		<selectKey resultClass="java.lang.Long" keyProperty="stationUserId">
+		<![CDATA[
+			SELECT to_number(BASIS.BASIS_SEQ_STATION_USER.nextval) AS stationUserId FROM dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_station_user
+		  (
+			ID,
+			STATION_ID,
+			USER_ID,
+			MODIFY_DATE
+		  )
+		  VALUES
+		  (
+			#stationUserId#,
+			#stationId#,
+			#userId#,
+			sysdate
+		  )
+	]]>
+	</insert>
+
+</sqlMap>

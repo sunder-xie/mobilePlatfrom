@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="menuTreeAjaxAction" class="com.kintiger.xplatform.menu.action.MenuTreeAjaxAction"
+		scope="request" parent="baseAction">
+		<property name="menuService" ref="menuService" />
+		<!--<property name="memcachedCacheService" ref="memcachedCacheService" />-->
+		<property name="appName">
+			<value>${appName}</value>
+		</property>
+	</bean>
+	
+	<bean id="menuAction" class="com.kintiger.xplatform.menu.action.MenuAction"
+		scope="request" parent="baseAction">
+		<property name="menuService" ref="menuService" />
+		<property name="caService" ref="caService" />
+	</bean>
+	<bean id="menuService"
+		class="com.kintiger.xplatform.menu.service.impl.MenuServiceImpl">
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="roleService" ref="roleService" />
+		<property name="menuDao" ref="menuDao" />
+	</bean>
+	<bean id="menuDao" class="com.kintiger.xplatform.menu.dao.impl.MenuDaoImpl" parent="baseDao">
+	</bean>
+	
+</beans>

@@ -1,0 +1,23 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$sap"
+		extends="{http://xplatform}xplatform$framework" namespace="/sap">
+
+		<action name="sapAction" class="sapAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="success" type="redirect">${url}</result>
+			<result name="none">/xplatform/sap/none.vm</result>
+		</action>
+		
+		<action name="sapAccountAction" class="sapAccountAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchSAPAccount">/xplatform/sap/searchSAPAccount.vm</result>
+		</action>
+		
+		<action name="sapLogAction" class="sapLogAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchSAPLog">/xplatform/sap/searchSAPLog.vm</result>
+		</action>
+
+	</package>
+</xwork>

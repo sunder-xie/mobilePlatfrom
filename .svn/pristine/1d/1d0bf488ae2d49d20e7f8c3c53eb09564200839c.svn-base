@@ -1,0 +1,22 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$org"
+		extends="{http://xplatform}xplatform$framework" namespace="/org">
+		
+		<action name="orgAction" class="orgAction">
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchOrg">/xplatform/org/searchOrg.vm</result>
+			<result name="searchOrgDetail">/xplatform/org/searchOrgDetail.vm</result>
+			<result name="createPrepare">/xplatform/org/createOrg.vm</result>
+		</action>
+		
+		<action name="orgTreeAjaxAction" class="orgTreeAjaxAction">
+			<interceptor-ref name="authenticationStack" />
+			<result name="orgTreeAjax">/xplatform/org/orgTreeAjax.vm</result>
+			<result name="orgTreeAjaxInfo">/xplatform/org/orgTreeAjaxInfo.vm</result>
+			<result name="orgTreeAjax4UserChange">/xplatform/org/orgTreeAjax4UserChange.vm</result>
+			<result name="orgTreePosition">/xplatform/org/orgTreePosition.vm</result>
+		</action>
+		
+	</package>
+</xwork>

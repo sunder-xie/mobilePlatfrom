@@ -1,0 +1,22 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<include file="webwork-default.xml" />
+	<include file="webwork/webwork-framework.xml" />
+	<include file="webwork/webwork-boform.xml" />
+	<include file="webwork/webwork-data.xml" />
+	<include file="webwork/webwork-dict.xml" />
+	<include file="webwork/webwork-error.xml" />
+	<include file="webwork/webwork-file.xml" />
+	<include file="webwork/webwork-index.xml" />
+	<include file="webwork/webwork-log.xml" />
+	<include file="webwork/webwork-login.xml" />
+	<include file="webwork/webwork-menu.xml" />
+	<include file="webwork/webwork-monitor.xml" />
+	<include file="webwork/webwork-news.xml" />
+	<include file="webwork/webwork-openapi.xml" />
+	<include file="webwork/webwork-org.xml" />
+	<include file="webwork/webwork-role.xml" />
+	<include file="webwork/webwork-sap.xml" />
+	<include file="webwork/webwork-station.xml" />
+	<include file="webwork/webwork-user.xml" />
+</xwork>

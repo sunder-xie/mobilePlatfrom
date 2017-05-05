@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>角色配置</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>
+		<form method="post">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+							<tr>
+								<td class="form_top_icon_01" >
+									角色配置
+								</td>
+								<td class="title_bottom_line" noWrap align='right'>
+									<a href="javascript:createRole();">
+                                        <img src="$!{env.imgUrl}/image/actions/icon_add.gif" align="absMiddle" >创建角色 </img>
+									</a>
+									<a href="javascript:syncSAPRole();">
+                                        <img src="$!{env.imgUrl}/image/actions/icon_refresh.gif" align="absMiddle" >同步ERP角色 </img>
+									</a>
+									<br>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="home_title">
+									查询条件
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+    									<tr>
+    										<td class="head" noWrap style="text-align: center">
+    											角色编号
+    										</td>
+                                     		<td class="even" noWrap >
+    											<input type="text" id="roleId" />
+    			    						</td>
+											<td class="head" noWrap style="text-align: center">
+    											角色名称
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='roleName' name="roleName" />
+											</td>
+    										<td class="head" noWrap style="text-align: center">
+    											角色类型
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='type' name="type" />
+											</td>
+											<td class="even" noWrap>
+												<input type="button" onclick="javascript:search()" value="查询" />
+											</td>
+                                    	</tr>
+									</table>
+									<tr>
+        								<td colspan="1" class="home_title">
+        									查询列表
+        								</td>
+									</tr>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<div class="cent_border">
+				<div id="gridList" class="ext-grid-mask"></div>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JSM(["common", "ext", "jquery"])
+        #JS_ENV_VAL()
+        <script type="text/javascript">
+        var store;
+        </script>
+        <script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/role/searchRole.js"></script>
+	</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+<body>
+	<form name="myForm" action="" method="post">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="form_top_icon_01">
+									新闻版块创建
+								</td>
+								<td class="title_bottom_line" noWrap align='right'>
+									<a href="javascript:createNewsTotal();">
+                                        <img src="$!{env.imgUrl}/image/actions/icon_save.png" align="absMiddle" >保存 </img>
+									</a>
+									<br>
+								</td>
+							</tr>
+							<tr>
+								<td class="home_title">
+									新闻版块内容
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									
+								</td>
+							</tr>
+							<tr>
+								<td colspan="4">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+										<tr>
+											<td class="head" noWrap>
+												父级栏目<FONT color="#ff0000">*</FONT></td>
+											<td class="even" noWrap>
+												<input type="text" id="parentName" readonly="readonly"/>
+												<input type="hidden" id="totalParentId" name="newsTotal.totalParentId" />
+												<input type="button" onclick="javascript:searchParent()" value="选择" />
+											</td>
+										</tr>
+										<tr>
+											<td class="head" noWrap>
+												栏目名称<FONT color="#ff0000">*</FONT>
+											</td>
+											<td class="even" noWrap>
+												<input type="text" id="totalName" name="newsTotal.totalName" />
+											</td>
+										</tr>
+										<tr>
+                                            <td class="head" noWrap>
+												首页显示
+											</td>
+											<td class="even" noWrap>
+												 <label><input type="radio" name="newsTotal.totalShow" value="Y" >是</label>
+												 <label><input type="radio" name="newsTotal.totalShow" value="N" checked="checked" >否</label>
+											</td>
+										</tr>
+										<tr id="t1">
+											<td class="head" noWrap>
+												跑马灯显示	
+											</td>
+											<td class="even" noWrap>
+ 												<label><input type="radio" name="newsTotal.totalSign" value="Y" />是</label>
+												<label><input type="radio" name="newsTotal.totalSign" value="N" checked="checked" />否</label>
+											</td>
+										</tr>
+										<tr id="t2">
+											<td class="head" noWrap>
+												排序码<FONT color="#ff0000">*</FONT>
+											</td>
+											<td class="even" noWrap>
+												<input type="text" id="totalCode" name="newsTotal.totalCode" />
+											</td>
+										</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JSM(["common", "ext", "jquery"])
+		#JS_ENV_VAL()
+		<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/news/createNewsTotal.js"></script>
+	</body>
+</html>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="news">
+	<typeAlias alias="newsTotal" type="com.kintiger.xplatform.api.news.bo.NewsTotal" />
+	<typeAlias alias="newsDetail" type="com.kintiger.xplatform.api.news.bo.NewsDetail" />
+	<typeAlias alias="newsFile" type="com.kintiger.xplatform.api.news.bo.NewsFile" />
+	
+	<select id="getNewsList" resultClass="newsDetail">
+	<![CDATA[
+		SELECT *
+		FROM
+		  (SELECT nt.total_id  AS totalId,
+			nt.total_name      AS totalName,
+			nt.total_sign      AS totalSign,
+			nd.detail_id       AS detailId,
+			nd.detail_title    AS detailTitle,
+			nd.detail_date     AS detailDate,
+			nd.detail_operator AS detailOperator,
+			nd.clicks_ratio    AS clicksRatio,
+			nd.css_flag        AS cssFlag,
+			(
+			CASE
+			  WHEN (sysdate - 3) <= nd.detail_date
+			  THEN 'Y'
+			  ELSE 'N'
+			END) AS new_flag,
+			rank() over(partition BY nt.total_id order by nt.total_code, nd.detail_date DESC) rnak
+		  FROM BASIS.basis_tb_news_total nt,
+			BASIS.basis_tb_news_detail nd
+		  WHERE nt.total_id      = nd.total_id
+		  AND nt.total_show      = 'Y'
+		  AND nt.total_flag      = 'Y'
+		  AND nt.total_parent_id = 1
+		  AND nd.detail_flag     = 'Y'
+		  AND nd.org_name        = '1'
+		  ORDER BY nt.total_code,
+			nd.detail_date DESC
+		  )
+		WHERE rnak < 8
+	]]>
+	</select>
+	
+	<select id="getNewsDetailCount" parameterClass="newsDetail" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1)
+		FROM BASIS.basis_tb_news_detail nd ,
+		  BASIS.basis_tb_news_total d
+		WHERE nd.total_id  = d.total_id
+		AND d.total_flag   = 'Y'
+		AND nd.detail_flag = 'Y'
+	]]>
+		<dynamic>
+			<isNotEmpty property="orgName" prepend="and">
+			<![CDATA[ nd.org_name = #orgName# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalId" prepend="and">
+			<![CDATA[ nd.total_id = #totalId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalName" prepend="and">
+			<![CDATA[ d.total_name like #totalName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="detailTitle" prepend="and">
+			<![CDATA[ nd.detail_title like #detailTitle,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getNewsDetailList" parameterClass="newsDetail" resultClass="newsDetail">
+		<include refid="global.paginationStart"/>
+	<![CDATA[
+		SELECT nd.detail_id  AS detailId,
+		  nd.detail_title    AS detailTitle,
+		  nd.detail_date     AS detailDate,
+		  nd.clicks_ratio    AS clicksRatio,
+		  nd.total_id        AS totalId,
+		  nd.detail_operator AS detailOperator,
+		  d.total_name       AS totalName
+		FROM BASIS.basis_tb_news_detail nd,
+		  BASIS.basis_tb_news_total d
+		WHERE nd.total_id  = d.total_id
+		AND nd.detail_flag = 'Y'
+		AND d.total_flag   = 'Y'
+	]]>
+		<dynamic>
+			<isNotEmpty property="orgName" prepend="and">
+			<![CDATA[ nd.org_name = #orgName# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalId" prepend="and">
+			<![CDATA[ nd.total_id = #totalId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalName" prepend="and">
+			<![CDATA[ d.total_name like #totalName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="detailTitle" prepend="and">
+			<![CDATA[ nd.detail_title like #detailTitle,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic> 
+	<![CDATA[ order by nd.detail_date desc ]]>
+		<include refid="global.paginationEnd"/>
+	</select>
+	
+	<insert id="createNewsDetail" parameterClass="newsDetail">
+		<selectKey resultClass="java.lang.Long" keyProperty="detailId">
+		<![CDATA[
+			SELECT to_number(BASIS.BASIS_SEQ_NEWS_DETAIL.NEXTVAL) AS detailId FROM dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_news_detail
+		  (
+			DETAIL_ID,
+			TOTAL_ID,
+			DETAIL_TITLE,
+			DETAIL_CONTENT,
+			DETAIL_OPERATOR,
+			DETAIL_DATE,
+			CLICKS_RATIO,
+			ORG_NAME,
+			DETAIL_FLAG,
+			MODIFY_DATE,
+			CSS_FLAG
+		  )
+		  VALUES
+		  (
+			#detailId#,
+			#totalId#,
+			#detailTitle#,
+			#detailContent#,
+			#detailOperator#,
+			sysdate,
+			#clicksRatio#,
+			#orgName#,
+			'Y',
+			sysdate,
+			#cssFlag#
+		  )
+	]]>
+	</insert>
+	
+	<select id="getNewsDetail" parameterClass="newsDetail"
+		resultClass="newsDetail">
+	<![CDATA[
+		SELECT t.detail_title AS detailTitle,
+		  t.css_flag          AS cssFlag,
+		  t.detail_content    AS detailContent,
+		  t.clicks_ratio      AS clicksRatio,
+		  t.detail_date       AS detailDate,
+		  t.detail_id         AS detailId
+		FROM BASIS.basis_tb_news_detail t
+		WHERE t.detail_id = #detailId#
+	]]>
+	</select>
+	
+	<update  id="updateNewsDetail" parameterClass="newsDetail" >
+	<![CDATA[
+		update  BASIS.basis_tb_news_detail t set t.modify_date = sysdate
+	]]>
+		<dynamic>
+			<isNotEmpty property="clicksRatio" prepend=",">
+			<![CDATA[ t.clicks_ratio = #clicksRatio# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="detailTitle" prepend=",">
+			<![CDATA[ t.detail_title = #detailTitle# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="cssFlag" prepend=",">
+			<![CDATA[ t.css_flag = #cssFlag# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="detailContent" prepend=",">
+			<![CDATA[ t.detail_content = #detailContent# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		 where t.detail_id = #detailId#
+	]]>
+	</update>
+	
+	<update id="deleteNewsDetail" parameterClass="newsDetail">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_news_detail t
+		SET t.detail_flag  ='N',
+		  t.modify_date    =sysdate
+		WHERE t.detail_id IN
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+	</update>
+	
+	<select id="getNewsTotalCount" parameterClass="newsTotal"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1) FROM BASIS.basis_tb_news_total nt WHERE nt.total_flag = 'Y'
+	]]>
+		<dynamic>
+			<isNotEmpty property="totalParentId" prepend="and">
+			<![CDATA[ nt.total_parent_id = #totalParentId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalName" prepend="and">
+			<![CDATA[ nt.total_name like #totalName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getNewsTotalList" parameterClass="newsTotal"
+		resultClass="newsTotal">
+		<include refid="global.paginationStart"/>
+	<![CDATA[
+		SELECT nt.total_id     AS totalId,
+		  nt.total_parent_id   AS totalParentId,
+		  nt.total_name        AS totalName,
+		  nt.total_title       AS totalTitle,
+		  nt.total_date        AS totalDate,
+		  nt.total_code        AS totalCode,
+		  nt.total_show        AS totalShow,
+		  nt.total_sign        AS totalSign,
+		  nt.total_upload_sign AS totalUploadSign
+		FROM BASIS.basis_tb_news_total nt
+		WHERE nt.total_flag = 'Y'
+	]]>
+		<dynamic>
+			<isNotEmpty property="totalParentId" prepend="and">
+			<![CDATA[ nt.total_parent_id = #totalParentId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalName" prepend="and">
+			<![CDATA[ nt.total_name like #totalName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createNewsTotal" parameterClass="newsTotal">
+		<selectKey resultClass="java.lang.Long" keyProperty="totalId">
+		<![CDATA[
+			SELECT to_number(BASIS.BASIS_SEQ_NEWS_TOTAL.NEXTVAL) AS totalId FROM dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_news_total
+		  (
+			total_id,
+			total_parent_id,
+			total_name,
+			total_title,
+			total_date,
+			total_code,
+			total_show,
+			total_sign,
+			total_flag,
+			modify_date,
+			total_upload_sign
+		  )
+		  VALUES
+		  (
+			#totalId#,
+			#totalParentId#,
+			#totalName#,
+			#totalTitle#,
+			sysdate,
+			#totalCode#,
+			#totalShow#,
+			#totalSign#,
+			'Y',
+			sysdate,
+			#totalUploadSign#
+		  )
+	]]>
+	</insert>
+	
+	<select id="getNewsTotal" parameterClass="newsTotal" resultClass="newsTotal">
+	<![CDATA[
+		SELECT t.total_id     AS totalId,
+		  t.total_name        AS totalName,
+		  t.total_upload_sign AS totalUploadSign,
+		  t.total_show        AS totalShow,
+		  t.total_sign        AS totalSign,
+		  t.total_code        AS totalCode
+		FROM BASIS.basis_tb_news_total t
+		WHERE t.total_id = #totalId#
+	]]>
+	</select>
+	
+	<update id="updateNewsTotal" parameterClass="newsTotal">
+	<![CDATA[
+		update  BASIS.basis_tb_news_total t set t.modify_date = sysdate
+	]]>
+		<dynamic>
+			<isNotEmpty property="totalName" prepend=",">
+			<![CDATA[ t.total_name = #totalName# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalTitle" prepend=",">
+			<![CDATA[ t.total_title = #totalTitle# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalCode" prepend=",">
+			<![CDATA[ t.total_code = #totalCode# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalShow" prepend=",">
+			<![CDATA[ t.total_show = #totalShow# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalSign" prepend=",">
+			<![CDATA[ t.total_sign = #totalSign# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalFlag" prepend=",">
+			<![CDATA[ t.total_flag = #totalFlag# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="totalUploadSign" prepend=",">
+			<![CDATA[ t.total_upload_sign = #totalUploadSign# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		  where t.total_id = #totalId#
+	]]>
+	</update>
+	
+	<select id="getNewsFileList" parameterClass="newsFile"
+		resultClass="newsFile">
+	<![CDATA[
+		select * from  cms_ww.CMS_TB_WW_NEWS_FILE t
+			 where 1=1
+			  and t.detail_id = #detailId#
+			  and t.news_del_flag = 'Y'
+	]]>
+	</select>
+	
+	<insert id="createNewsFile" parameterClass="newsFile">
+		<selectKey resultClass="java.lang.Long" keyProperty="newsFileId">
+		<![CDATA[
+			select to_number(office.office_seq_news_file.NEXTVAL) as newsFileId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into BASIS.basis_tb_news_file(
+			NEWS_FILE_ID,
+			NEWS_FILE_NAME,
+			DETAIL_ID,
+			NEWS_FILE_URL,
+			CREATE_DATE,
+			LAST_MODIFY,
+			NEWS_DEL_FLAG
+			)
+		values (
+			#newsFileId#,
+			#newsFileName#,
+			#detailId#,
+			#newsFileUrl#,
+			sysdate,
+			sysdate,
+			'Y'
+			)
+	]]>
+	</insert>
+	
+	<update id="updateNewsFile" parameterClass="newsFile">
+	<![CDATA[
+		update  BASIS.basis_tb_news_file t set t.modify_date = sysdate
+	]]>
+		<dynamic>
+			<isNotEmpty property="newsDelFlag" prepend=",">
+			<![CDATA[ t.news_del_flag = #newsDelFlag# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		 where 1 = 1 
+	]]>
+		<dynamic>
+			<isNotEmpty property="detailId" prepend="and">
+			<![CDATA[ t.detail_id = #detailId# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="codes" prepend="and">
+			<![CDATA[ t.news_file_id not in ]]>
+				<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+				</iterate>
+			</isNotEmpty>
+		</dynamic>
+	</update>
+	
+</sqlMap>

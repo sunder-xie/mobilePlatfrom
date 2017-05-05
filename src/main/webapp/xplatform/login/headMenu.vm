@@ -1,0 +1,91 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<meta name="description" content="" />
+		<meta name="keywords" content="" />
+		#CSSM(["style"])
+		<style type=text/css>
+		.Message{
+			margin:0 0 0;
+			border:1px solid #FFCB99;
+			background-color:#FFF8EE;
+			padding:5px;
+		}
+		.Message .MessageContent{
+			float:left; font-size:12px;
+		}
+		.Message .Close{
+			float:right;
+		}
+		</style>
+	</head>
+	<body text='#000000' bgColor='#ffffff' onload="showDetailMsg();" >
+		<form>
+			<div style="background-color:#ECF0F5; margin-top: 61px; right: 200px; position:absolute; filter:Alpha(Opacity=0, FinishOpacity=100, Style=1, StartX=0, StartY=0, FinishX=100, FinishY=140); width:100%;">
+        		<div id="detailMsg" class="Message" style="text-align:center; display:none; width:100%;">
+                	<div class="MessageContent" style="width:95%; float:none;">
+                    	<marquee onmouseover="stop();" onmouseout="start();" scrollamount="3">
+                    		<span id="oContent">
+                    			<a href="javascript:gotoProcessEvent();">您有$!{eventCount}条待办事宜，标题：$!{eventSummary}......</a>
+                    		</span>
+                        </marquee>
+                    </div>
+                    <div class="Close" style="position:absolute; right:5px; top:5px;">
+                    	<a href="javascript:closeDiv()">
+                    		<img src="$!{env.imgUrl}/image/login/icon_close.gif" alt="关闭" border="0"/>
+                        </a>
+                    </div>
+                </div>
+           	</div>
+			<table cellSpacing=0 cellPadding=0 width="100%" border=0 nowrap>
+				<tbody>
+					<tr height=60>
+						<td height="60" class="Ftopbg">
+							
+						</td>
+					</tr>
+					<tr height=30>
+						<td class=nav>
+							<table height="100%" cellSpacing=0 cellPadding=0 width="100%" border=0>
+								<tbody>
+									<tr>
+										<td width=10 >
+											&nbsp;
+										</td>
+										<td height="28" noWrap class=title>
+											[ $!{passport} - $!{name} ]
+											<span id=TIME1></span> &nbsp;
+										</td>
+										<td align=right noWrap class=title>
+											<img height=18 src="$!{env.imgUrl}/image/login/txt_ico1.gif" width=12 align=absMiddle />
+											<a href="home.htm" target="_parent">首页</a>
+											<img height=18 src="$!{env.imgUrl}/image/login/txt_ico1.gif" width=12 align=absMiddle />
+											<a target=mainFrame></a>
+											<img src="$!{env.imgUrl}/image/login/txt_ico1.gif" align=absMiddle />
+											<a target=_blank width="12" height="18" align="absmiddle"></a>
+											<img height=18 src="$!{env.imgUrl}/image/login/txt_ico1.gif" width=12 align=absMiddle border=0 />
+											<a target=_parent width="12" height="18" align="absmiddle"></a>
+											<img height=18 src="$!{env.imgUrl}/image/login/txt_ico1.gif" width=12 align=absMiddle />
+											<a target=_parent></a>
+											<img height=18 src="$!{env.imgUrl}/image/login/txt_ico1.gif" width=12 align=absMiddle />
+											<a target=_parent width="12" height="18" align="absmiddle"></a>
+											<font class=font12pt color=red align="absmiddle"></font>
+											<img height=18 src="$!{env.imgUrl}/image/login/txt_ico1.gif" width=12 align=absMiddle />
+											<a href="logout.htm" target=_parent width="12" height="18" align="absmiddle">退出</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<input type="hidden" id="detailMsgFlag" value="$!{eventCount}"></input>
+        #JS_ENV_VAL
+       	<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/login/headMenu.js"></script>
+	</body>
+</html>

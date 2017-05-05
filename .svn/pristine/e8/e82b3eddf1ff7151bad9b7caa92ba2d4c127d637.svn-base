@@ -1,0 +1,17 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$log"
+		extends="{http://xplatform}xplatform$framework" namespace="/log">
+
+		<action name="logMonitorAction" class="logMonitorAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchLogMonitor">/xplatform/log/searchLogMonitor.vm</result>
+		</action>
+		
+		<action name="logAction" class="logAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchActionLog">/xplatform/log/searchActionLog.vm</result>
+		</action>
+
+	</package>
+</xwork>

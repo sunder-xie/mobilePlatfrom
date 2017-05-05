@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>剑齿虎</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<link href="$!{env.imgUrl}/css/base.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/public.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/layout.css" type="text/css" rel="stylesheet" />
+		<link href="$!{env.imgUrl}/css/main.css" type="text/css" rel="stylesheet" />
+
+		<!-- Google Analytics --> 
+        <script>
+          (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+          m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+          })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        
+          ga('create', 'UA-44827885-1', 'kintiger.com');
+          ga('send', 'pageview');
+        
+        </script>
+	</head>
+	#if($!stringUtil.isNotEmpty($!{userName}))
+	<body>
+	#else
+	<body onload="setPassport();">
+	#end
+		<!-- header begin -->
+		<div class="topbar">
+	 		<div class="section">
+	    		<div class="mininavLeft">
+	    			<a class="mobileIcon" href="" target="_blank">手机剑齿虎</a>
+	    		</div>
+	    		<div class="mininavRight">
+					#if($!stringUtil.isNotEmpty($!{userName}))
+	    			<span class="welcome">欢迎，</span>
+	    			<a class="account" href="">$!{userName}</a>
+	    			<a class="accountout" href="logout.htm"> [退出] </a>
+					#else
+					<a class="home" href="">登录 </a>
+					#end
+					|<a class="home" href=""> 设为首页</a>
+	    			<a href="help" target="_blank"> 帮助中心</a>
+	    		</div>
+	  		</div>
+		</div>
+		<div class="header">
+	  		<div class="wf-wrap">
+	   			<div class="branding">
+	   				<a href="">
+	   					<img src="$!{env.imgUrl}/image/login/logo.png"/>
+	   				</a>
+	   			</div>
+	   			<div class="navigation">
+	   				<ul class="main-nav">
+	        			<li class="acts">
+	        				<a href="" target="_blank">首页</a>
+	        			</li>
+						<li><a href="" target="_blank">产品中心</a></li>
+				        <li><a href="" target="_blank">公司新闻</a></li>
+				        <li><a href="" target="_blank">联系我们</a></li>
+	      			</ul>
+	    		</div>
+	  		</div>
+		</div>
+		<!-- header end -->
+		
+		<!-- slider begin -->
+		<div class="slide">
+			<div class="login-box">
+		        <div class="login-aside" id="loginIframe">
+					#if($!stringUtil.isNotEmpty($!{userName}))
+					<form name="loginForm" class="loginform" method="post">
+						<div class="form-title">
+							<h1>欢迎使用Kintiger系统！</h1>
+						</div>
+						<div class="user-info">
+							<p class="user-info-title">您当前正在使用的Kintiger账户是：</p>
+							<p class="user-info-account">$!{passport}</p>
+							<p class="user-info-button">
+								<a href="home.htm" target="_self">进入我的Kintiger账户</a>
+							</p>
+						</div>
+					</form>
+					#else
+	  				<form action="login.htm" name="loginForm" class="loginform" method="post">
+	    				<div class="form-title">
+	      					<h1>登录</h1>
+	      				</div>
+						#if($!stringUtil.isNotEmpty($!{failMessage}))
+	    				<div class="error-box">$!{failMessage}</div>
+						#end
+	    				<div class="login-form-con">
+	      					<fieldset>
+	      						<div class="account">
+	      							<label class="form-label" for="logonId">账户名：</label>
+	      							<input type="text" name='passport' autocomplete="on" class="login-input" maxlength="100" />
+	      						</div>
+	      						<div class="passwords">
+	      							<label class="form-label" desc="登录密码">登录密码：</label>
+	      							<input type="password" name='password' autocomplete="off" class="login-input" />
+	      						</div>
+	      						<div class="login-btn fn-clear">
+	      							<input type="submit" class="login-btn-con" value="登  录" />
+	      							<p class="login-help">
+	      								<a href="javascript:forgetPasswd();">忘记登录密码？</a>
+	      							</p>
+	      						</div>
+	      					</fieldset>
+	      				</div>
+	      			</form>
+					#end
+	      		</div>
+	      	</div>
+	  		<div class="slideimages">
+	  			<div style="display: none; background-image:url($!{env.imgUrl}/image/login/01.jpg); opacity: 1;"></div>
+	  			<div style="display: block; background-image:url($!{env.imgUrl}/image/login/02.jpg); opacity: 1;"></div>
+	  			<div style="display: none; background-image:url($!{env.imgUrl}/image/login/03.jpg); opacity: 1;"></div>
+	  			<div style="display: none; background-image:url($!{env.imgUrl}/image/login/04.jpg); opacity: 1;"></div>
+	  		</div>
+	  		<div class="slide-number-box">
+	  			<div class="slidetabs">
+	  				<a href="#"></a>
+	  				<a href="#"></a>
+	  				<a href="#"></a>
+	  				<a href="#"></a>
+	  			</div>
+	  		</div>
+	  	</div>
+		<!-- slider end -->
+	
+		<div class="grid-1000 fn-clear">
+	 		<div class="benefits-grid">
+	    		<div class="benefits-item border-right">
+	     			<div class="benefits-icon-1"></div>
+	      			<h4>智慧SAP咨询实施</h4>
+	      			<p>剑齿虎是SAP核心合作伙伴及服务供应商，是SAP HANA、SUP领域最具有实力和最多客户案例的咨询服务商，具备强大的SAP-ERP咨询和实施能力。<a href="#"></a></p>
+	    		</div>
+	    		<div class="benefits-item border-right">
+	      			<div class="benefits-icon-2"></div>
+	      			<h4>自主研发EXP平台</h4>
+	      			<p>我公司精心自主研发的针对快消品行业强大的ERP平台，具有独特的流程和管理系统，很好地帮助企业日常运行与维护，提升企业管理效率。<a href="#"></a></p>
+	    		</div>
+	    		<div class="benefits-item border-right">
+	      			<div class="benefits-icon-3"></div>
+	      			<h4>企业文化</h4>
+	      			<p>创新激情，永不熄灭。客户体验至上，慎重做承诺，有承诺必交付，为客户提供最完善的软件资讯服务。<a href="#"></a></p>
+	    		</div>
+	    		<div class="benefits-item">
+	      			<div class="benefits-icon-4"></div>
+	      			<h4>专业的技术团队</h4>
+	      			<p>我公司囊括多名高级软件工程师，在业界有多年丰富的行业前锋经验，顺利完成多个大型企业的实施项目，如：2011年9月成功实施国内首例HANA项目，“农夫山泉HANA项目”成功上线；香飘飘食品有限公司的软件管理的整体实施等。<a href="#"></a></p>
+	    		</div>
+	  		</div>
+		</div>
+		
+		<div class="benefits-grid" />
+	
+		<!-- footer beigin -->
+		<div class="footer">
+			<div class="wf-wrap fn-clear">
+	      		<div class="branding-bottom">
+	      			<!--<a href="" target="_blank"><img src="$!{env.imgUrl}/image/login/slogo.png" width="114" height="29" alt="" /></a>-->
+	      		</div>
+	      		<div class="wf-float-left">剑齿虎科技有限公司版权所有 </div>
+	      		<div class="wf-td">
+	      			<a href="" target="_blank">关于我们</a>
+	      			<a href="" target="_blank">客服服务</a>
+	      			<a href="" target="_blank">隐私政策</a>
+	      		</div>
+	      	</div>
+		</div>
+		<!-- footer end -->
+	
+		<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.tools.js"></script>
+		<script>
+		$(function() {
+			$(".slidetabs").tabs(".slideimages > div",{
+				effect: 'fade',
+				fadeOutSpeed: "slow",
+				rotate: true
+			}).slideshow({
+				interval:5000,
+				autoplay: true
+			});
+		});
+    	var appName = '$!{env.appName}';
+    	var domain = '$!{env.domain}';
+    	var appUrl = '$!{env.appUrl}';
+        </script>
+    	<script type="text/javascript" src="$!{env.imgUrl}/js/jquery/jquery.cookie.js"></script>
+    	<script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/login/login.js"></script>
+	</body>
+</html>

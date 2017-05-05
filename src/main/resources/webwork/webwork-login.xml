@@ -1,0 +1,47 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$login"
+		extends="{http://xplatform}xplatform$framework" namespace="/">
+
+		<action name="login" class="loginAction" method="login">
+			<result name="incorrect">/index.vm</result>
+			<result name="success" type="redirect-action">
+				<param name="actionName">home</param>
+			</result>
+		</action>
+		
+		<action name="logout" class="loginAction" method="logout">
+			<result name="logout" type="redirect">
+				/
+			</result>
+		</action>
+		
+		<action name="forgetPassword" class="loginAction" method="forgetPassword">
+			<result name="success">/xplatform/login/forgetPassword.vm</result>
+		</action>
+		
+		<action name="sendCheckCode" class="loginAction" method="sendCheckCode">
+			<result name="success">/xplatform/login/sendVerifyEmail.vm</result>
+			<result name="error">/xplatform/login/forgetPassword.vm</result>
+		</action>
+		
+		<action name="setPassword" class="loginAction" method="setPassword">
+			<result name="success">/xplatform/login/setPassword.vm</result>
+		</action>
+		
+		<action name="updatePassword" class="loginAction" method="updatePassword">
+		</action>
+		
+		<action name="home" class="loginAction" method="homePage">
+			<interceptor-ref name="authenticationStack" />
+			<result name="homePage">/xplatform/login/homePage.vm</result>
+		</action>
+			
+		<action name="loginAction" class="loginAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="headMenu">/xplatform/login/headMenu.vm</result>
+			<result name="resetPassword">/xplatform/login/resetPassword.vm</result>
+		</action>
+		
+	</package>
+</xwork>

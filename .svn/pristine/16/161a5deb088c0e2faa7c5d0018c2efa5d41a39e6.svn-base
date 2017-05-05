@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body onbeforeunload="window.opener.closeShadeDiv();">
+		<form method="post">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+							<tr>
+								<td class="form_top_icon_01" >
+									BO报表参数配置
+								</td>
+								<td class="title_bottom_line" noWrap align='right'>
+									<a href="javascript:save();">
+                                        <img src="$!{env.imgUrl}/image/actions/icon_save.png" align="absMiddle" >保存 </img>
+									</a>
+									<br>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="home_title">
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											报表编号
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='bid' name="reportParameter.bid" value='$!{reportParameter.bid}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											表名
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='tableName' name="reportParameter.tableName" value='$!{reportParameter.tableName}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											ID字段
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='zdid' name="reportParameter.zdid" value='$!{reportParameter.zdid}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											描述字段
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='zdtxt' name="reportParameter.zdtxt" value='$!{reportParameter.zdtxt}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											查询Lable
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='memo' name="reportParameter.memo" value='$!{reportParameter.memo}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											参数可选数量
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='amount' name="reportParameter.amount" value='$!{reportParameter.amount}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											有无描述
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='txt' name="reportParameter.txt" value='$!{reportParameter.txt}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											是否必填
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='che' name="reportParameter.che" value='$!{reportParameter.che}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											查询条件
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='d' name="reportParameter.d" value="$!{reportParameter.d}" />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											别名
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='nickname' name="reportParameter.nickname" value='$!{reportParameter.nickname}' />
+											</td>
+                                    	</tr>
+										<tr>
+    										<td class="head" noWrap style="text-align: right">
+    											校验方式
+    										</td>
+											<td class="even" noWrap>
+												<input type='text' id='checkway' name="reportParameter.checkway" value='$!{reportParameter.checkway}' />
+											</td>
+                                    	</tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<input type='hidden' name='reportParameter.pid' value='$!{reportParameter.pid}'></input>
+		</form>
+		<iframe id="hideFrame" name="hideFrame" src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JSM(["common", "ext", "jquery"])
+        #JS_ENV_VAL()
+        <script type="text/javascript">
+        var store;
+        </script>
+        <script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/boform/searchReportParameterDetail.js"></script>
+	</body>
+</html>

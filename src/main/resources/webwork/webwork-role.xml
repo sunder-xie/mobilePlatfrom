@@ -1,0 +1,21 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$role"
+		extends="{http://xplatform}xplatform$framework" namespace="/role">
+
+		<action name="roleAction" class="roleAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchRole">/xplatform/role/searchRole.vm</result>
+			<result name="searchUserRole">/xplatform/role/searchUserRole.vm</result>
+			<result name="createPrepare">/xplatform/role/createRole.vm</result>
+			<result name="updatePrepare">/xplatform/role/searchRoleDetail.vm</result>
+			<result name="searchSelectedRole">/xplatform/role/searchSelectedRole.vm</result>
+			<result name="searchRole4Config">/xplatform/role/searchRole4Config.vm</result>
+			<result name='configRoleUserPrepare'>/xplatform/role/configRoleUser.vm</result>
+			<result name="chooseRoleUser">/xplatform/role/chooseRoleUser.vm</result>
+			<result name="orgTreeAjaxInfo">/xplatform/org/orgTreeAjaxInfo.vm</result>
+			<result name="peopleSelector">/xplatform/role/peopleSelector.vm</result>
+		</action>
+		
+	</package>
+</xwork>

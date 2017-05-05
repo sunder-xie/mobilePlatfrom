@@ -1,0 +1,21 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$news"
+		extends="{http://xplatform}xplatform$framework" namespace="/news">
+
+		<action name="newsAction" class="newsAction" >
+			<interceptor-ref name="authenticationStack"/>
+			<result name="index">/xplatform/news/index.vm</result>
+			<result name="news">/xplatform/news/news.vm</result>
+			<result name="createNewsTotalPrepare">/xplatform/news/createNewsTotal.vm</result>
+			<result name="searchNewsTree">/xplatform/news/searchNewsTree.vm</result>
+			<result name="searchNewsTotal">/xplatform/news/searchNewsTotal.vm</result>
+			<result name="createNewsDetailPrepare">/xplatform/news/createNewsDetail.vm</result>
+			<result name="searchNewsDetail">/xplatform/news/searchNewsDetail.vm</result>
+			<result name="searchNews">/xplatform/news/searchNews.vm</result>
+			<result name="updateNewsDetailPrepare">/xplatform/news/updateNewsDetail.vm</result>
+			<result name="updateNewsTotalPrepare">/xplatform/news/updateNewsTotal.vm</result>
+		</action>
+		
+	</package>
+</xwork>

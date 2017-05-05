@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="GB2312"?>
+<keys>
+	<key>
+		<name>xplatform.hessian</name>
+		<pubKey>pubkey.dat</pubKey>
+		<priKey>prikey.dat</priKey>
+	</key>
+</keys>

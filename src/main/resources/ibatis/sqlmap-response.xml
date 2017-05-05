@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="response">
+	<typeAlias alias="responseStats" type="com.kintiger.xplatform.api.openapi.bo.ResponseStats" />
+	
+	<select id="getResponseStatsCount" parameterClass="responseStats" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from osap.monitor_response_stats t where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="methodName" prepend="and">
+			<![CDATA[ t.methodName = #methodName# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getResponseStatsList" parameterClass="responseStats" resultClass="responseStats">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.response_stats_id as responseStatsId,
+			   t.method_name       as methodName,
+			   t.start_time        as startTime,
+			   t.end_time          as endTime,
+			   t.create_date       as createDate
+		  from osap.monitor_response_stats t
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="methodName" prepend="and">
+			<![CDATA[ t.methodName = #methodName# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createResponseStats" parameterClass="responseStats">
+		<selectKey resultClass="java.lang.Long" keyProperty="responseStatsId">
+		<![CDATA[
+			select to_number(OSAP.SEQ_MONITOR_RESPONSE_STATS_ID.NEXTVAL) as responseStatsId from dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into osap.monitor_response_stats
+		  (RESPONSE_STATS_ID, METHOD_NAME, START_TIME, END_TIME, CREATE_DATE)
+		values
+		  (#responseStatsId:NUMBER#,
+		   #methodName:VARCHAR#,
+		   #startTime:NUMBER#,
+		   #endTime:NUMBER#,
+		   sysdate)
+	]]>
+	</insert>
+	
+</sqlMap>

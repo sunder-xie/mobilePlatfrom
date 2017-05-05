@@ -1,0 +1,54 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>组织列表</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>
+		<div id="tree-div" style="overflow: auto; height: 100%; width: 100%; border: 0px;"></div>
+		<form method="post">
+			<input type="hidden" id="orgId" name="orgId"></input>
+			<input type="hidden" id="orgName" name="orgName"></input>
+		</form>
+		<input type="hidden" id="actionName" value="$!{actionName}"></input>
+    	#JSM(['ext'])
+    	#JS_ENV_VAL()
+    	<script type="text/javascript">
+    	Ext.onReady(function(){
+    	    var Tree = Ext.tree;
+    	
+    	    var tree = new Tree.TreePanel({
+    	        useArrows: true,
+    	        autoScroll: true,
+    	        animate: true,
+    	        enableDD: true,
+    	        containerScroll: true,
+    	        border: false,
+    	        dataUrl: '$!{env.appUrl}/org/orgTreeAjaxAction!getOrgTreeListByAjax.htm',
+    	        root: {
+    	            nodeType: 'async',
+    	            text: 'XXX有限公司',
+    	            draggable: false,
+    	            id: '$!node' == '-1' ? '-1' :'1'
+    	        }
+    	    });
+    	
+    	    tree.render('tree-div');
+    	    tree.getRootNode().expand();
+    	    
+    	    tree.on('click', function(node){
+    	    	var form = window.document.forms[0];
+    	    	document.getElementById("orgId").value = node.id;
+    	    	document.getElementById("orgName").value = node.text;
+    	    	var s = new Array();
+    			s[0] = node.id;
+    			s[1] = node.text;
+    			window.returnValue = s;
+    			window.close();
+    	    });
+    	});
+    	</script>
+	</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$station"
+		extends="{http://xplatform}xplatform$framework" namespace="/station">
+
+		<action name="stationAction" class="stationAction">
+			<interceptor-ref name="authenticationStack" />
+			<result name='searchStation'>/xplatform/station/searchStation.vm</result>
+			<result name='createPrepare'>/xplatform/station/createStation.vm</result>
+			<result name='updatePrepare'>/xplatform/station/updateStation.vm</result>
+			<result name='configStationUserPrepare'>/xplatform/station/configStationUser.vm</result>
+			<result name="chooseStationUser">/xplatform/station/chooseStationUser.vm</result>
+			<result name="orgTreeAjaxInfo">/xplatform/org/orgTreeAjaxInfo.vm</result>
+			<result name="peopleSelector">/xplatform/station/peopleSelector.vm</result>
+		</action>
+
+	</package>
+</xwork>

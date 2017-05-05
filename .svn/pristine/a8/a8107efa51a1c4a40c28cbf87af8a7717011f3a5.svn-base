@@ -1,0 +1,12 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$openapi"
+		extends="{http://xplatform}xplatform$framework" namespace="/openapi">
+
+		<action name="responseAction" class="responseAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchResponseStats">/xplatform/openapi/searchResponseStats.vm</result>
+		</action>
+
+	</package>
+</xwork>

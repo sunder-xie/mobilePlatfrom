@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+<body>
+	<form action="" method="post" id="mForm">
+		<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+			<tr>
+				<td valign="top">
+					<table bgColor=#ffffff width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+							<td class="form_top_icon_01">新闻栏目明细</td>
+							<td class="title_bottom_line" noWrap align='right'>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="home_title">搜索条件</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<table width="100%" border="0" cellpadding="0" cellspacing="1" class="outer">
+									<tr>
+                                        <td class="head" noWrap>关键字:</td>
+										<td class='even' noWrap>
+											<input type="text" id="detailTitle" value="$!{detailTitle}" />
+										</td>                              
+										 <td class="head" noWrap>所属版块:</td>
+											<td class='even' noWrap>
+												<select name="total_id" id="total_id">
+													<option value="" selected="selected">
+														所有数据
+													</option>
+													#foreach($lanNewsTotal in $newsTypelist)
+														#if(${total_id} == $!{lanNewsTotal.total_id})
+															<option value="$!{lanNewsTotal.total_id}" selected>
+																$!{lanNewsTotal.total_name}
+															</option>
+														#else
+															<option value=" $!{lanNewsTotal.total_id}">
+																$!{lanNewsTotal.total_name}
+															</option>
+														#end
+													#end
+												</select>
+											<input type="button" style="cursor: pointer" onclick="javascript:searchNews();" value="查询"></input>
+										</td>                              
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td align="left" class="home_title">新闻栏目明细</td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+		 <div class="cent_border">
+			<div id="gridList" class="ext-grid-mask"></div>
+		</div>
+	</form>
+	<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+	#JSM(["common", "ext", "jquery"])
+    #JS_ENV_VAL()
+    <script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/news/searchNews.js"></script>
+</body>
+</html>

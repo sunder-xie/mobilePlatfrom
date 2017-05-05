@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<!--SAP -->
+	<bean id="sapConnection" class="com.kintiger.xplatform.api.sap.bo.SAPConnectionBean">
+		<property name="poolName">
+			<value>${sap.jdbc.poolName}</value>
+		</property>
+		<property name="maximumConnectionCount">
+			<value>${sap.jdbc.maximumConnectionCount}</value>
+		</property>
+		<property name="clientName">
+			<value>${sap.jdbc.clientName}</value>
+		</property>
+		<property name="user">
+			<value>${sap.jdbc.user}</value>
+		</property>
+		<property name="password">
+			<value>${sap.jdbc.password}</value>
+		</property>
+		<property name="language">
+			<value>${sap.jdbc.language}</value>
+		</property>
+		<property name="hostName">
+			<value>${sap.jdbc.hostName}</value>
+		</property>
+		<property name="sysnr">
+			<value>${sap.jdbc.sysnr}</value>
+		</property>
+		<property name="group">
+			<value>${sap.jdbc.group}</value>
+		</property>
+		<property name="repositoryName">
+			<value>${sap.jdbc.repositoryName}</value>
+		</property>
+		<property name="byGroup">
+			<value>${sap.jdbc.byGroup}</value>
+		</property>
+	</bean>
+
+	<bean id="sapAction" class="com.kintiger.xplatform.sap.action.SAPAction"
+		scope="request" parent="baseAction">
+		<property name="sapService" ref="sapService" />
+		<property name="sapLogService" ref="sapLogService" />
+	</bean>
+	
+	<bean id="sapService"
+		class="com.kintiger.xplatform.sap.service.impl.SAPServiceImpl">
+		<property name="sapConnection" ref="sapConnection" />
+		<property name="ssoService" ref="ssoService" />
+		<!--<property name="memcachedCacheService" ref="memcachedCacheService" />-->
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="roleService" ref="roleService" />
+		<property name="sapDao" ref="sapDao" />
+	</bean>
+	
+	<bean id="ssoService"
+		class="com.kintiger.xplatform.sap.service.impl.SSOServiceImpl">
+		<property name="dictService" ref="dictService" />
+	</bean>
+	
+	<bean id="sapAccountAction" class="com.kintiger.xplatform.sap.action.SAPAccountAction"
+		scope="request" parent="baseAction">
+		<property name="sapAccountService" ref="sapAccountService" />
+		<property name="sapService" ref="sapService" />
+		<property name="sapSyncService" ref="sapSyncService" />
+	</bean>
+	<bean id="sapAccountService"
+		class="com.kintiger.xplatform.sap.service.impl.SAPAccountServiceImpl">
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="sapConnection" ref="sapConnection" />
+		<property name="sapDao" ref="sapDao" />
+	</bean>
+	<bean id="sapDao" class="com.kintiger.xplatform.sap.dao.impl.SAPDaoImpl" parent="baseDao">
+	</bean>
+	
+	<bean id="sapSyncService"
+		class="com.kintiger.xplatform.sap.service.impl.SAPSyncServiceImpl">
+		<property name="sapConnection" ref="sapConnection" />
+		<property name="roleService" ref="roleService" />
+		<property name="menuService" ref="menuService" />
+		<property name="transactionTemplate" ref="transactionTemplate" />
+		<property name="sapAccountService" ref="sapAccountService" />
+		<property name="sapService" ref="sapService" />
+		<property name="dictService" ref="dictService" />
+	</bean>
+	
+	<bean id="sapLogAction" class="com.kintiger.xplatform.sap.action.SAPLogAction"
+		scope="request" parent="baseAction">
+		<property name="sapLogService" ref="sapLogService" />
+	</bean>
+	<bean id="sapLogService"
+		class="com.kintiger.xplatform.sap.service.impl.SAPLogServiceImpl">
+		<property name="sapLogDao" ref="sapLogDao" />
+	</bean>
+	<bean id="sapLogDao" class="com.kintiger.xplatform.sap.dao.impl.SAPLogDaoImpl" parent="baseDao">
+	</bean>
+	
+</beans>

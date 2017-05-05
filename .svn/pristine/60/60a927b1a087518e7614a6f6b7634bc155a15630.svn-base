@@ -1,0 +1,592 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="role">
+	<typeAlias alias="role" type="com.kintiger.xplatform.api.role.bo.Role" />
+
+	<select id="getRoleCount" parameterClass="role" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1) FROM BASIS.basis_tb_role r WHERE r.state = 'U'
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ r.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ r.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ r.type = #type# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( r.role_id like #search,handler=wildcard# escape '\'
+				 or r.role_name like #search,handler=wildcard# escape '\'
+				 or r.remark like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getRoleList" parameterClass="role" resultClass="role">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT r.role_id AS roleId,
+		  r.role_name    AS roleName,
+		  r.remark,
+		  r.type,
+		  b.item_name AS itemName,
+		  CASE
+			WHEN p.menuCount IS NULL
+			THEN 0
+			ELSE p.menuCount
+		  END AS menuCount,
+		  CASE
+			WHEN q.stationCount IS NULL
+			THEN 0
+			ELSE q.stationCount
+		  END AS stationCount
+		FROM BASIS.basis_tb_role r,
+		  (SELECT COUNT(1) AS menuCount,
+			pp.role_id
+		  FROM BASIS.basis_tb_role_menu pp
+		  GROUP BY pp.role_id
+		  ) p,
+		  (SELECT COUNT(1) AS stationCount,
+			qq.role_id
+		  FROM basis.basis_tb_station_role qq
+		  WHERE qq.flag = 'U'
+		  GROUP BY qq.role_id
+		  ) q,
+		  BASIS.basis_tb_dict_type d,
+		  BASIS.basis_tb_dict b
+		WHERE r.role_id       = p.role_id(+)
+		AND r.role_id         = q.role_id (+)
+		AND d.dict_type_id    = b.dict_type_id
+		AND d.dict_type_value = 'roleType'
+		AND r.type		      = b.item_value
+		AND r.state           = 'U'
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ r.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ r.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ r.type = #type# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( r.role_id like #search,handler=wildcard# escape '\'
+				 or r.role_name like #search,handler=wildcard# escape '\'
+				 or r.remark like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<select id="getRole4ConpointCount" parameterClass="role"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(r.role_id)
+		  from BASIS.basis_tb_role r, cms.CMS_TB_ROLE_CONPOINT t
+		 where t.state = 'U'
+		   and r.state = 'U'
+		   and t.role_id = r.role_id
+		   and t.conpoint_id=#conpointId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ r.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ r.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getRole4ConpointList" parameterClass="role"
+		resultClass="role">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select r.role_id roleId,r.role_name roleName,r.descn descn
+		  from BASIS.basis_tb_role r, cms.CMS_TB_ROLE_CONPOINT t
+		 where t.state = 'U'
+		   and r.state = 'U'
+		   and t.role_id = r.role_id
+		   and t.conpoint_id=#conpointId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ r.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ r.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<select id="getRole4MenuCount" parameterClass="role"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(r.role_id)
+		  from BASIS.basis_tb_role r, BASIS.basis_tb_role_menu t
+		 where t.role_id = r.role_id
+		   and r.state = 'U'
+		   and t.menu_id = #menuId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ r.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ r.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getRole4MenuList" parameterClass="role"
+		resultClass="role">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select r.role_id roleId, r.role_name roleName, r.remark
+		  from BASIS.basis_tb_role r, BASIS.basis_tb_role_menu t
+		 where t.role_id = r.role_id
+		   and r.state = 'U'
+		   and t.menu_id = #menuId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ r.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ r.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<insert id="createRole" parameterClass="role">
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_role
+		  (
+			ROLE_ID,
+			ROLE_NAME,
+			REMARK,
+			CREATE_DATE,
+			MODIFY_DATE,
+			MODIFY_USER,
+			STATE,
+			TYPE
+		  )
+		  VALUES
+		  (
+			#roleId#,
+			#roleName#,
+			#remark#,
+			sysdate,
+			sysdate,
+			#modifyUser#,
+			'U',
+			#type#
+		  )
+	]]>
+	</insert>
+	
+	<insert id="batchCreateRoleUser" parameterClass="role">
+		<selectKey resultClass="java.lang.String" keyProperty="id">
+		<![CDATA[
+			SELECT BASIS.BASIS_SEQ_USER_ROLE.NEXTVAL AS id FROM dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_user_role
+		  (
+			ID,
+			USER_ID,
+			ROLE_ID,
+			CREATE_DATE,
+			MODIFY_USER
+		  )
+		  VALUES
+		  (
+			#id#,
+			#userId#,
+			#roleId#,
+			sysdate,
+			#modifyUser#
+		  )
+	]]>
+	</insert>
+
+	<select id="getRoleByRoleId" parameterClass="java.lang.String"
+		resultClass="role">
+	<![CDATA[
+		SELECT t.role_id AS roleId,
+		  t.role_name    AS roleName,
+		  t.remark,
+		  t.type
+		FROM BASIS.basis_tb_role t
+		WHERE t.state = 'U'
+		AND t.role_id = #roleId#
+	]]>
+	</select>
+
+	<update id="updateRole" parameterClass="role">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_role t
+		SET t.modify_date = sysdate
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleName" prepend=",">
+			<![CDATA[ t.role_name     = #roleName# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="remark" prepend=",">
+			<![CDATA[ t.remark        = #remark# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="type" prepend=",">
+			<![CDATA[ t.type 	      = #type# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="state" prepend=",">
+			<![CDATA[ t.state         = #state# ]]>
+			</isNotEmpty>
+			<isNotEmpty property="modifyUser" prepend=",">
+			<![CDATA[ t.modify_user   = #modifyUser# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		WHERE t.role_id   = #roleId#
+	]]>
+	</update>
+
+	<update id="deleteRole" parameterClass="java.util.Map">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_role t
+		SET t.modify_date = sysdate,
+		  t.modify_user   = #modifyUser#,
+		  t.state         = 'D'
+		WHERE t.state     = 'U'
+		AND t.role_id     = #roleId#
+	]]>
+	</update>
+	
+	<update id="deleteSAPRole">
+	<![CDATA[
+		UPDATE BASIS.basis_tb_role t
+		SET t.modify_date = sysdate,
+		  t.state         = 'D',
+		  t.modify_user   = 'system'
+		WHERE t.state     = 'U'
+		AND t.type        = 'S'
+	]]>
+	</update>
+	
+	<select id="getSelectedRole4StationCount" parameterClass="role"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1)
+		FROM BASIS.basis_tb_station_role t,
+		  BASIS.basis_tb_role p
+		WHERE t.role_id  = p.role_id
+		AND t.flag       = 'U'
+		AND p.state      = 'U'
+		AND t.station_id = #stationId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ p.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ p.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getSelectedRole4StationList" parameterClass="role"
+		resultClass="role">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT t.station_role_id AS id,
+		  p.role_id roleId,
+		  p.role_name roleName,
+		  p.remark,
+		  COUNT(1) AS menuCount
+		FROM BASIS.basis_tb_station_role t,
+		  BASIS.basis_tb_role p,
+		  BASIS.basis_tb_role_menu q
+		WHERE t.role_id  = p.role_id
+		AND p.role_id    = q.role_id(+)
+		AND t.flag       = 'U'
+		AND p.state      = 'U'
+		AND t.station_id = #stationId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ p.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ p.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		GROUP BY t.station_role_id,
+		  p.role_id,
+		  p.role_name,
+		  p.remark
+	]]>
+		<include refid="global.paginationEnd" />
+	</select>
+
+	<select id="getSelectedRole4Station" parameterClass="role"
+		resultClass="role">
+	<![CDATA[
+		select t.role_id roleId
+		  from BASIS.basis_tb_station_role t
+		 where t.station_id = #stationId#
+		   and t.role_id in
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+	</select>
+
+	<insert id="selectRole4Station" parameterClass="role">
+		<selectKey resultClass="java.lang.Long" keyProperty="stationRoleId">
+		<![CDATA[
+			SELECT BASIS.BASIS_SEQ_STATION_ROLE.nextval AS stationRoleId FROM DUAL
+		]]>
+		</selectKey>
+	<![CDATA[
+		INSERT
+		INTO BASIS.basis_tb_station_role VALUES
+		  (
+			#stationRoleId#,
+			#stationId#,
+			#roleId#,
+			'',
+			sysdate,
+			TO_DATE(sysdate,'yyyy-MM-dd'),
+			TO_DATE('9999-01-01','yyyy-MM-dd'),
+			'U'
+		  ) 
+	]]>
+	</insert>
+
+	<delete id="deleteSelectedRole4Station" parameterClass="role">
+	<![CDATA[
+		DELETE BASIS.basis_tb_station_role t
+	]]>
+		<dynamic>
+			<isNotEmpty property="stationId" prepend="WHERE">
+			<![CDATA[
+				t.station_id = #stationId#
+			]]>
+			</isNotEmpty>
+			<isEmpty property="stationId">
+				<isNotEmpty property="roleId" prepend="WHERE">
+				<![CDATA[
+					t.role_id = #roleId#
+				]]>
+				</isNotEmpty>
+				<isEmpty property="roleId" prepend="WHERE">
+				<![CDATA[
+					t.station_role_id in
+				]]>
+					<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+					</iterate>
+				</isEmpty>
+			</isEmpty>
+		</dynamic>
+	</delete>
+	
+	<delete id="deleteInvalidSelectedRole4Station" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE BASIS.basis_tb_station_role t
+		WHERE EXISTS
+		  (SELECT 1
+		  FROM BASIS.basis_tb_role p
+		  WHERE t.role_id = p.role_id
+		  AND p.state     = 'D'
+		  AND p.type = #type#
+		  )
+	]]>
+	</delete>
+	
+	<select id="getSelectedRole4PositionTypeCount" parameterClass="role"
+		resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(t.py_role_id)
+		  from osap.position_type_roles t, BASIS.basis_tb_role p
+		 where t.role_id = p.role_id
+		   and t.position_type_id = #positionTypeId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ p.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ p.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getSelectedRole4PositionTypeList" parameterClass="role"
+		resultClass="role">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.py_role_id id,
+			   p.role_id    roleId,
+			   p.role_name  roleName,
+			   p.descn      descn
+		  from osap.position_type_roles t, BASIS.basis_tb_role p
+		 where t.role_id = p.role_id
+		   and t.position_type_id = #positionTypeId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="roleId" prepend="and">
+			<![CDATA[ p.role_id like #roleId,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="roleName" prepend="and">
+			<![CDATA[ p.role_name like #roleName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<select id="getSelectedRole4PositionType" parameterClass="role"
+		resultClass="role">
+	<![CDATA[
+		select t.role_id roleId
+		  from osap.position_type_roles t
+		 where t.position_type_id = #positionTypeId#
+		   and t.role_id in
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+	</select>
+
+	<insert id="selectRole4PositionType" parameterClass="role">
+		<selectKey resultClass="java.lang.Long" keyProperty="pyRoleId">
+		<![CDATA[
+			SELECT osap.sq_position_type_roles.nextval AS pyRoleId FROM DUAL
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into osap.position_type_roles values
+		  (#pyRoleId#, #roleId#, #positionTypeId#, sysdate)
+	]]>
+	</insert>
+
+	<delete id="deleteSelectedRole4PositionType" parameterClass="role">
+	<![CDATA[
+		delete osap.position_type_roles t where t.py_role_id in
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+	</delete>
+	
+	<select id="getRoleListByUser" parameterClass="role" resultClass="role">
+	<![CDATA[
+		SELECT t.role_id AS roleId,
+		  t.role_name    AS roleName,
+		  t.remark,
+		  b.item_name    AS itemName
+		FROM BASIS.basis_tb_role t,
+		  BASIS.basis_tb_dict_type d,
+		  BASIS.basis_tb_dict b
+		WHERE (EXISTS
+		  (SELECT 1
+		  FROM BASIS.basis_tb_station_user t1,
+			BASIS.basis_tb_station_role t2
+		  WHERE t1.station_id = t2.station_id
+	]]>
+		<dynamic>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[ t1.USER_ID      = #userId# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		  AND t2.role_id      = t.role_id
+		  )
+		OR EXISTS
+		  (SELECT 1
+		  FROM BASIS.basis_tb_user_role t3
+		  WHERE t3.role_id   = t.role_id
+	]]>
+		<dynamic>
+			<isNotEmpty property="userId" prepend="and">
+			<![CDATA[ t3.USER_ID      = #userId# ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[
+		  ))
+		  AND t.state           = 'U'
+		  AND d.dict_type_id    = b.dict_type_id
+		  AND d.dict_type_value = 'roleType'
+		  AND t.type		    = b.item_value
+	]]>
+		<dynamic>
+			<isNotEmpty property="type" prepend="and">
+			<![CDATA[ t.type    	  = #type# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getRoleUserCount" parameterClass="role" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT COUNT(1)
+		FROM BASIS.basis_tb_user_role t,
+		  BASIS.basis_tb_user tt
+		WHERE t.user_id = tt.user_id
+		AND t.role_id   = #roleId#
+	]]>
+		<dynamic>
+			<isNotEmpty prepend="and" property="passport">
+			<![CDATA[ tt.passport like #passport,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userName">
+			<![CDATA[ tt.user_name like #userName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<select id="getRoleUserList" parameterClass="role" resultClass="role">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		SELECT t.id,
+		  tt.user_id AS userId,
+		  tt.passport,
+		  tt.user_name AS userName
+		FROM BASIS.basis_tb_user_role t,
+		  BASIS.basis_tb_user tt
+		WHERE t.user_id = tt.user_id
+		AND t.role_id   = #roleId#
+	]]>
+		<dynamic>
+			<isNotEmpty prepend="and" property="passport">
+			<![CDATA[ tt.passport like #passport,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="and" property="userName">
+			<![CDATA[ tt.user_name like #userName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+		</dynamic>
+	<![CDATA[ order by tt.user_id ]]>
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<delete id="deleteRoleUser" parameterClass="role">
+	<![CDATA[
+		DELETE BASIS.basis_tb_user_role t WHERE t.id = #id#
+	]]>
+	</delete>
+
+</sqlMap>

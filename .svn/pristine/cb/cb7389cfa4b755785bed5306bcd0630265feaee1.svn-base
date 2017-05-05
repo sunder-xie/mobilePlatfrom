@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>
+		<form method="post">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+							<tr>
+								<td class="form_top_icon_01"  >
+									通讯录
+								</td>
+								<td class="title_bottom_line" noWrap align='right'>
+									<br>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="home_title">
+									通讯录查询
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+    									<tr>
+    										<td class="head" noWrap >
+    											用户ID
+    										</td>
+                                     		<td class="even" noWrap >
+    											<input type="text" id="loginId" />
+    			    						</td>
+											<td class="head" noWrap >
+    											用户姓名
+    										</td>
+											<td class="even" noWrap >
+    											<input type="text" id="userName" />
+    			    						</td>
+										</tr>
+										<tr>
+											<td class="head" noWrap >
+    											办公电话
+    										</td>
+											<td class="even" noWrap >
+    											<input type="text" id="phone" />
+    			    						</td>
+    										<td class="head" noWrap >
+    											手机
+    										</td>
+											<td class="even" noWrap >
+    											<input type="text" id="mobile" />
+												<input type="button" onclick="javascript:search()" value="查询" />
+                                            </td>
+                                    	</tr>
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="home_title">
+									查询结果
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<div class="cent_border">
+				<div id="gridList" class="ext-grid-mask"></div>
+			</div>
+		</form>
+		<iframe id="hideFrame" name="hideFrame"	src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JSM(["common", "ext", "jquery"])
+        #JS_ENV_VAL()
+        <script type="text/javascript">
+        var store;
+        </script>
+        <script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/user/searchAddressBook.js"></script>
+	</body>
+</html>

@@ -1,0 +1,12 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>组织管理</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	</head>
+	<Frameset cols="20%,80%">
+		<frame src="$!{env.appUrl}/org/orgTreeAjaxAction!getOrgTreeInfo.htm">
+		<frame src="$!{env.appUrl}/org/orgAction!searchOrgDetail.htm" name="right" id="right">
+	</Frameset>
+	
+</html>

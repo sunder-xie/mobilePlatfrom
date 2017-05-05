@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="file">
+	<typeAlias alias="fileInfo" type="com.kintiger.xplatform.api.file.bo.FileInfo" />
+	
+	<select id="getFileInfo" parameterClass="fileInfo" resultClass="fileInfo">
+	<![CDATA[
+		select t.file_id   as fileId,
+			   t.file_name as fileName,
+			   t.suffix,
+			   t.file_path as filePath
+		  from osap.file_info t
+		 where t.file_id = #fileId#
+	]]>
+		<dynamic>
+			<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ t.flag = #flag# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<insert id="createFileInfo" parameterClass="fileInfo">
+	<![CDATA[
+		insert into osap.file_info
+		  (FILE_ID, FILE_NAME, SUFFIX, FILE_PATH, FLAG, CREATE_DATE, MODIFY_DATE)
+		values
+		  (#fileId:VARCHAR#,
+		   #fileName:VARCHAR#,
+		   #suffix:VARCHAR#,
+		   #filePath:VARCHAR#,
+		   'U',
+		   sysdate,
+		   sysdate)
+	]]>
+	</insert>
+	
+	<select id="getFileCount" parameterClass="fileInfo" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from osap.file_info t where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="fileName" prepend="and">
+			<![CDATA[ t.file_name like #fileName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ t.flag = #flag# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getFileList" parameterClass="fileInfo" resultClass="fileInfo">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.file_id     as fileId,
+			   t.file_name   as fileName,
+			   t.suffix,
+			   t.file_path   as filePath,
+			   t.flag,
+			   t.create_date as createDate,
+			   t.modify_date as modifyDate
+		  from osap.file_info t
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="fileName" prepend="and">
+			<![CDATA[ t.file_name like #fileName,handler=wildcard# escape '\' ]]>
+			</isNotEmpty>
+			<isNotEmpty property="flag" prepend="and">
+			<![CDATA[ t.flag = #flag# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<update id="deleteFile" parameterClass="fileInfo">
+	<![CDATA[
+		update osap.file_info t
+		   set t.modify_date = sysdate, t.flag = 'D'
+		 where t.file_id in
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+	</update>
+	
+</sqlMap>

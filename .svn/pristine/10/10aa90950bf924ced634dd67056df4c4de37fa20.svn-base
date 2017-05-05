@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="boform">
+	<typeAlias alias="reportParameter" type="com.kintiger.xplatform.api.boform.bo.ReportParameter" />
+	<typeAlias alias="queryParameter" type="com.kintiger.xplatform.api.boform.bo.QueryParameter" />
+	
+	<select id="getReportParameterCount" parameterClass="reportParameter" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1) from BASIS.basis_tb_parameter t
+	]]>
+		<dynamic>
+			<isNotEmpty property="bid" prepend="where">
+			<![CDATA[ t.bid = #bid# ]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getReportParameterList" parameterClass="reportParameter" resultClass="reportParameter">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select t.pid,
+			   t.bid,
+			   t.table_name as tableName,
+			   t.zdid,
+			   t.memo,
+			   t.amount,
+			   t.txt,
+			   t.che,
+			   t.zdtxt,
+			   t.d,
+			   t.nickname,
+			   t.checkway
+		  from BASIS.basis_tb_parameter t
+	]]>
+		<dynamic>
+			<isNotEmpty property="bid" prepend="where">
+			<![CDATA[ t.bid = #bid# ]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<insert id="createReportParameter" parameterClass="reportParameter">
+		<selectKey resultClass="java.lang.Long" keyProperty="pid">
+		<![CDATA[
+			SELECT BASIS.BASIS_SEQ_PARAMETER.NEXTVAL AS pid FROM dual
+		]]>
+		</selectKey>
+	<![CDATA[
+		insert into BASIS.basis_tb_parameter
+		  (PID,
+		   BID,
+		   TABLE_NAME,
+		   ZDID,
+		   MEMO,
+		   AMOUNT,
+		   TXT,
+		   CHE,
+		   ZDTXT,
+		   D,
+		   NICKNAME,
+		   CHECKWAY)
+		values
+		  (#pid#,
+		   #bid#,
+		   #tableName#,
+		   #zdid#,
+		   #memo#,
+		   #amount#,
+		   #txt#,
+		   #che#,
+		   #zdtxt#,
+		   #d#,
+		   #nickname#,
+		   #checkway#)
+	]]>
+	</insert>
+	
+	<select id="getReportParameterByPid" parameterClass="java.lang.Long" resultClass="reportParameter">
+	<![CDATA[
+		select t.pid,
+			   t.bid,
+			   t.table_name as tableName,
+			   t.zdid,
+			   t.memo,
+			   t.amount,
+			   t.txt,
+			   t.che,
+			   t.zdtxt,
+			   t.d,
+			   t.nickname,
+			   t.checkway
+		  from BASIS.basis_tb_parameter t
+		 where t.pid = #pid#
+	]]>
+	</select>
+	
+	<update id="updateReportParameter" parameterClass="reportParameter">
+	<![CDATA[
+		update BASIS.basis_tb_parameter t
+		   set t.bid        = #bid#,
+			   t.table_name = #tableName#,
+			   t.zdid       = #zdid#,
+			   t.memo       = #memo#,
+			   t.amount     = #amount#,
+			   t.txt        = #txt#,
+			   t.che        = #che#,
+			   t.zdtxt      = #zdtxt#,
+			   t.d          = #d#,
+			   t.nickname   = #nickname#,
+			   t.checkway   = #checkway#
+		 where t.pid = #pid#
+	]]>
+	</update>
+	
+	<delete id="deleteReportParameter" parameterClass="reportParameter">
+	<![CDATA[
+		delete BASIS.basis_tb_parameter t where t.pid in
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+	</delete>
+	
+	<select id="getReportParametersByBid" parameterClass="java.lang.Long" resultClass="reportParameter">
+	<![CDATA[
+		select t.pid,
+			   t.bid,
+			   t.table_name as tableName,
+			   t.zdid,
+			   t.memo,
+			   t.amount,
+			   t.txt,
+			   t.che,
+			   t.zdtxt,
+			   t.d,
+			   t.nickname,
+			   t.checkway
+		  from BASIS.basis_tb_parameter t
+		 where t.bid = #bid#
+		 order by t.pid asc
+	]]>
+	</select>
+
+	<select id="getQueryOrgCount" parameterClass="reportParameter" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(distinct t.saporg_id || t.saporg_name)
+		  from smsuser.b_saporg_smsorg t
+		 where t.sap_type = #d#
+		   and t.org_id in
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+		<dynamic>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( t.saporg_id like #search,handler=wildcard# escape '\'
+				 or t.saporg_name like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getQueryOrgList" parameterClass="reportParameter" resultClass="queryParameter">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select distinct t.saporg_id as id, t.saporg_name as text
+		  from smsuser.b_saporg_smsorg t
+		 where t.sap_type = #d#
+		   and t.org_id in
+	]]>
+		<iterate property="codes" open="(" close=")" conjunction=",">#codes[]#
+		</iterate>
+		<dynamic>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( t.saporg_id like #search,handler=wildcard# escape '\'
+				 or t.saporg_name like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<select id="getQueryAllChildOrgCount" parameterClass="reportParameter" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(distinct t.saporg_id || t.saporg_name)
+		  from smsuser.b_saporg_smsorg t
+		 where t.sap_type = #d#
+		   and exists (select 1
+				  from smsuser.b_org p
+				 where p.org_id = t.org_id
+				   and p.state = 'Y'
+				 start with p.org_id = #code#
+				connect by prior p.org_id = p.org_parent_id)
+	]]>
+		<dynamic>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( t.saporg_id like #search,handler=wildcard# escape '\'
+				 or t.saporg_name like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getQueryAllChildOrgList" parameterClass="reportParameter" resultClass="queryParameter">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select distinct t.saporg_id as id, t.saporg_name as text
+		  from smsuser.b_saporg_smsorg t
+		 where t.sap_type = #d#
+		   and exists (select 1
+				  from smsuser.b_org p
+				 where p.org_id = t.org_id
+				   and p.state = 'Y'
+				 start with p.org_id = #code#
+				connect by prior p.org_id = p.org_parent_id)
+	]]>
+		<dynamic>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( t.saporg_id like #search,handler=wildcard# escape '\'
+				 or t.saporg_name like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<select id="getQueryParameterCount0" parameterClass="reportParameter" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(distinct $zdid$)
+		  from $tableName$
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="d" prepend="and">
+			<![CDATA[ $d$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( $zdid$ like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getQueryParameterCount1" parameterClass="reportParameter" resultClass="java.lang.Integer">
+	<![CDATA[
+		select count(1)
+		  from $tableName$
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="d" prepend="and">
+			<![CDATA[ $d$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( $zdid$ like #search,handler=wildcard# escape '\'
+				 or $zdtxt$ like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+	
+	<select id="getQueryParameterList0" parameterClass="reportParameter" resultClass="queryParameter">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select distinct $zdid$ as id
+		  from $tableName$
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="d" prepend="and">
+			<![CDATA[ $d$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( $zdid$ like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+	<select id="getQueryParameterList1" parameterClass="reportParameter" resultClass="queryParameter">
+		<include refid="global.paginationStart" />
+	<![CDATA[
+		select $zdid$ as id, $zdtxt$ as text
+		  from $tableName$
+		 where 1 = 1
+	]]>
+		<dynamic>
+			<isNotEmpty property="d" prepend="and">
+			<![CDATA[ $d$ ]]>
+			</isNotEmpty>
+			<isNotEmpty property="search" prepend="and">
+			<![CDATA[
+				  ( $zdid$ like #search,handler=wildcard# escape '\'
+				 or $zdtxt$ like #search,handler=wildcard# escape '\' )
+			]]>
+			</isNotEmpty>
+		</dynamic>
+		<include refid="global.orderBy" />
+		<include refid="global.paginationEnd" />
+	</select>
+	
+</sqlMap>

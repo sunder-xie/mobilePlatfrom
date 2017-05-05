@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>组织列表</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    	#CSSM(["ext", "style"])
+	</head>
+	<body>
+		<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+			<tr>
+				<td valign="top">
+					<table bgColor=#ffffff width="100%" border="0" cellspacing="0" cellpadding="0">
+						<tr>
+						 	<td colspan="2" class="home_title" noWrap >
+								组织树
+			                </td>
+                        </tr>
+		                <form method="post">
+							<input type="hidden" id="orgId" name="orgId"></input>
+			                <input type="hidden" id="orgName" name="orgName"></input>
+						</form>
+						<input type="hidden" id="actionName" value="$!{actionName}"></input>
+					</table>
+				</td>
+			</tr>
+        </table>
+		<div id="tree-div" style="overflow: auto; height: 100%; width: 100%; border: 0px;"></div>
+    	#JSM(['ext'])
+    	#JS_ENV_VAL()
+    	<script type="text/javascript">
+    	Ext.onReady(function(){
+    	    var Tree = Ext.tree;
+    	
+    	    var tree = new Tree.TreePanel({
+    	        useArrows: true,
+    	        autoScroll: true,
+    	        animate: true,
+    	        enableDD: true,
+    	        containerScroll: true,
+    	        border: false,
+    	        dataUrl: '$!{env.appUrl}/org/orgTreeAjaxAction!getOrgTreeListByAjax.htm',
+    	        root: {
+    	            nodeType: 'async',
+    	            text: 'XXX有限公司',
+    	            draggable: false,
+    	            id: '$!node' == '-1' ? '-1' :'1'
+    	        }
+    	    });
+    	
+    	    tree.render('tree-div');
+    	    tree.getRootNode().expand();
+			
+    	    tree.on('click', function(node){
+    	  		var form = window.document.forms[0];
+    	    	document.getElementById("orgId").value = node.id;
+    	    	document.getElementById("orgName").value = node.text;
+    	    	
+    	    	var actionName = document.getElementById("actionName").value
+    	    	if (actionName != ""){
+    	    		form.action = actionName;
+    	    		form.target = "right";
+    	    		form.submit();
+    	    	}
+    		});
+    	});
+    	</script>
+	</body>
+</html>

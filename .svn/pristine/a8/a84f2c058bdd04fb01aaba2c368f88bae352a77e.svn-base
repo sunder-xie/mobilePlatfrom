@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body>
+		<form method="post">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" >
+							<tr>
+								<td class="form_top_icon_01" >
+									BO报表查询参数
+								</td>
+								<td class="title_bottom_line" noWrap align='right'>
+									<a href="javascript:save();">
+                                        <img src="$!{env.imgUrl}/image/actions/icon_ok.gif" align="absMiddle" >确定 </img>
+									</a>
+									<br>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="1" class="home_title">
+									查询条件
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+										<tr>
+											<td class="even" noWrap>
+												<input type='text' id='search' name="search" />
+												<input type="button" onclick="javascript:searchs()" value="查询" />
+											</td>
+                                    	</tr>
+									</table>
+									<tr>
+        								<td colspan="1" class="home_title">
+        									查询列表
+        								</td>
+									</tr>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<div class="cent_border">
+				<div id="gridList" class="ext-grid-mask"></div>
+			</div>
+		</form>
+		<input type='hidden' id='tableName' value='$!{reportParameter.tableName}' />
+		<input type='hidden' id='zdid' value='$!{reportParameter.zdid}' />
+		<input type='hidden' id='txt' value='$!{reportParameter.txt}' />
+		<input type='hidden' id='zdtxt' value='$!{reportParameter.zdtxt}' />
+		<input type='hidden' id='d' value="$!{reportParameter.d}" />
+		<iframe id="hideFrame" name="hideFrame" src="$!{env.imgUrl}/image/space.gif" style="height: 0; width: 0"></iframe>
+		#JSM(["common", "ext", "jquery"])
+        #JS_ENV_VAL()
+        <script type="text/javascript">
+        var store;
+        var amount = $!{reportParameter.amount};
+        </script>
+        <script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/boform/searchQueryParameter.js"></script>
+	</body>
+</html>

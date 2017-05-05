@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title>报表查询条件</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		#CSSM(["ext", "style"])
+	</head>
+	<body text=#000000 bgColor=#ffffff>
+		<form name="xx" method="post" target="myshow">
+			<table width="100%" height="100%" border="0" cellpadding="0" cellspacing="8">
+				<tr>
+					<td valign="top">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+							<tr>
+								<td class="form_top_icon_01">
+								参数
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title">
+									参数列表
+								</td>
+							</tr>
+							<tr>
+								<td colspan="2" class="home_title_line">
+									<table width="100%" border="0" cellpadding="0" cellspacing="1" class=outer>
+										#set($counts = 0)
+										#foreach($rp in $!{reportParameterList})
+										<tr>
+											<td class="head" noWrap>$!{rp.memo}:</td>
+											<td class="even" noWrap>
+												<input type="hidden" name='c_$counts' value='$!{rp.che}' />
+                        						<input type="hidden" name='l_$counts' value='$!{rp.memo}' />
+                        						<input type="hidden" name='a_$counts' value='$!{rp.amount}' />
+												<input type="hidden" name='nickname_$counts' value='$!{rp.nickname}' />
+											#if($!{rp.amount} == 0)
+                        						<input type="text" name='cont_$counts' onpropertychange="ac(this.value,$counts)" onblur='gocheck(this.value,$counts)' />
+                        						<input type="hidden" name='coni_$counts' readonly="readonly" />
+                        						<input type="hidden" name='cw_$counts' value='$!{rp.checkway}' />
+											#elseif($!{rp.amount} == 7)
+                        						<input type="text" name='cont_$counts' value='$!{custName}' readonly="readonly" />
+                        						<input type="hidden" name='coni_$counts' readonly="readonly" value='$!{custId}' />
+												#if($!{rp.che} == 0)
+												<input type="button" name='clear_$counts' value="清空" onclick="cc($counts)" />
+												#end
+											#elseif($!{rp.amount} == 4)
+                        						<input type="text" name='cont_$counts' readonly="readonly" />
+                        						<input type="hidden" name='coni_$counts' />
+                        						<input type="button" name='bot_$counts' onclick="newtree2($counts)" value="选择" />
+												#if($!{rp.che} == 0)
+												<input type="button" name='clear_$counts' value="清空" onclick="cc($counts)" />
+												#end
+											#elseif($!{rp.amount} == 5)
+												<select id='cont_$counts' size=1  name='cont_$counts' onpropertychange="cii($counts,this.value)">
+													#foreach($y in $!{yearList})
+													#if($y == $!{year})
+													<option value="$y" selected=true>$y</option>
+													#else
+													<option value="$y">$y</option>
+													#end
+													#end
+												</select>
+												<input type="hidden" name='coni_$counts' readonly="readonly" value='$!{year}' />
+												#if($!{rp.che} == 0)
+												<input type="button" name='clear_$counts' value="清空" onclick="cc($counts)" />
+												#end
+											#elseif($!{rp.amount} == 6)
+												<select id='cont_$counts' name='cont_$counts' onpropertychange="cii($counts,this.value)">
+                                                    <option value="1" selected=true>1</option> 
+                                                    <option value="2">2</option> 
+                                                    <option value="3">3</option> 
+                                                    <option value="4">4</option> 
+                                                    <option value="5">5</option> 
+                                                    <option value="6">6</option> 
+                                                    <option value="7">7</option> 
+                                                    <option value="8">8</option> 
+                                                    <option value="9">9</option> 
+                                                    <option value="10">10</option> 
+                                                    <option value="11">11</option> 
+                                                    <option value="12">12</option>
+												</select>
+												<input type="hidden" name='coni_$counts' readonly="readonly" value="1" />
+												#if($!{rp.che} == 0)
+												<input type="button" name='clear_$counts' value="清空" onclick="cc($counts)" />
+												#end
+											#elseif($!{rp.amount} == 3)
+												<input type="text" size="20" id="cont_$counts" name="cont_$counts" onpropertychange="ac(this.value,$counts)" />
+												<input type="hidden" name='coni_$counts' readonly="readonly" />
+												#if($!{rp.che} == 0)
+												<input type="button" name='clear_$counts' value="清空" onclick="cc($counts)" />
+												#end
+											#else
+                        						<input type="text" name='cont_$counts' readonly="readonly" />
+                        						<input type="hidden" name='coni_$counts' readonly="readonly" />
+                        						<input type="button" name='bot_$counts' onclick="newtree1('$!{rp.pid}', $counts)" value="选择" />
+												#if($!{rp.che} == 0)
+												<input type="button" name='clear_$counts' value="清空" onclick="cc($counts)" />
+												#end
+											#end
+											</td>
+										#if(1==$counts || 3==$counts || 5==$counts || 7==$counts)
+										</tr>
+										#end
+										#set($counts = $counts + 1)
+										#end
+									</table>
+								</td>
+							</tr>
+							<tr>
+								<td style="text-align:center"><br>
+									<input type="button" onclick="si($!{total});" value="查看报表" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+			<input type="hidden" id="bid" name="bid" value="$!{bid}" />
+			<input type="hidden" name="reportType" value="$!{reportType}" />
+			<input type="hidden" name="boType" value="$!{boType}" />
+			<input type='hidden' name="reportParameterList" id="reportParameterList" />
+		</form>
+		#JSM(["common", "ext", "jquery"])
+        #JS_ENV_VAL()
+        <script type="text/javascript">
+        var total = $!{total};
+        </script>
+        <script type="text/javascript" src="$!{env.imgUrl}/js/xplatform/boform/showBoRpt.js"></script>
+	</body>
+</html>

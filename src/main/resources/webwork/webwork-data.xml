@@ -1,0 +1,25 @@
+<!DOCTYPE xwork PUBLIC "-//OpenSymphony Group//XWork 1.1.1//EN" "http://www.opensymphony.com/xwork/xwork-1.1.1.dtd">
+<xwork>
+	<package name="{http://xplatform}xplatform$data"
+		extends="{http://xplatform}xplatform$framework" namespace="/data">
+
+		<action name="dataManageAction" class="dataManageAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchDataPreview">/xplatform/data/searchDataPreview.vm</result>
+		</action>
+		
+		<action name="dataLogAction" class="dataLogAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchDataLog">/xplatform/data/searchDataLog.vm</result>
+		</action>
+		
+		<action name="dataConfigAction" class="dataConfigAction" >
+			<interceptor-ref name="authenticationStack" />
+			<result name="searchDataConfig">/xplatform/data/searchDataConfig.vm</result>
+			<result name="createPrepare">/xplatform/data/authorizeAddMain.vm</result>
+			<result name="orgTreeAjax">/xplatform/org/orgTreeAjaxInfo.vm</result>
+			<result name="sendOrgToGetPeople">/xplatform/data/peopleSelector.vm</result>
+		</action>
+
+	</package>
+</xwork>
